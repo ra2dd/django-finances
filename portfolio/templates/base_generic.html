@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% block title %}
+            <title>Portfolio</title>
+        {% endblock %}
+
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+
+        <!-- Add additional CSS in static file -->
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    </head>
+
+    <body>
+        <div class="grid-container">
+            <header>
+                <h2>Portfolio</h2>
+            </header>
+
+            <aside>
+                {% block sidebar %}
+                {% endblock %}
+            </aside>
+
+            <section class="content-container">
+                {% block content %}
+                {% endblock %}
+            </section>
+
+            <footer>
+                <p>Created by 
+                </p>
+            </footer>
+        </div>
+    </body>
+</html>
