@@ -9,6 +9,9 @@ class Portfolio(models.Model):
         primary_key=True
     )
 
+    def __str__(self):
+        return f'{self.owner.username} Portfolio {self.pk}'
+
 
 class Cash(models.Model):
     portfolio = models.ForeignKey(
@@ -26,6 +29,9 @@ class Cash(models.Model):
         max_length=3,
         choices=CURRENCY_TYPE,
     )
+
+    def __str__(self):
+        return f'{self.portfolio} - {self.currency}'
 
 class CashHistory(models.Model):
     amount = models.DecimalField(max_digits=19, decimal_places=2)
@@ -56,6 +62,9 @@ class Stock(models.Model):
         choices=STOCK_NAME,
     )
 
+    def __str__(self):
+        return f'{self.portfolio} - {self.name}'
+
 class StockHistory(models.Model):
     amount = models.DecimalField(max_digits=19, decimal_places=6)
 
@@ -84,6 +93,9 @@ class Crypto(models.Model):
         max_length=5,
         choices=CRYPTO_NAME,
     )
+
+    def __str__(self):
+        return f'{self.portfolio} - {self.name}'
 
 class CryptoHistory(models.Model):
     amount = models.DecimalField(max_digits=19, decimal_places=10)
