@@ -22,8 +22,8 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
 
     def get_context_data(self):
 
-        user_portfolio = Portfolio.objects.filter(owner=self.request.user)
-        
+        user_portfolio = Portfolio.objects.filter(owner=self.request.user)[0]
+
         context = {
             'user_portfolio': user_portfolio,
         }

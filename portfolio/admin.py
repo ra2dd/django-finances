@@ -2,9 +2,7 @@ from django.contrib import admin
 from .models import Portfolio, Cash, CashHistory, Stock, StockHistory, Crypto, CryptoHistory
 # Register your models here.
 
-admin.site.register(Stock)
 admin.site.register(StockHistory)
-admin.site.register(Crypto)
 admin.site.register(CryptoHistory)
 
 # Defining inlines
@@ -22,7 +20,14 @@ class CryptoInline(admin.TabularInline):
 
 class CashHistoryInline(admin.TabularInline):
     model = CashHistory
-    
+
+class StockHistoryInline(admin.TabularInline):
+    model = StockHistory
+
+class CryptoHistoryInline(admin.TabularInline):
+    model = CryptoHistory
+
+
 # Admin models
 @admin.register(Portfolio)
 class PortfolioAdmin(admin.ModelAdmin):
@@ -32,6 +37,16 @@ class PortfolioAdmin(admin.ModelAdmin):
 class CashAdmin(admin.ModelAdmin):
     list_display = ('portfolio', 'currency')
     inlines = [CashHistoryInline]
+
+@admin.register(Stock)
+class StockAdmin(admin.ModelAdmin):
+    list_display = ('portfolio', 'name')
+    inlines = [StockHistoryInline]
+
+@admin.register(Crypto)
+class CryptoAdmin(admin.ModelAdmin):
+    list_display = ('portfolio', 'name')
+    inlines = [CryptoHistoryInline]
 
 @admin.register(CashHistory)
 class CashHistoryAdmin(admin.ModelAdmin):

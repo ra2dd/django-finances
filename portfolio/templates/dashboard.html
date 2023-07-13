@@ -10,4 +10,16 @@
     <h2>My assets:</h2>
 
     <p>{{ user_portfolio }}</p>
+
+    <ul>List of currencies</ul>
+        {% for cash in user_portfolio.cash_set.all %}
+            <li>{{ cash.currency }}</li>
+
+            <ul>
+                Currency history:
+                    {% for currency in cash.cashhistory_set.all %}
+                        <li>{{ currency.amount }} - {{ currency.date }}</li>
+                    {% endfor %}
+            </ul>
+        {% endfor %}
 {% endblock %}

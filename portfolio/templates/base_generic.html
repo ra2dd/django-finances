@@ -25,7 +25,13 @@
                 {% block sidebar %}
                     <ul class="sidebar-nav">
                         <div class="sidebar-section">
-                            <a href="{% url 'index' %}">Home</a>
+                            <li>
+                                <a href="{% url 'index' %}">Home</a>
+                            </li>
+
+                            <li>
+                                <a href="{% url 'dashboard' %}">Dashboard</a>
+                            </li>
                         </div>
                     </ul>
                 {% endblock %}
