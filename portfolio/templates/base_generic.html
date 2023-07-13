@@ -8,6 +8,8 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width" />
 
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik" />
+
         <!-- Add additional CSS in static file -->
         {% load static %}
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -21,6 +23,11 @@
 
             <aside>
                 {% block sidebar %}
+                    <ul class="sidebar-nav">
+                        <div class="sidebar-section">
+                            <a href="{% url 'index' %}">Home</a>
+                        </div>
+                    </ul>
                 {% endblock %}
             </aside>
 
@@ -30,7 +37,8 @@
             </section>
 
             <footer>
-                <p>Created by 
+                <p>
+
                 </p>
             </footer>
         </div>

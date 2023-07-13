@@ -1,0 +1,65 @@
+html
+{
+    font-family: 'Rubik';
+}
+
+body
+{
+    margin: 2% 4%;
+}
+
+/*
+    Appling grid layout to the page
+*/
+.grid-container
+{
+    display: grid;
+    grid-template-areas:
+        "header header"
+        "sidebar content"
+        "footer footer";
+        grid-template-columns: 0.8fr 5fr;
+        grid-template-rows: 1fr 6fr 0.5fr;
+        gap: 2vw;
+
+    
+    position: relative;
+    min-height: 94vh;
+}
+
+header
+{
+    grid-area: header;
+}
+
+aside
+{
+    grid-area: sidebar;
+
+    border-right: 0.1vw solid black;
+    padding-right: 1vw;
+}
+
+.content-container
+{
+    grid-area: content;
+}
+
+footer
+{
+    grid-area: footer;
+}
+
+
+/*
+    Styling content
+*/
+h1
+{
+    font-size: 1.8rem;
+}
+
+h2
+{
+    font-size: 1.6rem;
+}
