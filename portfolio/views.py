@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Portfolio, Cash, CashHistory, Stock, StockHistory, Crypto, CryptoHistory
+from .models import Portfolio, Asset, AssetBalance, AssetBalanceHistory
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views import generic
 

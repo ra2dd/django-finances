@@ -1,56 +1,26 @@
 from django.contrib import admin
-from .models import Portfolio, Cash, CashHistory, Stock, StockHistory, Crypto, CryptoHistory
-# Register your models here.
+from .models import Portfolio, Asset, AssetBalance, AssetBalanceHistory
 
-admin.site.register(StockHistory)
-admin.site.register(CryptoHistory)
+# Register your models here.
+admin.site.register(Asset)
 
 # Defining inlines
-class CashInline(admin.TabularInline):
-    model = Cash
+class AssetBalanceInline(admin.TabularInline):
+    model = AssetBalance
     extra = 1
 
-class StockInline(admin.TabularInline):
-    model = Stock
+class AssetBalanceHistoryInline(admin.TabularInline):
+    model = AssetBalanceHistory
     extra = 1
-
-class CryptoInline(admin.TabularInline):
-    model = Crypto
-    extra = 1
-
-class CashHistoryInline(admin.TabularInline):
-    model = CashHistory
-
-class StockHistoryInline(admin.TabularInline):
-    model = StockHistory
-
-class CryptoHistoryInline(admin.TabularInline):
-    model = CryptoHistory
 
 
 # Admin models
 @admin.register(Portfolio)
 class PortfolioAdmin(admin.ModelAdmin):
-    inlines = [CashInline, StockInline, CryptoInline]
+    inlines = [AssetBalanceInline]
 
-@admin.register(Cash)
+@admin.register(AssetBalance)
 class CashAdmin(admin.ModelAdmin):
-    list_display = ('portfolio', 'currency')
-    inlines = [CashHistoryInline]
-
-@admin.register(Stock)
-class StockAdmin(admin.ModelAdmin):
-    list_display = ('portfolio', 'name')
-    inlines = [StockHistoryInline]
-
-@admin.register(Crypto)
-class CryptoAdmin(admin.ModelAdmin):
-    list_display = ('portfolio', 'name')
-    inlines = [CryptoHistoryInline]
-
-@admin.register(CashHistory)
-class CashHistoryAdmin(admin.ModelAdmin):
-    list_display = ('cash', 'amount', 'date')
-    list_filter = ('cash',)
-
+    # list_display = ('portfolio', 'currency')
+    inlines = [AssetBalanceHistoryInline]
 
