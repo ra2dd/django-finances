@@ -12,13 +12,13 @@
     <p>{{ user_portfolio }}</p>
 
     <ul>List of currencies</ul>
-        {% for cash in user_portfolio.cash_set.all %}
-            <li>{{ cash.currency }}</li>
+        {% for assetBalance in user_portfolio.assetbalance_set.all %}
+            <li>{{ assetBalance.asset }}</li>
 
             <ul>
-                Currency history:
-                    {% for currency in cash.cashhistory_set.all %}
-                        <li>{{ currency.amount }} - {{ currency.date }}</li>
+                Asset history:
+                    {% for assetBalanceHistory in assetBalance.assetbalancehistory_set.all %}
+                        <li>{{ assetBalanceHistory.amount }} - {{ assetBalanceHistory.date }}</li>
                     {% endfor %}
             </ul>
         {% endfor %}

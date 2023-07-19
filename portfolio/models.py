@@ -13,6 +13,17 @@ class Portfolio(models.Model):
         return f'{self.owner.username} Portfolio {self.pk}'
 
 
+class Exchange(models.Model):
+    name = models.CharField(max_length=64)
+
+    url = models.URLField(max_length=200)
+
+    api_url = models.URLField(max_length=200, blank=True)
+
+    def __str__(self):
+        return f'{self.name}'
+
+
 class Asset(models.Model):
     name = models.CharField(max_length=64)
 
@@ -20,6 +31,21 @@ class Asset(models.Model):
 
     def __str__(self):
         return f'{self.ticker} - {self.name}'
+    
+
+class AssetPriceHistory(models.Model):
+    asset = models.ForeignKey(
+        Asset,
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+
+    date = models.DateField()
+
+    price = models.DecimalField(max_digits=19, decimal_places=8)
+
+    def __str__(self):
+        return f'{self.asset} {self.date} - {self.price}'
 
 
 class AssetBalance(models.Model):
@@ -35,12 +61,18 @@ class AssetBalance(models.Model):
         null= True,
     )
 
+    broker = models.ForeignKey(
+        Exchange,
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+
     def __str__(self):
         return f'{self.portfolio} - {self.asset}'
 
 
 class AssetBalanceHistory(models.Model):
-    amount = models.DecimalField(max_digits=19, decimal_places=2)
+    amount = models.DecimalField(max_digits=19, decimal_places=8)
 
     date = models.DateField()
 
