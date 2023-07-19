@@ -44,6 +44,10 @@ class AssetPriceHistory(models.Model):
 
     price = models.DecimalField(max_digits=19, decimal_places=8)
 
+    class Meta:
+        ordering = ['date']
+        get_latest_by = ['date']
+
     def __str__(self):
         return f'{self.asset} {self.date} - {self.price}'
 
@@ -80,6 +84,10 @@ class AssetBalanceHistory(models.Model):
         AssetBalance,
         on_delete=models.CASCADE
     )
+
+    class Meta:
+        ordering = ['date']
+        get_latest_by = ['date']
 
     def __str__(self):
         return f'{self.balance} - {self.amount}'
