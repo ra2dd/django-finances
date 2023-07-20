@@ -5,7 +5,7 @@ html
 
 body
 {
-    margin: 2% 4%;
+    margin: 0;
 }
 
 /*
@@ -15,39 +15,42 @@ body
 {
     display: grid;
     grid-template-areas:
-        "header header"
-        "sidebar content"
-        "footer footer";
-        grid-template-columns: 0.8fr 5fr;
+        "header"
+        "content"
+        "footer";
         grid-template-rows: 1fr 6fr 0.5fr;
         gap: 2vw;
 
     
     position: relative;
-    min-height: 94vh;
+    min-height: 100vh;
 }
 
 header
 {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: space-between;
+
     grid-area: header;
-}
-
-aside
-{
-    grid-area: sidebar;
-
-    border-right: 0.1vw solid black;
-    padding-right: 1vw;
+    background-color: orange;
+    font-weight: 600;
 }
 
 .content-container
 {
     grid-area: content;
+    margin: 2% 4%;
+    background-color: antiquewhite;
 }
 
 footer
 {
     grid-area: footer;
+
+    background-color: black;
+    color: white;
 }
 
 
@@ -62,4 +65,33 @@ h1
 h2
 {
     font-size: 1.6rem;
+}
+
+
+/*
+    Styling header and sidebar
+*/
+.header-navbar
+{
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.header-navbar > *
+{
+    margin: auto 2vw;
+}
+
+header > .header-logo
+{
+    margin-left: 6vw;
+}
+
+header > .header-user
+{
+    margin-right: 6vw;
+    display: flex;
+    justify-content: right;
 }

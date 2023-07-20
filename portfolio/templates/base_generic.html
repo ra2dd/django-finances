@@ -18,24 +18,33 @@
     <body>
         <div class="grid-container">
             <header>
-                <h2>Portfolio</h2>
-            </header>
+                <h2 class="header-logo">Portfolio</h2>
 
-            <aside>
+
                 {% block sidebar %}
-                    <ul class="sidebar-nav">
-                        <div class="sidebar-section">
-                            <li>
-                                <a href="{% url 'index' %}">Home</a>
-                            </li>
+                    <ul class="header-navbar">
+                        <li>
+                            <a href="{% url 'index' %}">Home</a>
+                        </li>
 
-                            <li>
-                                <a href="{% url 'dashboard' %}">Dashboard</a>
-                            </li>
-                        </div>
+                        <li>
+                            <a href="{% url 'dashboard' %}">Dashboard</a>
+                        </li>
                     </ul>
                 {% endblock %}
-            </aside>
+
+
+                <div class="header-user">
+                    {% if user.is_authenticated %}
+                        <p>
+                            User: {{ user.get_username }}
+                        </p>
+                    {% else %}
+                        <a href="">Log in</a>
+                    {% endif %}
+
+                </div>
+            </header>
 
             <section class="content-container">
                 {% block content %}
@@ -44,7 +53,7 @@
 
             <footer>
                 <p>
-
+                    Footer
                 </p>
             </footer>
         </div>
