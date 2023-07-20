@@ -22,12 +22,35 @@ class Exchange(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+    
+
+class ApiConnection(models.Model):
+    broker = models.ForeignKey(
+        Exchange,
+        on_delete=models.SET_NULL,
+        null=True
+    )
+
+    api_key = models.CharField(max_length=256)
+
+    secret_key = models.CharField(max_length=256)
+
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True
+    )
+
+    def __str__(self):
+        return f'Api key {self.owner} - {self.broker}'
 
 
 class Asset(models.Model):
     name = models.CharField(max_length=64)
 
     ticker = models.CharField(max_length=16)
+
+    type = models.CharField(max_length=32)
 
     def __str__(self):
         return f'{self.ticker} - {self.name}'
@@ -82,7 +105,8 @@ class AssetBalanceHistory(models.Model):
 
     balance = models.ForeignKey(
         AssetBalance,
-        on_delete=models.CASCADE
+        on_delete=models.SET_NULL,
+        null=True,
     )
 
     class Meta:
