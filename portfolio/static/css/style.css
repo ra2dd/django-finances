@@ -19,7 +19,6 @@ body
         "content"
         "footer";
         grid-template-rows: 1fr 6fr 0.5fr;
-        gap: 2vw;
 
     
     position: relative;
@@ -41,7 +40,6 @@ header
 .content-container
 {
     grid-area: content;
-    margin: 2% 4%;
     background-color: antiquewhite;
 }
 
@@ -55,17 +53,23 @@ footer
 
 
 /*
-    Styling content
+    Styling main content
 */
 h1
 {
-    font-size: 1.8rem;
+    font-size: 2.4rem;
 }
 
 h2
 {
-    font-size: 1.6rem;
+    font-size: 2rem;
 }
+
+.main-content
+{
+    margin: 4% 10%;
+}
+
 
 
 /*

@@ -23,23 +23,45 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
     def get_context_data(self):
 
         # Get portfolio of current user
-        user_portfolio = Portfolio.objects.filter(owner=self.request.user)[0]
-        
-        # Get all assets
-        assets_list = Asset.objects.all()
-        asset_price_history_list = AssetPriceHistory.objects.all()
-        latest_price_history_list = []
+        user_balance_list = Portfolio.objects.filter(owner=self.request.user)[0].assetbalance_set.all()
 
-        # Get the latest price of each asset and put its object into array
-        for asset in assets_list:
-            latest_price_history_list.append(asset.assetpricehistory_set.latest())
+        same_latest_balance = (False, False)
+        index = 0;
+
+        # Loop throgh balances to add amount, price and value attrributes to balance queryset
+        for balance in user_balance_list:
+            
+            # Add asset price attribute
+            asset_latest_price = balance.asset.assetpricehistory_set.latest().price
+            setattr(balance, 'latest_price', round(asset_latest_price, 2))
+
+            # Get asset holding
+            asset_latest_holding = balance.assetbalancehistory_set.latest().amount
+        
+            # Check if asset holding is the same as asset holding in previous iteration
+            if (same_latest_balance[0] == balance.asset):
+                # If True add previous holding to current holding
+                asset_latest_holding += same_latest_balance[1]
+
+                #TODO remove object from last iteration
+
+            # Set asset holding attribute    
+            setattr(balance, 'latest_holding', round(asset_latest_holding, 2))
+
+            # Set auxilary tuple variable for storing balance to the next iteration
+            same_latest_balance = (balance.asset, balance.assetbalancehistory_set.latest().amount)
+            
+            # Set asset value attribute
+            asset_latest_value = asset_latest_price * asset_latest_holding
+            setattr(balance, 'latest_value', round(asset_latest_value, 2))
+
 
         context = {
-            'user_portfolio': user_portfolio,
-            'latest_price_history_list': latest_price_history_list,
+            'user_balance_list': user_balance_list,
         }
         return context
     
+
 class ConnectionsView(generic.TemplateView, LoginRequiredMixin):
     """View function for user wallet connections"""
 

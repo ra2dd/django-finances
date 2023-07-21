@@ -5,7 +5,45 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Portfolio</h1>
+    <div class="main-header">
+        <h1>Portfolio</h1>
+    </div>
+    
+
+    <table>
+        <caption>
+            List of user assets
+        </caption>
+
+        <thead>
+            <th scope="col">Name</th>
+            <th scope="col">Price</th>
+            <th scope="col">Holdings</th>
+            <th scope="col">Value</th>
+        </thead>
+
+        <tbody>
+            {% for balance in user_balance_list %}
+                <tr>
+                    <th scope="row">{{ balance.asset }}</th>
+                    <th scope="row">{{ balance.latest_price }}</th>
+                    <th scope="row">{{ balance.latest_holding }}</th>
+                    <th scope="row">{{ balance.latest_value }}</th>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+
+
 
     <h2>My assets:</h2>
 
