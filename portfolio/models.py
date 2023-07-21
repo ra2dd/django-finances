@@ -16,6 +16,16 @@ class Portfolio(models.Model):
 class Exchange(models.Model):
     name = models.CharField(max_length=64)
 
+    EXCHANGE_TYPE = (
+        ('brokerage_house', 'Brokerage House'),
+        ('crypto_exchange', 'Cryptocurrency Exchange'),
+    )
+
+    type = models.CharField(
+        max_length=16,
+        choices=EXCHANGE_TYPE,
+    )
+
     url = models.URLField(max_length=200)
 
     api_url = models.URLField(max_length=200, blank=True)
@@ -51,6 +61,17 @@ class Asset(models.Model):
     ticker = models.CharField(max_length=16)
 
     type = models.CharField(max_length=32)
+
+    ASSET_TYPE = (
+        ('stock', 'Stock'),
+        ('cryptocurrency', 'Cryptocurrency'),
+        ('cash', 'Cash')
+    )
+
+    type = models.CharField(
+        max_length=16,
+        choices=ASSET_TYPE,
+    )
 
     def __str__(self):
         return f'{self.ticker} - {self.name}'
