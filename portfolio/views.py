@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Portfolio, Asset, AssetBalance, AssetBalanceHistory, AssetPriceHistory
+from .models import Portfolio, Asset, AssetBalance, AssetBalanceHistory, AssetPriceHistory, Exchange, ApiConnection
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views import generic
 
@@ -39,7 +39,34 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
             'latest_price_history_list': latest_price_history_list,
         }
         return context
+    
+class ConnectionsView(generic.TemplateView, LoginRequiredMixin):
+    """View function for user wallet connections"""
 
+    template_name = 'connections/connections.html'
+
+    def get_context_data(self):
+
+        connected_crypto_exchenges_list = []
+        connected_brokerages_list = []
+
+        for exchange in Exchange.objects.all():
+            if (exchange.apiconnection_set.filter(owner=self.request.user)):
+
+                setattr(exchange, 'connected', True)
+
+                if (exchange.type == 'crypto_exchange'):
+                    connected_crypto_exchenges_list.append(exchange)
+
+                elif (exchange.type == 'brokerage_house'):
+                    connected_brokerages_list.append(exchange)
+
+
+        context = {
+            'connected_crypto_exchenges_list': connected_crypto_exchenges_list,
+            'connected_brokerages_list': connected_brokerages_list,
+        }
+        return context
 
 
 
