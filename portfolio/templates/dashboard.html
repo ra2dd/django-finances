@@ -35,6 +35,27 @@
     </table>
 
 
+    <table>
+        <caption>
+            Portfolio value history
+        </caption>
+
+        <thead>
+            <th scope="col">Date</th>
+            <th scope="col">Value</th>
+        </thead>
+
+        <tbody>
+            {% for total_balance in user_total_balance_history %}
+                <tr>
+                    <th scope="row">{{ total_balance.date }}</th>
+                    <th scope="row">{{ total_balance.values }}</th>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
 
 
 

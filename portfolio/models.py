@@ -89,7 +89,7 @@ class AssetPriceHistory(models.Model):
     price = models.DecimalField(max_digits=19, decimal_places=8)
 
     class Meta:
-        ordering = ['-date']
+        ordering = ['date']
         get_latest_by = ['date']
 
     def __str__(self):
@@ -134,7 +134,7 @@ class AssetBalanceHistory(models.Model):
     )
 
     class Meta:
-        ordering = ['-date']
+        ordering = ['date']
         get_latest_by = ['date']
 
     def __str__(self):

@@ -2,16 +2,23 @@ from django.shortcuts import render
 from .models import Portfolio, Asset, AssetBalance, AssetBalanceHistory, AssetPriceHistory, Exchange, ApiConnection
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views import generic
+import datetime, random
 
 class UserCurrentAsset:
-            def __init__(self, name, ticker, type, latest_price, latest_holding, latest_value):
-                self.name = name
-                self.ticker = ticker
-                self.type = type
-                self.latest_price = latest_price
-                self.latest_holding = latest_holding
-                self.latest_value = latest_value
+    def __init__(self, name, ticker, type, latest_price, latest_holding, latest_value):
+        self.name = name
+        self.ticker = ticker
+        self.type = type
+        self.latest_price = latest_price
+        self.latest_holding = latest_holding
+        self.latest_value = latest_value
 
+class UserTotalBalanceHistory:
+    def __init__(self, date, value):
+        self.date = date
+        self.values = [value]
+
+     
 def index(request):
     """View function for the home page of the site."""
 
@@ -66,8 +73,87 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
             # Create UserCurrentAsset object and append it to the context list
             user_balance_list.append(UserCurrentAsset(balance.asset.name, balance.asset.ticker, balance.asset.type, round(asset_latest_price, 2), round(asset_latest_holding, 2), round(asset_latest_value, 2)))
 
+
+        """
+        # AssetPriceHistory database data creation
+
+        # Define a start date of data creation
+        date_new = datetime.datetime(2023, 7, 10)
+
+        # Define a asset ticker that we will be creating data for
+        ticker = 'USD'
+
+        # Define the price range our asset will be created in
+        price_range = (1 ,1) 
+        
+        # Loop through dates until it's today date
+        while (date_new <= datetime.datetime.now()):
+            
+            # Check if asset price history already exists for certain day
+            if AssetPriceHistory.objects.filter(date=date_new).filter(asset__ticker=ticker):
+
+                print(f'already in use - {date_new}')
+                date_new += datetime.timedelta(days=1)
+
+            else:
+                # Create a record with defined parameters
+                record = AssetPriceHistory(asset=Asset.objects.filter(ticker=ticker)[0], date=date_new, price=random.randint(price_range))   
+                record.save()
+
+                print(f'created {record}')
+                date_new += datetime.timedelta(days=1) 
+        """
+
+        user_total_balance_history = []
+
+        for balance in user_all_balance_list:
+             
+             last_date = None
+             last_value = None
+
+             for balance_history in balance.assetbalancehistory_set.all():
+                
+                added_to_existing_list = False
+
+                if last_date == None or last_date == balance_history.date:
+                    
+                    last_value = balance_history.amount * balance_history.balance.asset.assetpricehistory_set.filter(date=balance_history.date)[0].price
+                    print(last_value)
+
+                    for total_balance in user_total_balance_history:
+
+                        if(total_balance.date == balance_history.date):
+                            total_balance.values.append(last_value)
+                            added_to_existing_list = True
+
+                    if not added_to_existing_list:                      
+                        user_total_balance_history.append(UserTotalBalanceHistory(balance_history.date, last_value))
+                        
+                    last_date = balance_history.date
+                
+                else:
+                    while (last_date + datetime.timedelta(days=1) != balance_history.date):
+
+                        last_date += datetime.timedelta(days=1)
+                        last_value = balance_history.amount * balance_history.balance.asset.assetpricehistory_set.filter(date=last_date)[0].price
+                        user_total_balance_history.append(UserTotalBalanceHistory(last_date, last_value))
+
+
+                # print(balance_history.balance.asset.assetpricehistory_set.filter(date=balance_history.date))
+
+        for day_balance in user_total_balance_history:
+
+            sum_of_day_balances = 0
+
+            for day_asset_value in day_balance.values:
+                sum_of_day_balances += day_asset_value
+
+            day_balance.values = sum_of_day_balances
+
+
         context = {
             'user_balance_list': user_balance_list,
+            'user_total_balance_history': user_total_balance_history
         }
         return context
     
