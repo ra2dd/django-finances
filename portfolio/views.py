@@ -108,38 +108,92 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
 
         for balance in user_all_balance_list:
              
-             last_date = None
-             last_value = None
+            last_date = None
+            last_value = None
+            last_balance = None
+            print(f'start {balance}')
+            test = 0
 
-             for balance_history in balance.assetbalancehistory_set.all():
-                
-                added_to_existing_list = False
+            for balance_history in balance.assetbalancehistory_set.all():
 
-                if last_date == None or last_date == balance_history.date:
+                record_added = False
+                last_balance_history = balance_history
+                while(not record_added):
+
+                    added_to_existing_list = False
+
+                    print(f'  loop start{balance_history.date}')
+                    test += 1
+                    if test > 50:
+                        break
+
+                    if last_date == None or last_date == balance_history.date:
+                        print(f'    equals, last_date - {last_date}')    
+                        last_value = balance_history.amount * balance_history.balance.asset.assetpricehistory_set.filter(date=balance_history.date)[0].price
+                        
+                        for total_balance in user_total_balance_history:
+
+                            if(total_balance.date == balance_history.date):
+                                total_balance.values.append(last_value)
+                                added_to_existing_list = True
+
+                        if not added_to_existing_list:                      
+                            user_total_balance_history.append(UserTotalBalanceHistory(balance_history.date, last_value))
+                            
+                        last_date = balance_history.date
+                        record_added = True
+
+                        test += 1
+                        if test > 50:
+                            break
                     
-                    last_value = balance_history.amount * balance_history.balance.asset.assetpricehistory_set.filter(date=balance_history.date)[0].price
-                    print(last_value)
+                    else:
+                        while (last_date + datetime.timedelta(days=1) != balance_history.date):
+                            added_to_existing_list = False
+                            print(f'    loop, last_date - {last_date + datetime.timedelta(days=1)}') 
+                            last_date += datetime.timedelta(days=1)
+                            last_value = balance_history.amount * balance_history.balance.asset.assetpricehistory_set.filter(date=last_date)[0].price
 
+                            for total_balance in user_total_balance_history:
+
+                                if(total_balance.date == last_date):
+                                    total_balance.values.append(last_value)
+                                    added_to_existing_list = True
+
+                            if not added_to_existing_list:                      
+                                user_total_balance_history.append(UserTotalBalanceHistory(last_date, last_value))
+
+                            test += 1
+                            if test > 50:
+                                break
+
+                        if(not record_added):
+                            last_date += datetime.timedelta(days=1)
+
+            print()
+            print(last_date)
+            print(datetime.date.today())
+            print()
+            if(last_date < datetime.date.today()):
+
+                while (last_date < datetime.date.today()):
+                    added_to_existing_list = False
+                    print(f'      fill loop, last_date - {last_date + datetime.timedelta(days=1)}') 
+                    last_date += datetime.timedelta(days=1)
+                    last_value = last_balance_history.amount * last_balance_history.balance.asset.assetpricehistory_set.filter(date=last_date)[0].price
+                    
                     for total_balance in user_total_balance_history:
 
-                        if(total_balance.date == balance_history.date):
+                        if(total_balance.date == last_date):
                             total_balance.values.append(last_value)
                             added_to_existing_list = True
 
                     if not added_to_existing_list:                      
-                        user_total_balance_history.append(UserTotalBalanceHistory(balance_history.date, last_value))
-                        
-                    last_date = balance_history.date
-                
-                else:
-                    while (last_date + datetime.timedelta(days=1) != balance_history.date):
-
-                        last_date += datetime.timedelta(days=1)
-                        last_value = balance_history.amount * balance_history.balance.asset.assetpricehistory_set.filter(date=last_date)[0].price
                         user_total_balance_history.append(UserTotalBalanceHistory(last_date, last_value))
 
-
-                # print(balance_history.balance.asset.assetpricehistory_set.filter(date=balance_history.date))
+                    test += 1
+                    if test > 50:
+                        break
 
         for day_balance in user_total_balance_history:
 
