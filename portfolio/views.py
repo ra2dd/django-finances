@@ -104,6 +104,8 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
                 date_new += datetime.timedelta(days=1) 
         """
 
+
+
         # context list containing total daily user balance list
         # starting from first user asset balance date to today
         user_total_balance_history = []
@@ -126,14 +128,26 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
                 
                 print(f'  loop start{balance_history.date}')
 
-                # auxiliary variable for checking if current AssetBalanceHistory object data was added to total daily user balance list
+                # auxiliary variable for checking if records were filled in before adding 
+                # AssetBalanceHistory object to user_total_balance_history
                 records_filled = False
 
+                # if it's not a first iteration of the AssetBalanceHistory loop
                 if last_date != None:
+                    """
+                        If last_date + 1 day is not a AssetBalanceHisotry current date
+                        fill in missing dates between AssetBalanceHisotry object dates with records.
+                    """
                     while (last_date + datetime.timedelta(days=1) != balance_history.date):
+                            
+                            # auxiliary variable for knowing if user_total_balance_history object exists with certain date
                             added_to_existing_list = False
                             print(f'    loop, last_date - {last_date + datetime.timedelta(days=1)}') 
+                            
+                            # Add one day to last_date, because we are going to be filling it with data from last_balance_history
                             last_date += datetime.timedelta(days=1)
+                            
+                            # set last_value to AssetBalanceHistory amount from last iteration multiplied by AssetPriceHistory price matching last AssetBalanceHistory date
                             last_value = last_balance_history.amount * balance_history.balance.asset.assetpricehistory_set.filter(date=last_date)[0].price
 
                             for total_balance in user_total_balance_history:
@@ -145,8 +159,13 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
                             if not added_to_existing_list:                      
                                 user_total_balance_history.append(UserTotalBalanceHistory(last_date, last_value))
 
-                            records_filled = True
-
+                            records_filled = True   
+                    """
+                        If records were filled before adding new AssetBalanceHistory object 
+                        one day needs to be addded to last_date, because we already filled 
+                        user_total_balance_history with last_day data from last_balance_history
+                        and next day matches our current iteration AssetBalanceHistory day
+                    """
                     if(records_filled):
                             last_date += datetime.timedelta(days=1)
 
@@ -191,24 +210,36 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
                     # set record added to true so we can go to next AssetBalanceHistory iteration after checking if there are any 
                     record_added = True
 
-                    test += 1
-                    if test > 50:
-                        break
-
-                        
-
+                """
+                    set auxilary variable with last AssetBalanceHistory object, so we 
+                    have the latest object data for completing missing dates between 
+                    AssetBalanceHistory objects or missing dates between last
+                    AssetBalanceHistory object and today
+                """
                 last_balance_history = balance_history
 
             print()
             print(last_date)
             print(datetime.date.today())
             print()
+            """
+                if after iterating over all AssetBalanceHistory objects 
+                the last_date is still behind today
+            """
             if(last_date < datetime.date.today()):
 
+                """
+                    interate until all missing dates between last AssetBalanceHistory 
+                    object and today are added to user_total_balance_history
+                """
                 while (last_date < datetime.date.today()):
-                    added_to_existing_list = False
-                    print(f'      fill loop, last_date - {last_date + datetime.timedelta(days=1)}') 
+                    print(f'      fill loop, last_date - {last_date + datetime.timedelta(days=1)}')
+
+                    added_to_existing_list = False 
+                    # add one day to last_date, because it's data will be added to user_total_balance_history
                     last_date += datetime.timedelta(days=1)
+
+                    # set last_value to latest AssetBalanceHistory amount multiplied by AssetPriceHistory price matching last AssetBalanceHistory date
                     last_value = last_balance_history.amount * last_balance_history.balance.asset.assetpricehistory_set.filter(date=last_date)[0].price
                     
                     for total_balance in user_total_balance_history:
@@ -220,10 +251,7 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
                     if not added_to_existing_list:                      
                         user_total_balance_history.append(UserTotalBalanceHistory(last_date, last_value))
 
-                    test += 1
-                    if test > 50:
-                        break
-
+        # loop for adding all balance values in respective dates
         for day_balance in user_total_balance_history:
 
             sum_of_day_balances = 0
