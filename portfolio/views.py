@@ -145,7 +145,9 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
                         and it's time to update AssetBalanceHistory holding for calculations
                     """
                     if last_date == None or last_date == balance_history.date:
-                        print(f'    equals, last_date - {last_date}')    
+                        print(f'    equals, last_date - {last_date}')
+
+                        # set last_value to current AssetBalanceHistory amount multiplied by AssetPriceHistory price matching AssetBalanceHistory date
                         last_value = balance_history.amount * balance_history.balance.asset.assetpricehistory_set.filter(date=balance_history.date)[0].price
                         
                         """
@@ -153,15 +155,24 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
                             checking if current AssetBalanceHistory date is in the list
                         """
                         for total_balance in user_total_balance_history:
-
+                            
+                            # if it is in the list append last_value to object with date matching current AssetBalanceHistory date
                             if(total_balance.date == balance_history.date):
                                 total_balance.values.append(last_value)
+
+                                # Set variable to True, so we can check later if asset was already added to user_total_balance_history
                                 added_to_existing_list = True
 
+                        # if user_total_balance_history doesn't have object with date matching current AssetBalanceHistory
+                        # create new object in user_total_balance_history and add current AssetBalanceHistory object
                         if not added_to_existing_list:                      
                             user_total_balance_history.append(UserTotalBalanceHistory(balance_history.date, last_value))
-                            
+
+                        # set last_date so we know last date in current AssetBalance that was added into user_total_balance_history
+                        # helpful in filling not existing dates in AssetBalanceHistory between existing dates
                         last_date = balance_history.date
+
+                        # set record added to true so we can go to next AssetBalanceHistory iteration after checking if there are any 
                         record_added = True
 
                         test += 1
@@ -230,7 +241,12 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
 
             day_balance.values = sum_of_day_balances
 
-
+        """
+        TODO:
+            check if there is recent assetpricehistory in calculating user daily total balance list
+            check if price history values are duplicated in calculating user daily total balance list
+        """
+    
         context = {
             'user_balance_list': user_balance_list,
             'user_total_balance_history': user_total_balance_history
