@@ -54,39 +54,5 @@
             {% endfor %}
         </tbody>
     </table>
-
-
-
-
-
-
-
-
-
-
-
-
-    <h2>My assets:</h2>
-
-    <p>{{ user_portfolio }}</p>
-
-    <ul>List of currencies</ul>
-        {% for assetBalance in user_portfolio.assetbalance_set.all %}
-            <li>{{ assetBalance.asset }} - {{ assetBalance.broker }}</li>
-
-            <ul>
-                Asset history:
-                    {% for assetBalanceHistory in assetBalance.assetbalancehistory_set.all %}
-                        <li>
-                            {{ assetBalanceHistory.amount|floatformat:2 }} - {{ assetBalanceHistory.date }}
-
-                            {% for price_history_object in latest_price_history_list %}
-                                {% if assetBalance.asset == price_history_object.asset %}
-                                    x {{ price_history_object.price|floatformat:2 }} = {% widthratio assetBalanceHistory.amount|floatformat:2 1 price_history_object.price %} USD
-                                {% endif %}
-                            {% endfor %}
-                        </li>
-                    {% endfor %}
-            </ul>
-        {% endfor %}
+    
 {% endblock %}

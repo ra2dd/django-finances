@@ -3,6 +3,7 @@ from .models import Portfolio, Asset, AssetBalance, AssetBalanceHistory, AssetPr
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views import generic
 import datetime, random
+# from tasks import server_tasks
 
 class UserCurrentAsset:
     def __init__(self, name, ticker, type, latest_price, latest_holding, latest_value):
@@ -155,6 +156,7 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
                                 if(total_balance.date == last_date):
                                     total_balance.values.append(last_value)
                                     added_to_existing_list = True
+                                    break
 
                             if not added_to_existing_list:                      
                                 user_total_balance_history.append(UserTotalBalanceHistory(last_date, last_value))
@@ -197,6 +199,9 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
 
                             # Set variable to True, so we can check later if asset was already added to user_total_balance_history
                             added_to_existing_list = True
+
+                            # after loop found the matching date exit the loop to save computation time
+                            break
 
                     # if user_total_balance_history doesn't have object with date matching current AssetBalanceHistory
                     # create new object in user_total_balance_history and add current AssetBalanceHistory object
@@ -247,6 +252,7 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
                         if(total_balance.date == last_date):
                             total_balance.values.append(last_value)
                             added_to_existing_list = True
+                            break
 
                     if not added_to_existing_list:                      
                         user_total_balance_history.append(UserTotalBalanceHistory(last_date, last_value))
@@ -301,6 +307,21 @@ class ConnectionsView(generic.TemplateView, LoginRequiredMixin):
             'connected_brokerages_list': connected_brokerages_list,
         }
         return context
+    
+
+class PriceHistoryView(generic.TemplateView):
+    
+    template_name = 'price_history.html'
+
+    def get_context_data(self):
+        # server_tasks.import_crypto_price_history('TRX')
+
+        context = {
+
+        }
+        return context
+
+
 
 
 
