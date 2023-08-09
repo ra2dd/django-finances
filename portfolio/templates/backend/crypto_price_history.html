@@ -1,0 +1,31 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+    <title>Price History</title>
+{% endblock %}
+
+{% block content %}
+    <h1>Price history management</h1>
+
+    <h2>List of assets:</h2>
+
+    {% if asset_list %}
+        <ul>
+            {% for asset in asset_list %}
+                <li>
+                    <p>
+                        {{ asset.ticker }}
+                        {{ asset.name }}
+                    </p>
+
+                    <button>Check record history</button>
+                    <p class="history-information"></p>
+
+                    <button>Fetch record history</button>
+                    <p class="fetch-record-history"></p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+{% endblock %}
