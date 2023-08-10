@@ -85,7 +85,7 @@ def import_current_crypto_price(*argv):
     response = requests.get(construct_current_crypto_price_url(*argv), headers=headers)
     json_response = json.loads(response.content)
 
-    print(json_response)
+    # print(json_response)
     
     for api_asset in json_response:
         asset = Asset.objects.filter(api_name=api_asset['id'].lower())
@@ -103,21 +103,14 @@ def import_current_crypto_price(*argv):
                 # Check if there is price data from today
                 price_from_today = asset[0].assetpricehistory_set.filter(date=datetime.date.today())
 
-                if len(price_from_today) == 1:
-                    price_from_today[0].delete()
-                    record = AssetPriceHistory(asset=asset[0], date=datetime.date.today(), price=api_asset['current_price'])   
-                    print(record)
-                    print('replace todays price')
-                    record.save()
-                
-                elif len(price_from_today) > 1:
+                if len(price_from_today) > 1:
                     raise Exception("Cannot proceed. There is more than one price history from today.")
 
-                elif len(price_from_today) == 0:
-                    record = AssetPriceHistory(asset=asset[0], date=datetime.date.today(), price=api_asset['current_price'])   
-                    print(record)
-                    print('new price')
-                    print(type(api_asset['current_price']))
-                    record.save()
+                elif len(price_from_today) == 1:
+                    price_from_today[0].delete()
+
+                record = AssetPriceHistory(asset=asset[0], date=datetime.date.today(), price=api_asset['current_price'])   
+                record.save()
+            
             else:
                 import_crypto_price_history(api_asset['id'])
