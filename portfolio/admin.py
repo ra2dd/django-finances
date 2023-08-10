@@ -34,7 +34,8 @@ class AssetBalanceAdmin(admin.ModelAdmin):
 
 @admin.register(Asset)
 class AssetAdmin(admin.ModelAdmin):
-    inlines = [AssetPriceHistoryInline]
+    pass
+    # inlines = [AssetPriceHistoryInline]
 
 @admin.register(Exchange)
 class ExchangeAdmin(admin.ModelAdmin):

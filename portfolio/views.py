@@ -320,7 +320,7 @@ class PriceHistoryView(generic.ListView, LoginRequiredMixin):
         return Asset.objects.filter(type__exact='cryptocurrency')
     
     def get_context_data(self, **kwargs):
-        server_tasks.import_crypto_price_history('trx')
+        server_tasks.import_current_crypto_price('tron')
 
         context = super().get_context_data(**kwargs)
         return context

@@ -58,6 +58,8 @@ class ApiConnection(models.Model):
 class Asset(models.Model):
     name = models.CharField(max_length=64)
 
+    api_name = models.CharField(max_length=32, unique=True)
+
     ticker = models.CharField(max_length=16)
 
     type = models.CharField(max_length=32)
