@@ -1,4 +1,5 @@
 import datetime, json, string
+import sys, os
 import requests, random
 
 # from portfolio.tasks import server_tasks
@@ -37,10 +38,15 @@ def construct_current_crypto_price_url(*argv):
     return url
 
 
+def construct_stock_price_history_url(symbol):
+    return f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&outputsize=compact&apikey={os.environ.get("ALPHAVANTAGE_API_KEY")}'
+
+
+
 def import_crypto_price_history(*argv):
     
     for api_name in argv:
-        asset = Asset.objects.filter(api_name=api_name.lower())
+        asset = Asset.objects.filter(api_name=api_name.lower()).filter(type='cryptocurrency')
                                     
         if len(asset) > 1:
             raise Exception("Cannot fetch data. There is more than one asset with given api name.")
@@ -88,7 +94,7 @@ def import_current_crypto_price(*argv):
     # print(json_response)
     
     for api_asset in json_response:
-        asset = Asset.objects.filter(api_name=api_asset['id'].lower())
+        asset = Asset.objects.filter(api_name=api_asset['id'].lower()).filter(type='cryptocurrency')
                                     
         if len(asset) > 1:
             raise Exception("Cannot fetch data. There is more than one asset with given api id.")
@@ -114,3 +120,48 @@ def import_current_crypto_price(*argv):
             
             else:
                 import_crypto_price_history(api_asset['id'])
+
+
+
+def import_stock_price_history(*argv):
+    
+    for api_name in argv:
+        asset = Asset.objects.filter(api_name=api_name.lower()).filter(type='stock')
+                                    
+        if len(asset) > 1:
+            raise Exception("Cannot fetch data. There is more than one asset with given api name.")
+        
+        elif len(asset) == 0:
+            raise Exception("Cannot fetch data. There is no asset with given api_name.")
+        
+        elif len(asset) == 1:
+            
+            # Check if there are any price history for given assset
+            if len(asset[0].assetpricehistory_set.all()) > 0:
+                asset_price_history = asset[0].assetpricehistory_set.all()
+
+                # Delete all asset price history
+                for price_history in asset_price_history:
+                    price_history.delete()
+
+            # Define the start date of price history fetching
+            startDate = datetime.datetime(2023, 5, 1)
+            startDateTimestamp = datetime_to_timestamp(startDate) 
+
+            # Fetch price data from constructed url   
+            response = requests.get(construct_stock_price_history_url(api_name))
+            json_response = json.loads(response.content)
+            
+            # Create database records from fetched data
+            for trading_day in json_response["Time Series (Daily)"]:
+                
+                new_date = datetime.datetime.strptime(trading_day, '%Y-%m-%d')
+
+                if new_date >= startDate:
+                    
+                    # Calculate average price from day's high and low price
+                    average_price = round((float(json_response["Time Series (Daily)"][trading_day]['3. low']) + float(json_response["Time Series (Daily)"][trading_day]['2. high'])) / 2, 2)
+
+                    record = AssetPriceHistory(asset=asset[0], date=new_date, price=average_price)   
+                    record.save()  
+                
