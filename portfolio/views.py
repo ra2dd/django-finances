@@ -321,7 +321,8 @@ class PriceHistoryView(generic.ListView, LoginRequiredMixin):
     
     def get_context_data(self, **kwargs):
         # server_tasks.import_current_crypto_price('tron')
-        server_tasks.import_stock_price_history('ko')
+        # server_tasks.import_stock_price_history('ko')
+        server_tasks.import_current_stock_price('ko')
 
         context = super().get_context_data(**kwargs)
         return context

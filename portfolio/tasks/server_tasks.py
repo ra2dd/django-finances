@@ -41,6 +41,8 @@ def construct_current_crypto_price_url(*argv):
 def construct_stock_price_history_url(symbol):
     return f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&outputsize=compact&apikey={os.environ.get("ALPHAVANTAGE_API_KEY")}'
 
+def construct_current_stock_price_url(symbol):
+    return f'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={symbol}&interval=5min&apikey={os.environ.get("ALPHAVANTAGE_API_KEY")}'
 
 
 def import_crypto_price_history(*argv):
@@ -90,8 +92,6 @@ def import_current_crypto_price(*argv):
 
     response = requests.get(construct_current_crypto_price_url(*argv), headers=headers)
     json_response = json.loads(response.content)
-
-    # print(json_response)
     
     for api_asset in json_response:
         asset = Asset.objects.filter(api_name=api_asset['id'].lower()).filter(type='cryptocurrency')
@@ -165,3 +165,41 @@ def import_stock_price_history(*argv):
                     record = AssetPriceHistory(asset=asset[0], date=new_date, price=average_price)   
                     record.save()  
                 
+
+def import_current_stock_price(*argv):
+    
+    for api_name in argv:
+        asset = Asset.objects.filter(api_name=api_name.lower()).filter(type='stock')
+                                    
+        if len(asset) > 1:
+            raise Exception("Cannot fetch data. There is more than one asset with given api id.")
+        
+        elif len(asset) == 0:
+            raise Exception("Cannot fetch data. There is no asset with given api id.")
+        
+        elif len(asset) == 1:
+            # Check if there is price data from previous day
+            if len(asset[0].assetpricehistory_set.filter(date=datetime.date.today() - datetime.timedelta(days=1))) == 1:
+                
+                # Check if there is price data from today
+                price_from_today = asset[0].assetpricehistory_set.filter(date=datetime.date.today())
+
+                if len(price_from_today) > 1:
+                    raise Exception("Cannot proceed. There is more than one price history from today.")
+
+                elif len(price_from_today) == 1:
+                    price_from_today[0].delete()
+
+                # Fetch price data from constructed url   
+                response = requests.get(construct_current_stock_price_url(api_name))
+                json_response = json.loads(response.content)
+
+                for trading_day in json_response["Time Series (5min)"]: 
+                    new_price = json_response["Time Series (5min)"][trading_day]['1. open']
+                    break
+
+                record = AssetPriceHistory(asset=asset[0], date=datetime.date.today(), price=new_price)   
+                record.save()
+            
+            else:
+                import_crypto_price_history(api_name)
