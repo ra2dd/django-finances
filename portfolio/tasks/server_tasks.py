@@ -45,6 +45,13 @@ def construct_current_stock_price_url(symbol):
     return f'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={symbol}&interval=5min&apikey={os.environ.get("ALPHAVANTAGE_API_KEY")}'
 
 
+def construct_currency_price_history_url(symbol):
+    return f'https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=USD&to_symbol={symbol}&apikey={os.environ.get("ALPHAVANTAGE_API_KEY")}'
+
+def construct_current_currency_price_url(symbol):
+    return f'https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency={symbol}&apikey={os.environ.get("ALPHAVANTAGE_API_KEY")}'
+
+
 def import_crypto_price_history(*argv):
     
     for api_name in argv:
@@ -203,3 +210,47 @@ def import_current_stock_price(*argv):
             
             else:
                 import_crypto_price_history(api_name)
+
+
+def import_currency_price_history(*argv):
+    
+    for api_name in argv:
+        asset = Asset.objects.filter(api_name=api_name.lower()).filter(type='currency')
+                                    
+        if len(asset) > 1:
+            raise Exception("Cannot fetch data. There is more than one asset with given api name.")
+        
+        elif len(asset) == 0:
+            raise Exception("Cannot fetch data. There is no asset with given api_name.")
+        
+        elif len(asset) == 1:
+            
+            # Check if there are any price history for given assset
+            if len(asset[0].assetpricehistory_set.all()) > 0:
+                asset_price_history = asset[0].assetpricehistory_set.all()
+
+                # Delete all asset price history
+                for price_history in asset_price_history:
+                    price_history.delete()
+
+            # Define the start date of price history fetching
+            startDate = datetime.datetime(2023, 5, 1)
+            startDateTimestamp = datetime_to_timestamp(startDate) 
+
+            # Fetch price data from constructed url   
+            response = requests.get(construct_currency_price_history_url(api_name))
+            json_response = json.loads(response.content)
+            
+            # Create database records from fetched data
+            for trading_day in json_response["Time Series FX (Daily)"]:
+                
+                new_date = datetime.datetime.strptime(trading_day, '%Y-%m-%d')
+
+                if new_date >= startDate:
+                    
+                    # Calculate average price from day's high and low price
+                    average_price = round((float(json_response["Time Series FX (Daily)"][trading_day]['3. low']) + float(json_response["Time Series FX (Daily)"][trading_day]['2. high'])) / 2, 4)
+
+                    record = AssetPriceHistory(asset=asset[0], date=new_date, price=average_price)   
+                    record.save()  
+                    print(record)

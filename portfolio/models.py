@@ -67,7 +67,7 @@ class Asset(models.Model):
     ASSET_TYPE = (
         ('stock', 'Stock'),
         ('cryptocurrency', 'Cryptocurrency'),
-        ('cash', 'Cash')
+        ('currency', 'Currency')
     )
 
     type = models.CharField(
