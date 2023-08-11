@@ -323,7 +323,8 @@ class PriceHistoryView(generic.ListView, LoginRequiredMixin):
         # server_tasks.import_current_crypto_price('tron')
         # server_tasks.import_stock_price_history('ko')
         # server_tasks.import_current_stock_price('ko')
-        server_tasks.import_currency_price_history('eur')
+        # server_tasks.import_currency_price_history('eur')
+        server_tasks.import_current_currency_price('eur')
 
         context = super().get_context_data(**kwargs)
         return context
