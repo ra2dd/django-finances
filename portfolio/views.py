@@ -5,7 +5,7 @@ from django.views import generic
 import datetime, random, sys, os
 
 from .models import Portfolio, Asset, AssetBalance, AssetBalanceHistory, AssetPriceHistory, Exchange, ApiConnection
-from .tasks import server_tasks
+from .tasks import server_tasks, client_tasks
 
 class UserCurrentAsset:
     def __init__(self, name, ticker, type, latest_price, latest_holding, latest_value):
@@ -349,9 +349,16 @@ class PriceHistoryView(generic.ListView, LoginRequiredMixin):
     
     def get_context_data(self, **kwargs):
 
+        '''
         server_tasks.import_current_currency_price()
         server_tasks.import_current_stock_price()
         server_tasks.import_current_crypto_price()
+        '''
+        connection = ApiConnection.objects.filter(owner=self.request.user).filter(broker=Exchange.objects.filter(name='Binance')[0])[0] 
+        api_key = connection.api_key
+        secret_key = connection.secret_key
+
+        client_tasks.import_binance_balance(api_key, secret_key)
 
         context = super().get_context_data(**kwargs)
         return context

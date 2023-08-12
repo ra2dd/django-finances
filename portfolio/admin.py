@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Portfolio, Asset, AssetBalance, AssetBalanceHistory, AssetPriceHistory, Exchange, ApiConnection
 
 # Register your models here.
-admin.site.register(AssetPriceHistory)
+admin.site.register(ApiConnection)
 
 # Defining inlines
 class AssetBalanceInline(admin.TabularInline):
@@ -40,4 +40,9 @@ class AssetAdmin(admin.ModelAdmin):
 @admin.register(Exchange)
 class ExchangeAdmin(admin.ModelAdmin):
     inlines = [ApiConnectionInline]
+
+@admin.register(AssetPriceHistory)
+class AssetPriceHistoryAdmin(admin.ModelAdmin):
+    list_filter = ('asset', 'date')
+    list_display = ('asset', 'date', 'price')
 
