@@ -122,6 +122,8 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
             last_value = None
             # auxilary variable for storing last AssetBalanceHistory object 
             last_balance_history = None
+            # auxilary variable for stroing last price history exisiting day
+            last_price_history = None
 
             print(f'start {balance}')
             test = 0
@@ -150,8 +152,18 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
                             # Add one day to last_date, because we are going to be filling it with data from last_balance_history
                             last_date += datetime.timedelta(days=1)
                             
+                            if(len(balance_history.balance.asset.assetpricehistory_set.filter(date=last_date)) > 0):
+                                last_price_history = balance_history.balance.asset.assetpricehistory_set.filter(date=last_date)[0].price
+                            
+                            elif last_price_history == None:
+                                minus_days = 0
+                                while last_price_history == None:
+                                    minus_days += 1
+                                    if len(balance_history.balance.asset.assetpricehistory_set.filter(date=last_date - datetime.timedelta(days=minus_days))) > 0:
+                                        last_price_history = balance_history.balance.asset.assetpricehistory_set.filter(date=last_date - datetime.timedelta(days=minus_days))[0].price
+
                             # set last_value to AssetBalanceHistory amount from last iteration multiplied by AssetPriceHistory price matching last AssetBalanceHistory date
-                            last_value = last_balance_history.amount * balance_history.balance.asset.assetpricehistory_set.filter(date=last_date)[0].price
+                            last_value = last_balance_history.amount * last_price_history
 
                             for total_balance in user_total_balance_history:
 
@@ -186,8 +198,19 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
                 if last_date == None or last_date == balance_history.date:
                     print(f'    equals, last_date - {last_date}')
 
+                    if(len(balance_history.balance.asset.assetpricehistory_set.filter(date=balance_history.date)) > 0):
+                        last_price_history = balance_history.balance.asset.assetpricehistory_set.filter(date=balance_history.date)[0].price
+                        print(f'last price history - {last_price_history}')
+
+                    elif last_price_history == None:
+                        minus_days = 0
+                        while last_price_history == None:
+                            minus_days += 1
+                            if len(balance_history.balance.asset.assetpricehistory_set.filter(date=balance_history.date - datetime.timedelta(days=minus_days))) > 0:
+                                last_price_history = balance_history.balance.asset.assetpricehistory_set.filter(date=balance_history.date - datetime.timedelta(days=minus_days))[0].price
+
                     # set last_value to current AssetBalanceHistory amount multiplied by AssetPriceHistory price matching AssetBalanceHistory date
-                    last_value = balance_history.amount * balance_history.balance.asset.assetpricehistory_set.filter(date=balance_history.date)[0].price
+                    last_value = balance_history.amount * last_price_history
                     
                     """
                         loop through user_total_balance_history list 
@@ -246,8 +269,11 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
                     # add one day to last_date, because it's data will be added to user_total_balance_history
                     last_date += datetime.timedelta(days=1)
 
+                    if(len(last_balance_history.balance.asset.assetpricehistory_set.filter(date=last_date)) > 0):
+                                last_price_history = last_balance_history.balance.asset.assetpricehistory_set.filter(date=last_date)[0].price
+
                     # set last_value to latest AssetBalanceHistory amount multiplied by AssetPriceHistory price matching last AssetBalanceHistory date
-                    last_value = last_balance_history.amount * last_balance_history.balance.asset.assetpricehistory_set.filter(date=last_date)[0].price
+                    last_value = last_balance_history.amount * last_price_history
                     
                     for total_balance in user_total_balance_history:
 
@@ -267,7 +293,9 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
             for day_asset_value in day_balance.values:
                 sum_of_day_balances += day_asset_value
 
-            day_balance.values = sum_of_day_balances
+            day_balance.values = round(sum_of_day_balances, 2)
+        
+        user_total_balance_history.sort(key=lambda b: b.date)   
 
         """
         TODO:
@@ -320,11 +348,10 @@ class PriceHistoryView(generic.ListView, LoginRequiredMixin):
         return Asset.objects.filter(type__exact='cryptocurrency')
     
     def get_context_data(self, **kwargs):
-        # server_tasks.import_current_crypto_price('tron')
-        # server_tasks.import_stock_price_history('ko')
-        # server_tasks.import_current_stock_price('ko')
-        # server_tasks.import_currency_price_history('eur')
-        server_tasks.import_current_currency_price('eur')
+
+        server_tasks.import_current_currency_price()
+        server_tasks.import_current_stock_price()
+        server_tasks.import_current_crypto_price()
 
         context = super().get_context_data(**kwargs)
         return context
