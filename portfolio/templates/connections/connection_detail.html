@@ -1,13 +1,17 @@
 {% extends "base_generic.html" %}
 
 {% block title %}
-    <title>{{ user.get_username }} Dashboard</title>
+    <title>Exchange {{ exchange.name }} detail</title>
 {% endblock %}
 
 {% block content %}
-    <h1>Portfolio connections</h1>
+    <h1>Connection detail</h1>
 
-    <h2>Exchange</h2>
+    <h2>{{ exchange.name }} Exchange</h2>
 
-    <p>{{ exchange.name }}</p>
+    <a href="{% url 'add-connection' exchange.pk %}">
+        <p>
+            Add exchange connection
+        </p>    
+    </a>
 {% endblock %}
