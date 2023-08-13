@@ -1,0 +1,23 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+    <title>{{ user.get_username }} Dashboard</title>
+{% endblock %}
+
+{% block content %}
+    <h1>Portfolio connections</h1>
+
+    <h2>Exchanges</h2>
+
+    {% if exchange_list %}
+        <ul>
+            {% for exchange in exchange_list %}
+                <li>
+                    {{ exchange.name }}
+                    <a href="{{ exchange.get_absolute_url }}">go to details</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+{% endblock %}

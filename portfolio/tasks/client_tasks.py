@@ -23,9 +23,13 @@ def timestamp_to_datetime(timestamp):
     else:
         raise Exception(f'Timestamp length is out of range - {timestamp_length}')
 
+
+def get_binance_client(api_key, api_secret):
+    return Spot(base_url='https://testnet.binance.vision', api_key=api_key, api_secret=api_secret)
+
 def import_binance_balance(api_key, api_secret):
 
-    client = Spot(base_url='https://testnet.binance.vision', api_key=api_key, api_secret=api_secret) 
+    client =  get_binance_client(api_key, api_secret)
 
     if not client:
         raise Exception('Error getting crypto price history data, no client.')
@@ -38,6 +42,15 @@ def import_binance_balance(api_key, api_secret):
         for balance in user_balance['balances']:
             print(balance['asset'])
             print(float(balance['free']) + float(balance['locked']))
+
+def check_binance_connection(api_key, api_secret):
+
+    client = get_binance_client(api_key, api_secret)
+
+    if client.ping() == {}:
+        return True
+    else:
+        return False
     
         
 

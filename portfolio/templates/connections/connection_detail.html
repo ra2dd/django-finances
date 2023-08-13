@@ -1,0 +1,13 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+    <title>{{ user.get_username }} Dashboard</title>
+{% endblock %}
+
+{% block content %}
+    <h1>Portfolio connections</h1>
+
+    <h2>Exchange</h2>
+
+    <p>{{ exchange.name }}</p>
+{% endblock %}
