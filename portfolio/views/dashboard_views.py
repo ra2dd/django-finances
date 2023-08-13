@@ -1,11 +1,10 @@
-from typing import Any, Dict
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views import generic
 import datetime, random, sys, os
 
-from .models import Portfolio, Asset, AssetBalance, AssetBalanceHistory, AssetPriceHistory, Exchange, ApiConnection
-from .tasks import server_tasks, client_tasks
+from ..models import Portfolio, Asset, AssetBalance, AssetBalanceHistory, AssetPriceHistory, Exchange, ApiConnection
+from ..tasks import server_tasks, client_tasks
 
 class UserCurrentAsset:
     def __init__(self, name, ticker, type, latest_price, latest_holding, latest_value):
@@ -309,7 +308,7 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
         }
         return context
     
-
+'''
 class ConnectionsView(generic.TemplateView, LoginRequiredMixin):
     """View function for user wallet connections"""
 
@@ -337,7 +336,9 @@ class ConnectionsView(generic.TemplateView, LoginRequiredMixin):
             'connected_brokerages_list': connected_brokerages_list,
         }
         return context
-    
+'''
+
+
 
 class PriceHistoryView(generic.ListView, LoginRequiredMixin):
     
@@ -346,7 +347,7 @@ class PriceHistoryView(generic.ListView, LoginRequiredMixin):
 
     def get_queryset(self):
         return Asset.objects.filter(type__exact='cryptocurrency')
-    
+
     def get_context_data(self, **kwargs):
 
         '''
