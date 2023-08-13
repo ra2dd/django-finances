@@ -30,8 +30,20 @@ class Exchange(models.Model):
 
     api_url = models.URLField(max_length=200, blank=True)
 
+    @property
+    def is_user_connected(self):
+        return bool(ApiConnection.objects.filter(broker=self.id))
+    
+    class Meta:
+        ordering = ['name']
+
+    def get_absolute_url(self):
+        """Returns the URL to access a detail record for exchange."""
+        return reverse('connection-detail', args=[str(self.id)])
+
     def __str__(self):
-        return f'{self.name}'
+        """String for representing the Model object"""
+        return f'{self.name}, {self.type}'
     
 
 class ApiConnection(models.Model):
@@ -51,7 +63,12 @@ class ApiConnection(models.Model):
         null=True
     )
 
+    def get_absolute_url(self):
+        """Returns the URL to access a detail record for exchange."""
+        return reverse('connection-detail', args=[str(self.id)])
+
     def __str__(self):
+        """String for representing the Model object"""
         return f'Api key {self.owner} - {self.broker}'
 
 
