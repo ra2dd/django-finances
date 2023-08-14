@@ -7,6 +7,9 @@ from ..models import Exchange, ApiConnection
 from ..tasks import client_tasks
 from ..forms import AddConnectionModelForm
 
+def fetch_exchange(self):
+    return Exchange.objects.filter(pk=self.kwargs['pk'])[0]
+
 class ConnectionsView(generic.ListView, LoginRequiredMixin):
     """View function for listing user wallet connections"""
 
@@ -31,7 +34,6 @@ class ConnectionInfoView(generic.DetailView, LoginRequiredMixin):
     model = Exchange
     template_name = 'connections/connection_detail.html'
 
-
 class AddConnectionModelForm(generic.CreateView, LoginRequiredMixin):
     """View function for connecting user exchange data"""
 
@@ -39,9 +41,15 @@ class AddConnectionModelForm(generic.CreateView, LoginRequiredMixin):
     form_class = AddConnectionModelForm
     template_name = 'connections/connection_add.html'
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['exchange_name'] = fetch_exchange(self).name.lower()
+
+        return kwargs
+    
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        self.object.broker = Exchange.objects.filter(pk=self.kwargs['pk'])[0]
+        self.object.broker = fetch_exchange(self)
         self.object.owner = self.request.user
         self.object.save()
 
@@ -49,5 +57,13 @@ class AddConnectionModelForm(generic.CreateView, LoginRequiredMixin):
     
     def get_success_url(self):
         return reverse('connection-detail', args=[str(self.kwargs['pk'])])
-        
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["exchange"] = fetch_exchange(self)
+
+        return context
+    
+    # TODO: check if connection already exists
+    # TODO: disable autocomplete in forms
     

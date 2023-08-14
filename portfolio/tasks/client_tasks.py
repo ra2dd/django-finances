@@ -24,6 +24,7 @@ def timestamp_to_datetime(timestamp):
         raise Exception(f'Timestamp length is out of range - {timestamp_length}')
 
 
+'''Bianance api connection'''
 def get_binance_client(api_key, api_secret):
     return Spot(base_url='https://testnet.binance.vision', api_key=api_key, api_secret=api_secret)
 
@@ -47,10 +48,19 @@ def check_binance_connection(api_key, api_secret):
 
     client = get_binance_client(api_key, api_secret)
 
+    # Check biannce api connection
     if client.ping() == {}:
+        try:
+            # Check if binance api keys are correct
+            client.account()
+        except:
+            return False
+        
+        # If api keys ok -> return True
         return True
+    
     else:
-        return False
+        return 'no-connection'
     
         
 
