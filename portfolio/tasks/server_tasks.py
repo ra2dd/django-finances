@@ -311,3 +311,25 @@ def import_current_currency_price():
                 
                 else:
                     import_currency_price_history(api_name)
+
+
+
+def get_crypto_assets():
+    
+    response = requests.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en', headers=headers)
+    json_response = json.loads(response.content)
+    # print(json.dumps(json_response, indent=4))
+
+    for response_asset in json_response:
+        asset = Asset.objects.filter(api_name=response_asset['id'])
+        if len(asset) == 0:
+            print(f'no asset with api_name {response_asset["id"]}')
+            asset_record = Asset(name=response_asset["name"], api_name=response_asset["id"], ticker=response_asset["symbol"], type='cryptocurrency')
+            asset_record.save()
+
+        elif len(asset) > 1:
+            raise Exception('Too many assets with given response api_name')
+        elif len(asset) == 1:
+            print(f'asset with api_name {response_asset["id"]} exists')
+        
+
