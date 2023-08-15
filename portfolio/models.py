@@ -10,7 +10,7 @@ class Portfolio(models.Model):
     )
 
     def __str__(self):
-        return f'{self.owner.username} Portfolio {self.pk}'
+        return f'Portfolio {self.pk}'
 
 
 class Exchange(models.Model):
@@ -43,7 +43,7 @@ class Exchange(models.Model):
 
     def __str__(self):
         """String for representing the Model object"""
-        return f'{self.name}, {self.type}'
+        return f'{self.name}'
     
 
 class ApiConnection(models.Model):
@@ -69,7 +69,7 @@ class ApiConnection(models.Model):
 
     def __str__(self):
         """String for representing the Model object"""
-        return f'Api key {self.owner} - {self.broker}'
+        return f'{self.owner.username[0].upper() + self.owner.username[1:]} api keys - {self.broker}'
 
 
 class Asset(models.Model):
