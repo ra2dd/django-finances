@@ -92,6 +92,7 @@ def import_balance(exchange, api_connection, user):
         elif len(asset) > 1:
            raise Exception('Too many assets corresponding with given ticker.') 
 
+        asset_balance_record = None
         asset_balance = AssetBalance.objects.filter(portfolio=portfolio, asset=asset[0], broker=exchange)
 
         if len(asset_balance) > 1: 
@@ -100,8 +101,11 @@ def import_balance(exchange, api_connection, user):
             print(f'asset balance not exisiting for {fetched_asset.ticker}')
             asset_balance_record = AssetBalance(portfolio=portfolio, asset=asset[0], broker=exchange)
             asset_balance_record.save()
-            
-        print(f'creating asset balance history for {fetched_asset.ticker}')     
+
+        print(f'creating asset balance history for {fetched_asset.ticker}') 
+        if asset_balance_record == None:
+            asset_balance_record = asset_balance[0]
+        
         asset_balance_history_record = AssetBalanceHistory(amount=fetched_asset.amount, date=datetime.datetime.now(), balance=asset_balance_record)
         asset_balance_history_record.save()
         print(f'{asset_balance_history_record}\n')

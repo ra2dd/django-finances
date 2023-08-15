@@ -1,6 +1,9 @@
 import datetime, json, string
+import urllib.request
 import sys, os
 import requests, random
+from django.core.files import File
+from io import BytesIO
 
 # from portfolio.tasks import server_tasks
 # server_tasks.import_crypto_price_history('xlm')
@@ -316,20 +319,28 @@ def import_current_currency_price():
 
 def get_crypto_assets():
     
-    response = requests.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en', headers=headers)
+    response = requests.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false&locale=en', headers=headers)
     json_response = json.loads(response.content)
-    # print(json.dumps(json_response, indent=4))
+    print(json.dumps(json_response, indent=4))
 
     for response_asset in json_response:
         asset = Asset.objects.filter(api_name=response_asset['id'])
         if len(asset) == 0:
             print(f'no asset with api_name {response_asset["id"]}')
             asset_record = Asset(name=response_asset["name"], api_name=response_asset["id"], ticker=response_asset["symbol"], type='cryptocurrency')
+
             asset_record.save()
 
         elif len(asset) > 1:
             raise Exception('Too many assets with given response api_name')
         elif len(asset) == 1:
             print(f'asset with api_name {response_asset["id"]} exists')
-        
+            
+            if response_asset["id"] == 'bitcoin':
+
+                fetch_headers = {'User-Agent': 'Mozilla/5.0 (Linux; Android 13; SM-S901B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36'}
+                image_request = requests.get(response_asset["image"], headers=fetch_headers)
+                asset[0].icon.save(response_asset["symbol"] + '.png', File.open(BytesIO(image_request.content)))
+                asset[0].save()
+                
 

@@ -19,5 +19,7 @@
             {% endfor %}
         </ul>
     {% endif %}
-
+    
+    {% load static %}
+    <img src="{% static asset_test.icon.url|slice:'18:' %}"
 {% endblock %}

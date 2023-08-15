@@ -92,6 +92,8 @@ class Asset(models.Model):
         choices=ASSET_TYPE,
     )
 
+    icon = models.ImageField(upload_to="portfolio/static/media/images/assets/crypto", null=True)
+    
     def __str__(self):
         return f'{self.ticker} - {self.name}'
     

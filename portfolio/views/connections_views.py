@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect, Http404
 from django.views.decorators.http import require_http_methods
 
-from ..models import Exchange, ApiConnection, AssetPriceHistory
+from ..models import Exchange, ApiConnection, AssetPriceHistory, Asset
 from ..tasks import client_tasks, server_tasks
 from ..forms import AddConnectionModelForm
 
@@ -29,8 +29,10 @@ class ConnectionsView(generic.ListView, LoginRequiredMixin):
         client_tasks.import_binance_balance(api_key, secret_key)
         '''
         # server_tasks.get_crypto_assets()
-
+        asset_test = Asset.objects.filter(api_name='bitcoin')[0]
+        
         context = super().get_context_data(**kwargs)
+        context['asset_test'] = asset_test
         return context
 
 
