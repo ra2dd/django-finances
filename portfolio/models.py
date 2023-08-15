@@ -144,7 +144,7 @@ class AssetBalance(models.Model):
 class AssetBalanceHistory(models.Model):
     amount = models.DecimalField(max_digits=19, decimal_places=8)
 
-    date = models.DateField()
+    date = models.DateTimeField()
 
     balance = models.ForeignKey(
         AssetBalance,
