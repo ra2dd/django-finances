@@ -1,13 +1,14 @@
 from binance.spot import Spot
 import datetime, json, string
 import os
+from django.shortcuts import get_object_or_404
 
-from ..models import Asset, AssetPriceHistory
+from ..models import Asset, AssetPriceHistory, AssetBalance, AssetBalanceHistory, Exchange, Portfolio
 
-class PriceHistory():
-    def __init__(self, ticker):
+class AssetsAmount():
+    def __init__(self, ticker, amount):
         self.ticker = ticker
-        self.price = None
+        self.amount = amount
 
 def datetime_to_timestamp(date):
     return round(datetime.datetime.timestamp(date))
@@ -32,17 +33,28 @@ def import_binance_balance(api_key, api_secret):
 
     client =  get_binance_client(api_key, api_secret)
 
-    if not client:
-        raise Exception('Error getting crypto price history data, no client.')
-    else:
-
-        # Get account information and balance 
+    # Check biannce api connection
+    if client.ping() == {}:
+        try:
+            # Check if binance api keys are correct
+            client.account()
+        except:
+            return False
+        
+        # If api keys ok Get account information and balance
         user_balance = client.account()
-        # print(json.dumps(user_balance, indent=4))
 
+        assets_amounts = []
         for balance in user_balance['balances']:
+            assets_amounts.append(AssetsAmount(balance['asset'], float(balance['free']) + float(balance['locked'])))
+
             print(balance['asset'])
             print(float(balance['free']) + float(balance['locked']))
+
+        return assets_amounts
+
+    else:
+        return 'no-connection'
 
 def check_binance_connection(api_key, api_secret):
 
@@ -62,6 +74,38 @@ def check_binance_connection(api_key, api_secret):
     else:
         return 'no-connection'
     
+def import_balance(exchange, api_connection, user):
+
+    if(exchange.name.lower() == 'binance'):
+        assets_amounts = import_binance_balance(api_connection.api_key, api_connection.secret_key)
+    else:
+        print('Exchange not yet implemented')
+        return False
+    
+    for fetched_asset in assets_amounts:
+        portfolio = Portfolio.objects.filter(owner=user)[0]
+        asset = Asset.objects.filter(ticker=fetched_asset.ticker.lower())
+
+        if len(asset) == 0:
+            print(f'no asset with {fetched_asset.ticker} ticker in database')
+            continue
+        elif len(asset) > 1:
+           raise Exception('Too many assets corresponding with given ticker.') 
+
+        asset_balance = AssetBalance.objects.filter(portfolio=portfolio, asset=asset[0], broker=exchange)
+
+        if len(asset_balance) > 1: 
+           raise Exception('Too many asset balances corresponding with given ticker.')
+        if len(asset_balance) == 0:
+            print(f'asset balance not exisiting for {fetched_asset.ticker}')
+            asset_balance_record = AssetBalance(portfolio=portfolio, asset=asset[0], broker=exchange)
+            asset_balance_record.save()
+            
+        print(f'creating asset balance history for {fetched_asset.ticker}')     
+        asset_balance_history_record = AssetBalanceHistory(amount=fetched_asset.amount, date=datetime.datetime.now(), balance=asset_balance_record)
+        asset_balance_history_record.save()
+        print(f'{asset_balance_history_record}\n')
+        
         
 
 
