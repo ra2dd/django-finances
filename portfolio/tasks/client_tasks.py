@@ -2,6 +2,7 @@ from binance.spot import Spot
 import datetime, json, string
 import os
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponseRedirect, Http404
 
 from ..models import Asset, AssetPriceHistory, AssetBalance, AssetBalanceHistory, Exchange, Portfolio
 
@@ -29,32 +30,24 @@ def timestamp_to_datetime(timestamp):
 def get_binance_client(api_key, api_secret):
     return Spot(base_url='https://testnet.binance.vision', api_key=api_key, api_secret=api_secret)
 
+
 def import_binance_balance(api_key, api_secret):
 
-    client =  get_binance_client(api_key, api_secret)
+    if check_binance_connection(api_key, api_secret) != True:
+        return False
 
-    # Check biannce api connection
-    if client.ping() == {}:
-        try:
-            # Check if binance api keys are correct
-            client.account()
-        except:
-            return False
-        
-        # If api keys ok Get account information and balance
-        user_balance = client.account()
+    client = get_binance_client(api_key, api_secret)
+    user_balance = client.account()
 
-        assets_amounts = []
-        for balance in user_balance['balances']:
-            assets_amounts.append(AssetsAmount(balance['asset'], float(balance['free']) + float(balance['locked'])))
+    assets_amounts = []
+    for balance in user_balance['balances']:
+        assets_amounts.append(AssetsAmount(balance['asset'], float(balance['free']) + float(balance['locked'])))
 
-            print(balance['asset'])
-            print(float(balance['free']) + float(balance['locked']))
+        print(balance['asset'])
+        print(float(balance['free']) + float(balance['locked']))
 
-        return assets_amounts
+    return assets_amounts
 
-    else:
-        return 'no-connection'
 
 def check_binance_connection(api_key, api_secret):
 
@@ -74,13 +67,14 @@ def check_binance_connection(api_key, api_secret):
     else:
         return 'no-connection'
     
-    
+
+
 def import_balance(exchange, api_connection, user):
 
     if(exchange.name.lower() == 'binance'):
         assets_amounts = import_binance_balance(api_connection.api_key, api_connection.secret_key)
     else:
-        print('Exchange not yet implemented')
+        raise Http404(f'Importing balance from {exchange.name} Exchange not yet implemented')
         return False
     
     for fetched_asset in assets_amounts:

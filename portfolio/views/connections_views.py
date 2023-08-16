@@ -74,9 +74,9 @@ class AddConnectionModelForm(generic.CreateView, LoginRequiredMixin):
         context["exchange"] = fetch_exchange(self)
 
         return context
-    
-    # TODO: check if connection already exists
+
     # TODO: disable autocomplete in forms
+
 
 @require_http_methods(["GET"])
 def connection_update_data(request, pk):
