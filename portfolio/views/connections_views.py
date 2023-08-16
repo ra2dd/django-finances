@@ -4,6 +4,7 @@ from django.views import generic
 from django.urls import reverse
 from django.http import HttpResponseRedirect, Http404
 from django.views.decorators.http import require_http_methods
+from django.contrib.auth.hashers import make_password
 
 from ..models import Exchange, ApiConnection, AssetPriceHistory, Asset
 from ..tasks import client_tasks, server_tasks
@@ -50,7 +51,8 @@ class AddConnectionModelForm(generic.CreateView, LoginRequiredMixin):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['exchange_name'] = fetch_exchange(self).name.lower()
+        kwargs['exchange_object'] = fetch_exchange(self)
+        kwargs["user_object"] = self.request.user
 
         return kwargs
     
@@ -58,6 +60,8 @@ class AddConnectionModelForm(generic.CreateView, LoginRequiredMixin):
         self.object = form.save(commit=False)
         self.object.broker = fetch_exchange(self)
         self.object.owner = self.request.user
+        # self.object.api_key = make_password(self.object.api_key)
+        # self.object.secret_key = make_password(self.object.secret_key)
         self.object.save()
 
         return super().form_valid(form)
