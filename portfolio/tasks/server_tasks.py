@@ -89,8 +89,12 @@ def import_crypto_price_history(*argv):
 
             # Create database records from fetched data
             for priceHistory in json_response["prices"]:
-
+                
                 new_date = timestamp_to_datetime(priceHistory[0])
+                if (new_date < datetime.datetime(2023, 8, 1)):
+                    continue
+
+                print(f'adding price history for {api_name} {new_date} {priceHistory[1]}')
                 record = AssetPriceHistory(asset=asset[0], date=new_date, price=priceHistory[1])   
                 record.save()  
 
@@ -129,12 +133,13 @@ def import_current_crypto_price():
                 elif len(price_from_today) == 1:
                     price_from_today[0].delete()
 
+                print(f'adding todays price for {api_asset}')
                 record = AssetPriceHistory(asset=asset[0], date=datetime.date.today(), price=api_asset['current_price'])   
                 record.save()
             
             else:
+                print(f'importing all history {api_asset}')
                 import_crypto_price_history(api_asset['id'])
-
 
 
 def import_stock_price_history(*argv):
@@ -159,7 +164,7 @@ def import_stock_price_history(*argv):
                     price_history.delete()
 
             # Define the start date of price history fetching
-            startDate = datetime.datetime(2023, 5, 1)
+            startDate = datetime.datetime(2023, 8, 1)
             startDateTimestamp = datetime_to_timestamp(startDate) 
 
             # Fetch price data from constructed url   
@@ -250,7 +255,7 @@ def import_currency_price_history(*argv):
                     price_history.delete()
 
             # Define the start date of price history fetching
-            startDate = datetime.datetime(2023, 5, 1)
+            startDate = datetime.datetime(2023, 8, 1)
             startDateTimestamp = datetime_to_timestamp(startDate) 
 
             # Fetch price data from constructed url   
@@ -316,31 +321,42 @@ def import_current_currency_price():
                     import_currency_price_history(api_name)
 
 
-
 def get_crypto_assets():
     
-    response = requests.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false&locale=en', headers=headers)
+    response = requests.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=16&page=1&sparkline=false&locale=en', headers=headers)
     json_response = json.loads(response.content)
-    print(json.dumps(json_response, indent=4))
+    # print(json.dumps(json_response, indent=4))
+
+    '''
+    crypto_assets = Asset.objects.filter(type='cryptocurrency')
+    for crypto_asset in crypto_assets:
+        crypto_asset.delete()
+
+    crypto_assets_ph = AssetPriceHistory.objects.all()
+    for crypto_asset_ph in crypto_assets_ph:
+        crypto_asset_ph.delete()
+    '''
 
     for response_asset in json_response:
         asset = Asset.objects.filter(api_name=response_asset['id'])
         if len(asset) == 0:
             print(f'no asset with api_name {response_asset["id"]}')
+            
+            fetch_headers = {'User-Agent': 'Mozilla/5.0 (Linux; Android 13; SM-S901B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36'}
+            image_request = requests.get(response_asset["image"], headers=fetch_headers)
+           
             asset_record = Asset(name=response_asset["name"], api_name=response_asset["id"], ticker=response_asset["symbol"], type='cryptocurrency')
-
+            asset_record.icon.save(response_asset["symbol"] + '.png', File.open(BytesIO(image_request.content)))           
             asset_record.save()
 
         elif len(asset) > 1:
             raise Exception('Too many assets with given response api_name')
         elif len(asset) == 1:
-            print(f'asset with api_name {response_asset["id"]} exists')
-            
-            if response_asset["id"] == 'bitcoin':
+            print(f'asset with api_name {response_asset["id"]} exists')  
 
-                fetch_headers = {'User-Agent': 'Mozilla/5.0 (Linux; Android 13; SM-S901B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36'}
-                image_request = requests.get(response_asset["image"], headers=fetch_headers)
-                asset[0].icon.save(response_asset["symbol"] + '.png', File.open(BytesIO(image_request.content)))
-                asset[0].save()
+    import_current_crypto_price()          
+
+            
+
                 
 

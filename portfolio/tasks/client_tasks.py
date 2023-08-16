@@ -106,6 +106,11 @@ def import_balance(exchange, api_connection, user):
         if asset_balance_record == None:
             asset_balance_record = asset_balance[0]
         
+        check_asset_balance_history = AssetBalanceHistory.objects.filter(date=datetime.date.today(), balance = asset_balance_record)
+
+        if len(check_asset_balance_history) == 1:
+            check_asset_balance_history[0].delete()
+            
         asset_balance_history_record = AssetBalanceHistory(amount=fetched_asset.amount, date=datetime.datetime.now(), balance=asset_balance_record)
         asset_balance_history_record.save()
         print(f'{asset_balance_history_record}\n')
