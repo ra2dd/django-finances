@@ -36,12 +36,14 @@ class AddConnectionModelForm(forms.ModelForm):
         api_key_data = cleaned_data['api_key']
         secret_key_data = cleaned_data['secret_key']
 
-        api_connection = ApiConnection.objects.filter(broker=self.exchange_object, owner=self.user_object)
-        if len(api_connection) > 0:
-            raise ValidationError(f'Api connection for {self.exchange_object.name} exchange already exists.')
-
         check_connection(self.exchange_object.name.lower(), api_key_data, secret_key_data)
 
+        api_connection = ApiConnection.objects.filter(broker=self.exchange_object, owner=self.user_object)
+        if len(api_connection) == 1:
+            api_connection[0].delete()
+        elif len(api_connection) > 1:
+            raise ValidationError('Error, please contact site admin.')
+    
     class Meta:
         model = connections_views.ApiConnection
         fields = ['api_key', 'secret_key']

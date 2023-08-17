@@ -10,9 +10,15 @@
     <h2>{{ exchange.name }} Exchange</h2>
 
     <a href="{% url 'add-connection' exchange.pk %}">
-        <p>
-            Add exchange connection
-        </p>    
+        {% if connection_exists == True %}
+            <p>
+                Update exchange connection
+            </p>    
+        {% else %}
+            <p>
+                Add exchange connection
+            </p>  
+        {% endif %}
     </a>
 
     <a href="{% url 'update-connection-data' exchange.pk %}">

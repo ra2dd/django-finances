@@ -1,5 +1,6 @@
 from typing import Any, Dict
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.views import generic
 from django.urls import reverse
 from django.http import HttpResponseRedirect, Http404
@@ -42,6 +43,20 @@ class ConnectionInfoView(generic.DetailView, LoginRequiredMixin):
     model = Exchange
     template_name = 'connections/connection_detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        api_connection = ApiConnection.objects.filter(broker=fetch_exchange(self)).filter(owner=self.request.user)
+        connection_exists = None
+        if len(api_connection) == 0:
+            connection_exists = False
+        else:
+            connection_exists = True
+
+        context["connection_exists"] = connection_exists
+
+        return context
+
 class AddConnectionModelForm(generic.CreateView, LoginRequiredMixin):
     """View function for connecting user exchange data"""
 
@@ -79,6 +94,7 @@ class AddConnectionModelForm(generic.CreateView, LoginRequiredMixin):
 
 
 @require_http_methods(["GET"])
+@login_required
 def connection_update_data(request, pk):
 
     if request.method == 'GET':
