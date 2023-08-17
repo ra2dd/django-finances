@@ -39,7 +39,7 @@ class Exchange(models.Model):
 
     def get_absolute_url(self):
         """Returns the URL to access a detail record for exchange."""
-        return reverse('connection-detail', args=[str(self.id)])
+        return reverse('exchange-detail', args=[str(self.id)])
 
     def __str__(self):
         """String for representing the Model object"""

@@ -23,7 +23,7 @@ def check_connection(exchange_name, api_key_data, secret_key_data):
         raise ValidationError('Error, please contact site admin.')
 
 
-class AddConnectionModelForm(forms.ModelForm):
+class ConnectionAddModelForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         self.exchange_object = kwargs.pop('exchange_object', None)

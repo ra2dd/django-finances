@@ -5,12 +5,12 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Connection detail</h1>
+    <h1>Exchange detail</h1>
 
     <h2>{{ exchange.name }} Exchange</h2>
 
-    <a href="{% url 'add-connection' exchange.pk %}">
-        {% if connection_exists == True %}
+    <a href="{% url 'apiconnection-add' exchange.pk %}">
+        {% if api_connection_exists == True %}
             <p>
                 Update exchange connection
             </p>    
@@ -21,7 +21,7 @@
         {% endif %}
     </a>
 
-    <a href="{% url 'update-connection-data' exchange.pk %}">
+    <a href="{% url 'fetch-apiconnection-balance' exchange.pk %}">
         <p>
             Update connection data
         </p>    

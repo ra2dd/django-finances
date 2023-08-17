@@ -6,10 +6,11 @@ urlpatterns = [
     path('', dashboard_views.index, name='index'),
     path('dashboard/', dashboard_views.DashboardView.as_view(), name='dashboard'),
 
-    path('connections/', connections_views.ConnectionsView.as_view(), name='connections'),
-    path('connections/<int:pk>/create', connections_views.AddConnectionModelForm.as_view(), name='add-connection'),
-    path('connections/<int:pk>', connections_views.ConnectionInfoView.as_view(), name='connection-detail'),
-    path('connections/<int:pk>/update-connection-data', connections_views.connection_update_data, name='update-connection-data'),
+    path('exchanges/', connections_views.ExchangeListView.as_view(), name='exchanges'),
+    path('exchanges/<int:pk>', connections_views.ExchangeDetailView.as_view(), name='exchange-detail'),
+    path('exchanges/<int:pk>/create-apiconnection', connections_views.ApiConnectionAdd.as_view(), name='apiconnection-add'),
+    path('exchanges/<int:pk>/delete-apiconnection', connections_views.ApiConnectionDelete.as_view(), name='apiconnection-delete'),
+    path('exchanges/<int:pk>/fetch-apiconnection-balance', connections_views.fetch_apiconnection_balance_view, name='fetch-apiconnection-balance'),
 
     path('pricehistory/', dashboard_views.PriceHistoryView.as_view(), name='pricehistory'),
 ]

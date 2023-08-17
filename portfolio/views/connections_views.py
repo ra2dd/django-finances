@@ -2,22 +2,22 @@ from typing import Any, Dict
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.views import generic
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect, Http404
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.hashers import make_password
 
 from ..models import Exchange, ApiConnection, AssetPriceHistory, Asset
 from ..tasks import client_tasks, server_tasks
-from ..forms import AddConnectionModelForm
+from ..forms import ConnectionAddModelForm
 
 def fetch_exchange(self):
     return Exchange.objects.filter(pk=self.kwargs['pk'])[0]
 
-class ConnectionsView(generic.ListView, LoginRequiredMixin):
-    """View function for listing user wallet connections"""
+class ExchangeListView(generic.ListView, LoginRequiredMixin):
+    """View function for listing exchanges and their user wallet connections"""
 
-    template_name = 'connections/connections_list.html'
+    template_name = 'connections/exchange_list.html'
     model = Exchange
 
     def get_context_data(self, **kwargs):
@@ -38,31 +38,31 @@ class ConnectionsView(generic.ListView, LoginRequiredMixin):
         return context
 
 
-class ConnectionInfoView(generic.DetailView, LoginRequiredMixin):
-    """View function for displaying connection info"""
+class ExchangeDetailView(generic.DetailView, LoginRequiredMixin):
+    """View function for displaying exchange details and its user connection info"""
     model = Exchange
-    template_name = 'connections/connection_detail.html'
+    template_name = 'connections/exchange_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         api_connection = ApiConnection.objects.filter(broker=fetch_exchange(self)).filter(owner=self.request.user)
-        connection_exists = None
+        api_connection_exists = None
         if len(api_connection) == 0:
-            connection_exists = False
+            api_connection_exists = False
         else:
-            connection_exists = True
+            api_connection_exists = True
 
-        context["connection_exists"] = connection_exists
+        context["api_connection_exists"] = api_connection_exists
 
         return context
 
-class AddConnectionModelForm(generic.CreateView, LoginRequiredMixin):
-    """View function for connecting user exchange data"""
+class ApiConnectionAdd(generic.CreateView, LoginRequiredMixin):
+    """View function for adding user ApiConnection to exchange"""
 
     model = ApiConnection
-    form_class = AddConnectionModelForm
-    template_name = 'connections/connection_add.html'
+    form_class = ConnectionAddModelForm
+    template_name = 'connections/apiconnection_add.html'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -82,7 +82,7 @@ class AddConnectionModelForm(generic.CreateView, LoginRequiredMixin):
         return super().form_valid(form)
     
     def get_success_url(self):
-        return reverse('connection-detail', args=[str(self.kwargs['pk'])])
+        return reverse('exchange-detail', args=[str(self.kwargs['pk'])])
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -93,9 +93,16 @@ class AddConnectionModelForm(generic.CreateView, LoginRequiredMixin):
     # TODO: disable autocomplete in forms
 
 
+class ApiConnectionDelete(generic.DeleteView, LoginRequiredMixin):
+    model = ApiConnection
+
+    def get_success_url(self):
+        return reverse_lazy('exchange-detail', args=str(self.kwargs['pk']))
+
+
 @require_http_methods(["GET"])
 @login_required
-def connection_update_data(request, pk):
+def fetch_apiconnection_balance_view(request, pk):
 
     if request.method == 'GET':
         exchange = Exchange.objects.filter(pk=pk)[0]
@@ -110,4 +117,4 @@ def connection_update_data(request, pk):
         elif(len(api_connection) == 1):
             client_tasks.import_balance(exchange, api_connection[0], request.user)    
         
-        return HttpResponseRedirect(reverse('connection-detail', args=str(pk)))
+        return HttpResponseRedirect(reverse('exchange-detail', args=str(pk)))
