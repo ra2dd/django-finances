@@ -12,14 +12,22 @@
     <a href="{% url 'apiconnection-add' exchange.pk %}">
         {% if api_connection_exists == True %}
             <p>
-                Update exchange connection
+                Update exchange api connection
             </p>    
         {% else %}
             <p>
-                Add exchange connection
+                Add exchange api connection
             </p>  
         {% endif %}
     </a>
+
+    {% if api_connection_exists == True %}
+        <a href="{% url 'apiconnection-delete' exchange.pk %}">
+            <p>
+                Delete exchange api connection
+            </p>
+        </a>
+    {% endif %}
 
     <a href="{% url 'fetch-apiconnection-balance' exchange.pk %}">
         <p>

@@ -14,6 +14,7 @@ from ..forms import ConnectionAddModelForm
 def fetch_exchange(self):
     return Exchange.objects.filter(pk=self.kwargs['pk'])[0]
 
+
 class ExchangeListView(generic.ListView, LoginRequiredMixin):
     """View function for listing exchanges and their user wallet connections"""
 
@@ -57,6 +58,7 @@ class ExchangeDetailView(generic.DetailView, LoginRequiredMixin):
 
         return context
 
+
 class ApiConnectionAdd(generic.CreateView, LoginRequiredMixin):
     """View function for adding user ApiConnection to exchange"""
 
@@ -82,7 +84,7 @@ class ApiConnectionAdd(generic.CreateView, LoginRequiredMixin):
         return super().form_valid(form)
     
     def get_success_url(self):
-        return reverse('exchange-detail', args=[str(self.kwargs['pk'])])
+        return self.object.broker.get_absolute_url()
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -95,9 +97,15 @@ class ApiConnectionAdd(generic.CreateView, LoginRequiredMixin):
 
 class ApiConnectionDelete(generic.DeleteView, LoginRequiredMixin):
     model = ApiConnection
+    template_name = 'connections/apiconnection_delete.html'
 
     def get_success_url(self):
-        return reverse_lazy('exchange-detail', args=str(self.kwargs['pk']))
+        return self.object.broker.get_absolute_url()
+        # return reverse_lazy('exchange-detail', args=str(self.kwargs['pk']))
+
+    def get_object(self):
+        object = ApiConnection.objects.filter(broker=fetch_exchange(self)).filter(owner=self.request.user)[0]
+        return object
 
 
 @require_http_methods(["GET"])
