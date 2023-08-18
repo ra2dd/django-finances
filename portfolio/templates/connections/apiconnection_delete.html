@@ -4,6 +4,7 @@
     <h1>Delete Api Connection for {{ apiconnection.broker }} Exchange?</h1>
     
     <p>Are you sure you want to detele {{ apiconnection.broker }} Api Connection?</p>
+    <p>All related information about Asset balances fetched from the exchange will also be deleted.</p>
 
     <form action="" method="POST">
         {% csrf_token %}

@@ -3,11 +3,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.auth.decorators import login_required
 from django.views import generic
 from django.urls import reverse, reverse_lazy
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, Http404
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.hashers import make_password
 
-from ..models import Exchange, ApiConnection, AssetPriceHistory, Asset
+from ..models import Exchange, ApiConnection, AssetPriceHistory, Asset, AssetBalance, AssetBalanceHistory
 from ..tasks import client_tasks, server_tasks
 from ..forms import ConnectionAddModelForm
 
@@ -106,6 +106,20 @@ class ApiConnectionDelete(generic.DeleteView, LoginRequiredMixin):
     def get_object(self):
         object = ApiConnection.objects.filter(broker=fetch_exchange(self)).filter(owner=self.request.user)[0]
         return object
+    
+    def form_valid(self, form):
+
+        related_balance = AssetBalance.objects.filter(portfolio=self.request.user.portfolio).filter(broker=self.object.broker)
+
+        for balance in related_balance:
+            related_balance_history = AssetBalanceHistory.objects.filter(balance=balance)
+
+            for balance_history in related_balance_history:
+                balance_history.delete()
+
+            balance.delete()
+
+        return super().form_valid(self)
 
 
 @require_http_methods(["GET"])

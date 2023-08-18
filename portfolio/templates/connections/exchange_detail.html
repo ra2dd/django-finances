@@ -27,11 +27,11 @@
                 Delete exchange api connection
             </p>
         </a>
-    {% endif %}
 
-    <a href="{% url 'fetch-apiconnection-balance' exchange.pk %}">
-        <p>
-            Update connection data
-        </p>    
-    </a>
+        <a href="{% url 'fetch-apiconnection-balance' exchange.pk %}">
+            <p>
+                Fetch Asset balance from api connection
+            </p>    
+        </a>
+    {% endif %}
 {% endblock %}

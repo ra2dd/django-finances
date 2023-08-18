@@ -51,7 +51,8 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
 
         # Loop throgh balances to add amount, price and value attrributes to balance queryset
         for balance in user_all_balance_list:
-            
+            # TODO check if balance assetbalancehistory exists
+            print(balance)
             # Get asset price
             asset_latest_price = balance.asset.assetpricehistory_set.latest().price
 
