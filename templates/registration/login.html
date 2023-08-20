@@ -1,0 +1,41 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+    {% if form.errors %}
+        <p>Your username and password combination is incorrect. Please try again.</p>
+    {% endif %}
+
+    {% if next %}
+        {% if user.is_authenticated %}
+            <p> 
+                Your account access for this page is denied.
+                Please login with account that has access.
+            </p>
+        {% else %}
+            <p>
+                Login to see this page.
+            </p>
+        {% endif %}
+    {% endif %}
+
+
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+            <table>
+                <tr>
+                    <th scope="row">{{ form.username.label_tag }}</td>
+                    <td>{{ form.username }}</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">{{ form.password.label_tag }}</td>
+                    <td>{{ form.password }}</td>
+                </tr>
+            </table>
+            <input type="submit" value="login" />
+            <input type="hidden" name="next" value="{{ next }}" />
+    </form>
+
+{% endblock %}
+    
