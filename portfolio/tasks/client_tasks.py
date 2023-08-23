@@ -90,21 +90,35 @@ def import_balance(exchange, api_connection, user):
         asset_balance_record = None
         asset_balance = AssetBalance.objects.filter(portfolio=portfolio, asset=asset[0], broker=exchange)
 
+
         if len(asset_balance) > 1: 
            raise Exception('Too many asset balances corresponding with given ticker.')
         if len(asset_balance) == 0:
-            print(f'asset balance not exisiting for {fetched_asset.ticker}')
-            asset_balance_record = AssetBalance(portfolio=portfolio, asset=asset[0], broker=exchange)
-            asset_balance_record.save()
+            if fetched_asset.amount == 0:
+                continue
+            else:
+                print(f'asset balance not exisiting for {fetched_asset.ticker}')
+                asset_balance_record = AssetBalance(portfolio=portfolio, asset=asset[0], broker=exchange)
+                asset_balance_record.save()
 
         print(f'creating asset balance history for {fetched_asset.ticker}') 
         if asset_balance_record == None:
             asset_balance_record = asset_balance[0]
-        
-        check_asset_balance_history = AssetBalanceHistory.objects.filter(date=datetime.date.today(), balance = asset_balance_record)
 
-        if len(check_asset_balance_history) == 1:
-            check_asset_balance_history[0].delete()
+        if fetched_asset.amount == 0 or 1 == 1:
+            asset_balance_history_exists = AssetBalanceHistory.objects.filter(balance = asset_balance_record)         
+            print(asset_balance_history_exists)
+
+        check_asset_balance_history = AssetBalanceHistory.objects.filter(balance = asset_balance_record)     
+
+        if len(check_asset_balance_history) > 0:
+            latest_asset_balance_history = check_asset_balance_history.latest()    
+            
+            if fetched_asset.amount == 0 and latest_asset_balance_history.amount == 0:
+                    continue
+
+            if latest_asset_balance_history.date == datetime.date.today():
+                    latest_asset_balance_history.delete()
 
         asset_balance_history_record = AssetBalanceHistory(amount=fetched_asset.amount, date=datetime.date.today(), balance=asset_balance_record)
         asset_balance_history_record.save()
