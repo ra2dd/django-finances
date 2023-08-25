@@ -319,6 +319,39 @@ def import_current_currency_price():
                 
                 else:
                     import_currency_price_history(api_name)
+   
+
+def import_current_price_history():
+
+    asset_types = []
+
+    for choice in Asset.ASSET_TYPE:
+        asset_types.append(choice[0]) 
+
+    for asset_type in asset_types:
+
+        all_assets = Asset.objects.filter(type=asset_type)
+
+        for asset in all_assets:
+            api_name = asset.api_name.lower()
+            asset = Asset.objects.filter(api_name=api_name)
+                                        
+            if len(asset) > 1:
+                raise Exception(f'Cannot fetch data. There is more than one {asset_type} asset with given api id.')
+            
+            elif len(asset) == 1:
+                latest_record_added = False
+
+                while latest_record_added == False:
+                    
+                    # Fetch price data from constructed url
+                    if asset_type == 'stock':
+                        response = requests.get(construct_current_stock_price_url(api_name))
+                    elif asset_type == 'currency':   
+                        response = requests.get(construct_current_currency_price_url(api_name))
+
+                    json_response = json.loads(response.content)
+
 
 
 def get_crypto_assets():
