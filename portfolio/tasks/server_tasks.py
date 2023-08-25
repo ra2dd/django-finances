@@ -291,34 +291,51 @@ def import_current_currency_price():
             raise Exception("Cannot fetch data. There is no asset with given api id.")
         
         elif len(asset) == 1:
-            todays_record_added = False
+            # Check if past data exists for an asset
+            previous_day = datetime.date.today() - datetime.timedelta(days=1)
+            missing_day_count = 0
 
-            while todays_record_added == False:
+            for day in range(7):
+                print(day)
+                if len(asset[0].assetpricehistory_set.filter(date=previous_day)) == 0:
+                    missing_day_count += 1
+                previous_day -= datetime.timedelta(days=1)
+            print(missing_day_count)
+            if missing_day_count >= 7:
+                import_currency_price_history(api_name)
+                continue
 
-                # Check if there is price data from previous day
-                if len(asset[0].assetpricehistory_set.filter(date=datetime.date.today() - datetime.timedelta(days=1))) == 1:
-                    
-                    # Check if there is price data from today
-                    price_from_today = asset[0].assetpricehistory_set.filter(date=datetime.date.today())
+            # Fetch price data from constructed url   
+            response = requests.get(construct_current_currency_price_url(api_name))
+            json_response = json.loads(response.content)
+            last_refreshed_day = datetime.datetime.strptime(json_response["Realtime Currency Exchange Rate"]["6. Last Refreshed"],'%Y-%m-%d %H:%M:%S').date()
 
-                    if len(price_from_today) > 1:
-                        raise Exception("Cannot proceed. There is more than one price history from today.")
+            # Check if last refreshed day is in the past
+            if last_refreshed_day < datetime.date.today():
+                # Check if AssetPriceHistory record exists for last refreshed day in the past
+                if len(asset[0].assetpricehistory_set.filter(date=last_refreshed_day)) == 1:
+                    continue
+                else:
+                    raise Exception('Fix data fetching for currency')
 
-                    elif len(price_from_today) == 1:
+            elif last_refreshed_day == datetime.date.today():
+                
+                # Check if there is price data from today
+                price_from_today = asset[0].assetpricehistory_set.filter(date=datetime.date.today())
+                new_price = round(float(json_response["Realtime Currency Exchange Rate"]["5. Exchange Rate"]), 4)
+
+                if len(price_from_today) > 1:
+                    raise Exception("Cannot proceed. There is more than one price history from today.")
+
+                elif len(price_from_today) == 1:
+                    if price_from_today == new_price:
+                        continue
+                    else: 
                         price_from_today[0].delete()
 
-                    # Fetch price data from constructed url   
-                    response = requests.get(construct_current_currency_price_url(api_name))
-                    json_response = json.loads(response.content)
-    
-                    new_price = round(float(json_response["Realtime Currency Exchange Rate"]["5. Exchange Rate"]), 4)
-
-                    record = AssetPriceHistory(asset=asset[0], date=datetime.date.today(), price=new_price)   
-                    record.save()
-                    todays_record_added = True
-                
-                else:
-                    import_currency_price_history(api_name)
+                record = AssetPriceHistory(asset=asset[0], date=datetime.date.today(), price=new_price)   
+                record.save()
+                    
 
 
 def get_crypto_assets():
