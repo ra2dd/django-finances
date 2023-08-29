@@ -8,7 +8,7 @@ from django.views.decorators.http import require_http_methods
 from django.contrib.auth.hashers import make_password
 
 from ..models import Exchange, ApiConnection, AssetPriceHistory, Asset, AssetBalance, AssetBalanceHistory
-from ..tasks import client_tasks, server_tasks
+from ..utils import client_tasks, server_tasks
 from ..forms import ConnectionAddModelForm
 
 def fetch_exchange(self):

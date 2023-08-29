@@ -2,7 +2,7 @@ from django import forms
 
 from django.core.exceptions import ValidationError
 from .views import connections_views
-from .tasks import client_tasks
+from .utils import client_tasks
 from .models import ApiConnection
 
 def check_connection(exchange_name, api_key_data, secret_key_data):
