@@ -43,7 +43,7 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
         # Get all asset balances of current user portfolio
         user_all_balance_list = Portfolio.objects.filter(owner=self.request.user)[0].assetbalance_set.all()
         
-        # Auxilary variable for storing asset information for the next loop iteration
+        # Auxilary variable for storing asset information for the next loop iteration (asset, asset amount)
         same_latest_balance = (False, False)
 
         # context list for holding user current asset holdings objects
@@ -308,66 +308,3 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
             'user_total_balance_history': user_total_balance_history
         }
         return context
-    
-'''
-class ConnectionsView(generic.TemplateView, LoginRequiredMixin):
-    """View function for user wallet connections"""
-
-    template_name = 'connections/connections.html'
-
-    def get_context_data(self):
-
-        connected_crypto_exchenges_list = []
-        connected_brokerages_list = []
-
-        for exchange in Exchange.objects.all():
-            if (exchange.apiconnection_set.filter(owner=self.request.user)):
-
-                setattr(exchange, 'connected', True)
-
-                if (exchange.type == 'crypto_exchange'):
-                    connected_crypto_exchenges_list.append(exchange)
-
-                elif (exchange.type == 'brokerage_house'):
-                    connected_brokerages_list.append(exchange)
-
-
-        context = {
-            'connected_crypto_exchenges_list': connected_crypto_exchenges_list,
-            'connected_brokerages_list': connected_brokerages_list,
-        }
-        return context
-'''
-
-
-
-class PriceHistoryView(generic.ListView, LoginRequiredMixin):
-    
-    template_name = 'backend/crypto_price_history.html'
-    model = Asset
-
-    def get_queryset(self):
-        return Asset.objects.filter(type__exact='cryptocurrency')
-
-    def get_context_data(self, **kwargs):
-
-        '''
-        server_tasks.import_current_currency_price()
-        server_tasks.import_current_stock_price()
-        server_tasks.import_current_crypto_price()
-        '''
-        connection = ApiConnection.objects.filter(owner=self.request.user).filter(broker=Exchange.objects.filter(name='Binance')[0])[0] 
-        api_key = connection.api_key
-        secret_key = connection.secret_key
-
-        client_tasks.import_binance_balance(api_key, secret_key)
-
-        context = super().get_context_data(**kwargs)
-        return context
-
-
-
-
-
-
-

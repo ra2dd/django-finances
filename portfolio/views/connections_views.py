@@ -66,6 +66,7 @@ class ApiConnectionAdd(generic.CreateView, LoginRequiredMixin):
     form_class = ConnectionAddModelForm
     template_name = 'connections/apiconnection_add.html'
 
+    # Send additional data to ModelForm
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['exchange_object'] = fetch_exchange(self)
@@ -73,6 +74,7 @@ class ApiConnectionAdd(generic.CreateView, LoginRequiredMixin):
 
         return kwargs
     
+    # Set object additional fields after succesfully submitting a form
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.broker = fetch_exchange(self)
@@ -86,6 +88,7 @@ class ApiConnectionAdd(generic.CreateView, LoginRequiredMixin):
     def get_success_url(self):
         return self.object.broker.get_absolute_url()
     
+    # Add context data to display in template
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["exchange"] = fetch_exchange(self)
@@ -103,10 +106,12 @@ class ApiConnectionDelete(generic.DeleteView, LoginRequiredMixin):
         return self.object.broker.get_absolute_url()
         # return reverse_lazy('exchange-detail', args=str(self.kwargs['pk']))
 
+    # Specify DeleteView context object
     def get_object(self):
         object = ApiConnection.objects.filter(broker=fetch_exchange(self)).filter(owner=self.request.user)[0]
         return object
     
+    # Delete additional records when deleting a context object
     def form_valid(self, form):
 
         related_balance = AssetBalance.objects.filter(portfolio=self.request.user.portfolio).filter(broker=self.object.broker)

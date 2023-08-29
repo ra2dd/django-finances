@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import connections_views, dashboard_views
+from .views import connections_views, dashboard_views, backend_views
 
 urlpatterns = [
     path('', dashboard_views.index, name='index'),
@@ -12,5 +12,5 @@ urlpatterns = [
     path('exchanges/<int:pk>/delete-apiconnection', connections_views.ApiConnectionDelete.as_view(), name='apiconnection-delete'),
     path('exchanges/<int:pk>/fetch-apiconnection-balance', connections_views.fetch_apiconnection_balance_view, name='fetch-apiconnection-balance'),
 
-    path('pricehistory/', dashboard_views.PriceHistoryView.as_view(), name='pricehistory'),
+    path('assets/', backend_views.AssetListView.as_view(), name='assets'),
 ]
