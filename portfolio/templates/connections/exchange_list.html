@@ -5,17 +5,32 @@
 {% endblock %}
 
 {% block content %}
-    <h1>List of exchanges</h1>
-
-    <h2>Exchanges</h2>
+    <h1>List of Exchanges</h1>
 
     {% if exchange_list %}
+        <h2>Exchanges with active Api Connection</h2>
         <ul>
             {% for exchange in exchange_list %}
-                <li>
-                    {{ exchange.name }}
-                    <a href="{{ exchange.get_absolute_url }}">go to details</a>
+                {% if exchange.is_user_connected == True %}
+                    <li>
+                        {{ exchange.name }} - connected
+                        <br />
+                        <a href="{{ exchange.get_absolute_url }}">go to details</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+        <h2>Exchanges with no Api Connection</h2>
+        <ul>
+            {% for exchange in exchange_list %}
+                {% if exchange.is_user_connected == False %}
+                    <li>
+                        {{ exchange.name }}
+                        <br />
+                        <a href="{{ exchange.get_absolute_url }}">go to details</a>
                 </li>
+                {% endif %}
             {% endfor %}
         </ul>
     {% endif %}
