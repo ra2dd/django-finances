@@ -19,6 +19,7 @@ class Exchange(models.Model):
     EXCHANGE_TYPE = (
         ('brokerage_house', 'Brokerage House'),
         ('crypto_exchange', 'Cryptocurrency Exchange'),
+        ('manual_trades', 'Manual Trades')
     )
 
     type = models.CharField(
@@ -26,7 +27,7 @@ class Exchange(models.Model):
         choices=EXCHANGE_TYPE,
     )
 
-    url = models.URLField(max_length=200)
+    url = models.URLField(max_length=200, blank=True)
 
     api_url = models.URLField(max_length=200, blank=True)
 

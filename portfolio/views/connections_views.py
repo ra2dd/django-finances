@@ -1,11 +1,13 @@
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.db import models
 from django.views import generic
 from django.urls import reverse, reverse_lazy
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, Http404
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.hashers import make_password
+from django.core.exceptions import PermissionDenied
 
 from ..models import Exchange, ApiConnection, AssetPriceHistory, Asset, AssetBalance, AssetBalanceHistory
 from ..utils import client_tasks, server_tasks
@@ -108,7 +110,11 @@ class ApiConnectionDelete(generic.DeleteView, LoginRequiredMixin):
 
     # Specify DeleteView context object
     def get_object(self):
-        object = ApiConnection.objects.filter(broker=fetch_exchange(self)).filter(owner=self.request.user)[0]
+        exchange = fetch_exchange(self)
+        if exchange.name.lower() == 'manual trades':
+            raise PermissionDenied
+        
+        object = ApiConnection.objects.filter(broker=exchange).filter(owner=self.request.user)[0]
         return object
     
     # Delete additional records when deleting a context object
@@ -133,6 +139,10 @@ def fetch_apiconnection_balance_view(request, pk):
 
     if request.method == 'GET':
         exchange = Exchange.objects.filter(pk=pk)[0]
+
+        if exchange.name.lower() == 'manual trades':
+            raise PermissionDenied
+
         api_connection = ApiConnection.objects.filter(broker=exchange).filter(owner=request.user)
 
         if(len(api_connection) == 0):

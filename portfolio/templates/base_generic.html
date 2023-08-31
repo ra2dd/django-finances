@@ -34,6 +34,10 @@
                         <li>
                             <a href="{% url 'exchanges' %}">Connections</a>
                         </li>
+
+                        <li>
+                            <a href="{% url 'assets' %}">Available Assets</a>
+                        </li>
                     </ul>
                 {% endblock %}
 
@@ -42,9 +46,10 @@
                     {% if user.is_authenticated %}
                         <p>
                             User: {{ user.get_username }}
+                            <a href="{% url 'logout' %}">Log out</a>
                         </p>
                     {% else %}
-                        <a href="">Log in</a>
+                        <a href="{% url 'login' %}">Log in</a>
                     {% endif %}
 
                 </div>
