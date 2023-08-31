@@ -1,0 +1,34 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+    <title>All assets</title>
+{% endblock %}
+
+{% block content %}
+    <h1>All assets</h1>
+
+    <h2>List of all assets:</h2>
+
+    {% if asset_list %}
+        <table>
+            <thead>
+                <th scope="col">Name</th>
+                <th scope="col">Holdings</th>
+                <th scope="col">Price</th>
+                <th scope="col">Value</th>
+            </thead>
+
+            <tbody>
+                {% for asset in asset_list %}
+                    <tr>
+                        <th scope="row"><a href="">{{ asset.name }}</a></th>
+                        <th scope="row">{{ asset.value_object.latest_holding }}</th>
+                        <th scope="row">{{ asset.value_object.latest_price }}</th>
+                        <th scope="row">{{ asset.value_object.latest_value }}</th>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+{% endblock %}
