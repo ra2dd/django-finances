@@ -21,7 +21,7 @@
             <tbody>
                 {% for asset in asset_list %}
                     <tr>
-                        <th scope="row"><a href="">{{ asset.name }}</a></th>
+                        <th scope="row"><a href="{% url 'asset-detail' asset.pk %}">{{ asset.name }}</a></th>
                         <th scope="row">{{ asset.value_object.latest_holding }}</th>
                         <th scope="row">{{ asset.value_object.latest_price }}</th>
                         <th scope="row">{{ asset.value_object.latest_value }}</th>

@@ -1,0 +1,20 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+    <title>{{ asset.name }} Detail</title>
+{% endblock %}
+
+{% block content %}
+    <h1>{{ asset.name }} {{ asset.type }} Detail</h1>
+
+    <p>
+        Price: {{ asset.value_object.latest_price }}
+        Amount: {{ asset.value_object.latest_holding }}
+        Value: {{ asset.value_object.latest_value }}
+    </p>
+    <ul>
+        {% for balance in asset.assetbalance_set.all %}
+            <li>{{ balance.broker }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

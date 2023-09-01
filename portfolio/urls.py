@@ -13,6 +13,6 @@ urlpatterns = [
     path('exchanges/<int:pk>/fetch-apiconnection-balance', connections_views.fetch_apiconnection_balance_view, name='fetch-apiconnection-balance'),
 
     path('assets/', assets_views.AssetListView.as_view(), name='assets'),
-    path('assets/<int:pk>', assets_views.UserAssetHoldingView.as_view(), name='asset-detail'),
+    path('assets/<int:pk>', assets_views.AssetDetailView.as_view(), name='asset-detail'),
 
 ]
