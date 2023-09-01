@@ -1,0 +1,17 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+    <title>Trades list</title>
+{% endblock %}
+
+{% block content %}
+    <h1>Trades List</h1>
+
+    {% if assetbalance_list %}
+        <ul>
+            {% for trade_assetbalance in assetbalance_list %}
+                <li> {{ trade_assetbalance.asset }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

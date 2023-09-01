@@ -44,3 +44,17 @@ class AssetDetailView(generic.DetailView):
         setattr(asset_obj, 'value_object', assets_util.get_asset_value_object(asset_balances))
 
         return context
+
+
+class ManualTradesListView(generic.ListView):
+    template_name = 'assets/manualtrades_list.html'
+    model = AssetBalance
+
+    def get_queryset(self):
+        portfolio = Portfolio.objects.filter(owner=self.request.user)[0]
+        exchange = Exchange.objects.filter(name='Manual Trades')[0]
+        return (
+            AssetBalance.objects
+            .filter(portfolio=portfolio)
+            .filter(broker=exchange)
+        )

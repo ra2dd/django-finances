@@ -15,4 +15,5 @@ urlpatterns = [
     path('assets/', assets_views.AssetListView.as_view(), name='assets'),
     path('assets/<int:pk>', assets_views.AssetDetailView.as_view(), name='asset-detail'),
 
+    path('manualtrades', assets_views.ManualTradesListView.as_view(), name='manual-trades'),
 ]

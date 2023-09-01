@@ -14,7 +14,10 @@
     </p>
     <ul>
         {% for balance in asset.assetbalance_set.all %}
-            <li>{{ balance.broker }}</li>
+            <li>
+                {{ balance.broker }}
+                {{ balance.assetbalancehistory_set.latest.amount }}
+            </li>
         {% endfor %}
     </ul>
 {% endblock %}
