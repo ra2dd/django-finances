@@ -74,3 +74,14 @@ class AssetBalanceHistoryListView(generic.ListView):
         context = super().get_context_data(**kwargs)
         print(context)
         return context
+
+
+class AssetBalanceHistoryCreate(generic.CreateView):
+    model = AssetBalanceHistory
+    template_name = 'assets/assetbalancehistory_form.html'
+    fields = ['balance', 'date', 'amount']
+
+'''
+def assetbalancehistory_create(request, pk, pk2):
+    """View function for creating assetbalancehistory records"""
+'''

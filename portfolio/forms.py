@@ -50,3 +50,13 @@ class ConnectionAddModelForm(forms.ModelForm):
         model = connections_views.ApiConnection
         fields = ['api_key', 'secret_key']
 
+
+class AssetPriceHistoryModelForm(forms.Form):
+    asset = forms.TypedChoiceField()
+    exchange = forms.TypedChoiceField()
+    amount = forms.DecimalField()
+    date = forms.DateField()
+
+    
+
+

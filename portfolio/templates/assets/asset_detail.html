@@ -22,5 +22,7 @@
                 {{ balance.assetbalancehistory_set.latest.amount }}
             </li>
         {% endfor %}
+
+        <a href="{% url 'assetbalancehistory-create' asset.pk %}">Create new assetbalancehistory</a>
     </ul>
 {% endblock %}
