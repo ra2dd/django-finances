@@ -6,6 +6,8 @@ html
 body
 {
     margin: 0;
+    background-color: hsl(0, 0%, 97%);
+    color: hsl(0, 0%, 6%);
 }
 
 /*
@@ -18,11 +20,12 @@ body
         "header"
         "content"
         "footer";
-        grid-template-rows: 1fr 6fr 0.5fr;
+    grid-template-rows: 72px auto 48px;
 
-    
     position: relative;
     min-height: 100vh;
+    max-width: 1200px;
+    margin: 0 auto;    
 }
 
 header
@@ -33,38 +36,22 @@ header
     justify-content: space-between;
 
     grid-area: header;
-    background-color: orange;
-    font-weight: 600;
 }
 
 .content-container
 {
     grid-area: content;
-    background-color: antiquewhite;
 }
 
 footer
 {
     grid-area: footer;
-
-    background-color: black;
-    color: white;
 }
 
 
 /*
     Styling main content
 */
-h1
-{
-    font-size: 2.4rem;
-}
-
-h2
-{
-    font-size: 2rem;
-}
-
 .main-content
 {
     margin: 4% 10%;
