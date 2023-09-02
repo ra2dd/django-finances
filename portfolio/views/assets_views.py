@@ -1,6 +1,6 @@
 from django.views import generic
 
-from ..models import Portfolio, AssetBalance, Asset, Exchange
+from ..models import Portfolio, AssetBalance, Asset, Exchange, AssetBalanceHistory
 from ..utils import dashboard_balance, assets_util
 
 class AssetListView(generic.ListView):
@@ -58,3 +58,19 @@ class ManualTradesListView(generic.ListView):
             .filter(portfolio=portfolio)
             .filter(broker=exchange)
         )
+    
+
+
+class AssetBalanceHistoryListView(generic.ListView):
+    template_name = 'assets/assetbalancehistory_list.html'
+    model = AssetBalanceHistory
+
+    def get_queryset(self):
+        return (
+            AssetBalanceHistory.objects.filter(balance_id=self.kwargs['pk2'])
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        print(context)
+        return context

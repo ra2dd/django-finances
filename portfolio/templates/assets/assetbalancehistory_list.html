@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+    <title>AssetBalanceHistory List</title>
+{% endblock %}
+
+{% block content %}
+    <h1>AssetBalanceHistory</h1>
+
+    <ul>
+        {% for assetbalancehistory in assetbalancehistory_list %}
+            <li>
+                {{ assetbalancehistory.balance }}
+                {{ assetbalancehistory.date }}
+                {{ assetbalancehistory.amount }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

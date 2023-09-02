@@ -15,6 +15,9 @@
     <ul>
         {% for balance in asset.assetbalance_set.all %}
             <li>
+                <a href="{% url 'assetbalancehistory' asset.pk balance.pk %}">
+                    Go to assetbalancehistory list
+                </a>
                 {{ balance.broker }}
                 {{ balance.assetbalancehistory_set.latest.amount }}
             </li>
