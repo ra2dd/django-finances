@@ -13,6 +13,7 @@
         <!-- Add additional CSS in static file -->
         {% load static %}
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <link rel="stylesheet" href="{% static 'css/main_module.css' %}">
     </head>
 
     <body>
@@ -56,10 +57,8 @@
             </header>
 
             <section class="content-container">
-                <div class="main-content">
-                    {% block content %}
-                    {% endblock %}
-                </div>
+                {% block content %}
+                {% endblock %}
             </section>
 
             <footer>

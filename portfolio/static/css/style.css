@@ -24,7 +24,7 @@ body
 
     position: relative;
     min-height: 100vh;
-    max-width: 1200px;
+    max-width: 56rem;
     margin: 0 auto;    
 }
 
@@ -48,41 +48,30 @@ footer
     grid-area: footer;
 }
 
-
-/*
-    Styling main content
-*/
-.main-content
-{
-    margin: 4% 10%;
-}
-
-
-
 /*
     Styling header and sidebar
 */
 .header-navbar
 {
     display: flex;
-    flex-flow: row wrap;
+    flex-flow: row;
     align-items: center;
     justify-content: space-around;
 }
 
 .header-navbar > *
 {
-    margin: auto 2vw;
+    list-style: none;
+    margin: 0.25rem;
 }
 
 header > .header-logo
 {
-    margin-left: 6vw;
+    
 }
 
 header > .header-user
 {
-    margin-right: 6vw;
     display: flex;
     justify-content: right;
 }
