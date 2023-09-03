@@ -3,7 +3,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from .views import connections_views
 from .utils import client_tasks
-from .models import ApiConnection
+from .models import ApiConnection, Exchange
 
 def check_connection(exchange_name, api_key_data, secret_key_data):
     connection_response = None
@@ -52,10 +52,15 @@ class ConnectionAddModelForm(forms.ModelForm):
 
 
 class AssetPriceHistoryModelForm(forms.Form):
-    asset = forms.TypedChoiceField()
-    exchange = forms.TypedChoiceField()
+    
+    def return_exchange_choice_tuple(obj):
+        return (obj.pk, obj.name)
+    
+    exchange_choices = list(map(return_exchange_choice_tuple, Exchange.objects.all())) 
+
+    exchange = forms.TypedChoiceField(choices=exchange_choices)
     amount = forms.DecimalField()
-    date = forms.DateField()
+    date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
 
     
 
