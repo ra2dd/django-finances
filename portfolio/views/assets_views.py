@@ -6,7 +6,7 @@ from django.urls import reverse
 
 from ..models import Portfolio, AssetBalance, Asset, Exchange, AssetBalanceHistory
 from ..utils import dashboard_balance, assets_util
-from ..forms import AssetPriceHistoryModelForm
+from ..forms import AssetBalanceHistoryForm
 
 def get_user_portfolio(self):
     return get_object_or_404(Portfolio, owner=self.request.user)
@@ -91,7 +91,7 @@ def assetbalancehistory_create(request, pk, pk2='None'):
     if request.method == 'POST':
 
         # Create a form and populate it with the user entered data
-        form = AssetPriceHistoryModelForm(request.POST)
+        form = AssetBalanceHistoryForm(request.POST)
 
         if form.is_valid():
             exchange = Exchange.objects.filter(pk=form.cleaned_data['exchange'])[0]
@@ -113,7 +113,7 @@ def assetbalancehistory_create(request, pk, pk2='None'):
             assetbalancehistory_record.save()
             return HttpResponseRedirect(reverse('asset-detail', args=[pk]))
     else:
-        form = AssetPriceHistoryModelForm()
+        form = AssetBalanceHistoryForm()
 
     context = {
         'form': form,
