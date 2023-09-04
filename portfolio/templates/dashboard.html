@@ -2,6 +2,17 @@
 
 {% block title %}
     <title>{{ user.get_username }} Dashboard</title>
+
+    <style>
+        .dashboardTotalBalance > div {
+            width: 33%;
+            padding: 0.5rem 1rem;
+        }
+
+        .dashboardTotalBalance > div:nth-of-type(n+2) {
+            border-left: 2px solid hsl(0, 0%, 85%);
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -10,20 +21,20 @@
         <p>September 3 2023</p>
     </div>
 
-    <div class="flexboxSA grayBc7 margin1B">
-        <div class="textLeft padding1">
-            <h2 class="textNormal weight500">Total Balance</h2>
-            <p>$1500.00</p>
+    <div class="flexboxSA grayBc5 margin1B textLeft dashboardTotalBalance">
+        <div>
+            <h3 class="textNormal weight500">Total Balance</h3>
+            <p class="headingXl">$1500.00</p>
         </div>
 
         <div>
-            <h3>30 Day Change</h3>
-            <p>+$100.00</p>
+            <h3 class="textNormal weight500">30 Day Change</h3>
+            <p class="headingXl">+$100.00</p>
         </div>
 
         <div>
-            <h3>Cash</h3>
-            <p>$200</p>
+            <h3 class="textNormal weight500">Cash</h3>
+            <p class="headingXl">$200</p>
         </div>
     </div>
     
