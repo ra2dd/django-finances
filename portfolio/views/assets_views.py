@@ -77,15 +77,14 @@ class AssetBalanceHistoryListView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print(context)
+        context['pk'] = self.kwargs['pk']
+        context['pk2'] = self.kwargs['pk2']
+
         return context
 
-def assetbalancehistory_create(request, pk, pk2='None'):
+def assetbalancehistory_create(request, pk, pk2=None):
     """View function for creating assetbalancehistory records"""
-    #Implement: 
-    #   form date validation
-    #   checking for exising assetbalancehistory record in same day
-    #   optional: take pk2 into account
+    
     asset = get_object_or_404(Asset, pk=pk)
 
     if request.method == 'POST':
@@ -101,6 +100,8 @@ def assetbalancehistory_create(request, pk, pk2='None'):
             portfolio = get_object_or_404(Portfolio, owner=request.user)
             assetbalance = AssetBalance.objects.filter(portfolio=portfolio).filter(broker=exchange).filter(asset=asset)
 
+            # Check if AssetBalance exists
+            # If it doesn't exist create new record
             if len(assetbalance) == 0:
                 assetbalance_record = AssetBalance(portfolio=portfolio, asset=asset, broker=exchange)
                 assetbalance_record.save()
@@ -109,11 +110,27 @@ def assetbalancehistory_create(request, pk, pk2='None'):
             else:
                 assetbalance_record = assetbalance[0]
             
+            # Check if AssetBalanceHistory exists with certain balance and date
+            # If it exists delete existing record
+            assetbalancehistory_exists = AssetBalanceHistory.objects.filter(balance=assetbalance_record).filter(date=date)
+            if len(assetbalancehistory_exists) == 0:
+                pass
+            elif len(assetbalancehistory_exists) == 1:
+                assetbalancehistory_exists[0].delete()
+            elif len(assetbalancehistory_exists) > 1:
+                raise Http404('AssetBalanceHistory Error, please contact site admin.')
+
+            # Create new AssetBalanceHistory record
             assetbalancehistory_record = AssetBalanceHistory(amount=amount, date=date, balance=assetbalance_record)
             assetbalancehistory_record.save()
             return HttpResponseRedirect(reverse('asset-detail', args=[pk]))
     else:
-        form = AssetBalanceHistoryForm()
+        if pk2 == None:
+            form = AssetBalanceHistoryForm()
+        else:
+            exchange_pk = get_object_or_404(AssetBalance, pk=pk2).broker.pk
+            
+            form = AssetBalanceHistoryForm(initial={'exchange': exchange_pk})
 
     context = {
         'form': form,
