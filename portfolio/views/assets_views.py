@@ -1,7 +1,8 @@
 from django.views import generic
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse
+
 
 from ..models import Portfolio, AssetBalance, Asset, Exchange, AssetBalanceHistory
 from ..utils import dashboard_balance, assets_util
@@ -86,29 +87,30 @@ def assetbalancehistory_create(request, pk, pk2='None'):
     #   checking for exising assetbalancehistory record in same day
     #   optional: take pk2 into account
     asset = get_object_or_404(Asset, pk=pk)
-    print(request)
+
     if request.method == 'POST':
 
         # Create a form and populate it with the user entered data
         form = AssetPriceHistoryModelForm(request.POST)
-        print(form)
+
         if form.is_valid():
-            print('dziala')
+            exchange = Exchange.objects.filter(pk=form.cleaned_data['exchange'])[0]
+            amount = form.cleaned_data['amount']
+            date = form.cleaned_data['date']
+        
             portfolio = get_object_or_404(Portfolio, owner=request.user)
-            exchange = form.cleaned_data['exchange']
             assetbalance = AssetBalance.objects.filter(portfolio=portfolio).filter(broker=exchange).filter(asset=asset)
 
             if len(assetbalance) == 0:
-                # Implement record creation
-                raise Exception('error')
+                assetbalance_record = AssetBalance(portfolio=portfolio, asset=asset, broker=exchange)
+                assetbalance_record.save()
+            elif len(assetbalance) > 1:
+                raise Http404('AssetBalance Error, please contact site admin.')
+            else:
+                assetbalance_record = assetbalance[0]
             
-            amount = form.cleaned_data['amount']
-            date = form.cleaned_data['date']
-            assetbalancehistory_record = AssetBalanceHistory(amount=amount, date=date, balance=assetbalance[0])
+            assetbalancehistory_record = AssetBalanceHistory(amount=amount, date=date, balance=assetbalance_record)
             assetbalancehistory_record.save()
-            
-            print(assetbalancehistory_record)
-            print('created record')
             return HttpResponseRedirect(reverse('asset-detail', args=[pk]))
     else:
         form = AssetPriceHistoryModelForm()
