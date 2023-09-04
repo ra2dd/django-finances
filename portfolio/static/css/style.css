@@ -6,8 +6,9 @@ html
 body
 {
     margin: 0;
-    background-color: hsl(0, 0%, 97%);
+    background-color: hsl(0, 0%, 92%);
     color: hsl(0, 0%, 6%);
+    font-weight: 500;
 }
 
 /*
@@ -36,6 +37,8 @@ header
     justify-content: space-between;
 
     grid-area: header;
+
+    border-bottom: 2px solid hsl(0, 0%, 86%);
 }
 
 .content-container
@@ -74,4 +77,12 @@ header > .header-user
 {
     display: flex;
     justify-content: right;
+}
+
+
+/*
+    Other styling
+*/
+a {
+    text-decoration: none;
 }

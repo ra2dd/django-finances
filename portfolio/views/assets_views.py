@@ -81,6 +81,10 @@ class AssetBalanceHistoryListView(generic.ListView):
 
 def assetbalancehistory_create(request, pk, pk2='None'):
     """View function for creating assetbalancehistory records"""
+    #Implement: 
+    #   form date validation
+    #   checking for exising assetbalancehistory record in same day
+    #   optional: take pk2 into account
     asset = get_object_or_404(Asset, pk=pk)
     print(request)
     if request.method == 'POST':

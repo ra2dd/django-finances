@@ -1,10 +1,11 @@
 import datetime
 
 class UserCurrentAsset:
-    def __init__(self, name, ticker, type, latest_price, latest_holding, latest_value):
+    def __init__(self, name, ticker, type, icon, latest_price, latest_holding, latest_value):
         self.name = name
         self.ticker = ticker
         self.type = type
+        self.icon = icon
         self.latest_price = latest_price
         self.latest_holding = latest_holding
         self.latest_value = latest_value
@@ -48,9 +49,10 @@ def get_user_asset_holdings_with_values_list(user_all_balance_list):
         asset_latest_value = asset_latest_price * asset_latest_holding
 
         # Create UserCurrentAsset object and append it to the context list
-        user_holdings_list.append(UserCurrentAsset(balance.asset.name, balance.asset.ticker, balance.asset.type, round(asset_latest_price, 2), round(asset_latest_holding, 2), round(asset_latest_value, 2)))
+        user_holdings_list.append(UserCurrentAsset(balance.asset.name, balance.asset.ticker, balance.asset.type, balance.asset.icon, round(asset_latest_price, 2), round(asset_latest_holding, 2), round(asset_latest_value, 2)))
 
-    return user_holdings_list
+    user_holdings_list.sort(reverse=False, key=lambda h: h.latest_value)
+    return user_holdings_list[:5]
 
 
 def get_user_daily_balance_history(user_all_balance_list):
