@@ -1,35 +1,72 @@
 .grayBc1 {
-    background-color: hsl(0, 0%, 6%);
-  }
-  
-  .grayBc2 {
-    background-color: hsl(0, 0%, 19%);
-  }
-  
-  .grayBc3 {
-    background-color: hsl(0, 0%, 33%);
-  }
-  
-  .grayBc4 {
-    background-color: hsl(0, 0%, 53%);
-  }
-  
-  .grayBc5 {
-    background-color: hsl(0, 0%, 68%);
-  }
-  
-  .grayBc6 {
-    background-color: hsl(0, 0%, 78%);
-  }
-  
-  .grayBc7 {
-    background-color: hsl(0, 0%, 86%);
-  }
-  
-  .grayBc8 {
-    background-color: hsl(0, 0%, 92%);
-  }
-  
-  .grayBc9 {
-    background-color: hsl(0, 0%, 97%);
-  }
+  background-color: hsl(0, 0%, 8%);
+}
+
+.grayBc2 {
+  background-color: hsl(0, 0%, 20%);
+}
+
+.grayBc3 {
+  background-color: hsl(0, 0%, 33%);
+}
+
+.grayBc4 {
+  background-color: hsl(0, 0%, 53%);
+}
+
+.grayBc5 {
+  background-color: hsl(0, 0%, 73%);
+}
+
+.grayBc6 {
+  background-color: hsl(0, 0%, 85%);
+}
+
+.grayBc7 {
+  background-color: hsl(0, 0%, 91%);
+}
+
+.grayBc8 {
+  background-color: hsl(0, 0%, 95%);
+}
+
+.grayBc9 {
+  background-color: hsl(0, 0%, 97%);
+}
+
+
+.grayColor1 {
+  color: hsl(0, 0%, 8%);
+}
+
+.grayColor2 {
+  color: hsl(0, 0%, 20%);
+}
+
+.grayColor3 {
+  color: hsl(0, 0%, 33%);
+}
+
+.grayColor4 {
+  color: hsl(0, 0%, 53%);
+}
+
+.grayColor5 {
+  color: hsl(0, 0%, 73%);
+}
+
+.grayColor6 {
+  color: hsl(0, 0%, 85%);
+}
+
+.grayColor7 {
+  color: hsl(0, 0%, 91%);
+}
+
+.grayColor8 {
+  color: hsl(0, 0%, 95%);
+}
+
+.grayColor9 {
+  color: hsl(0, 0%, 97%);
+}

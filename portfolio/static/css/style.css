@@ -6,8 +6,6 @@ html
 body
 {
     margin: 0;
-    background-color: hsl(0, 0%, 92%);
-    color: hsl(0, 0%, 6%);
     font-weight: 500;
 }
 
@@ -38,7 +36,7 @@ header
 
     grid-area: header;
 
-    border-bottom: 2px solid hsl(0, 0%, 86%);
+    border-bottom: 2px solid hsl(0, 0%, 91%);
 }
 
 .content-container
@@ -85,4 +83,8 @@ header > .header-user
 */
 a {
     text-decoration: none;
+}
+
+table caption {
+    display: none;
 }

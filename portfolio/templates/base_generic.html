@@ -15,16 +15,17 @@
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
         <link rel="stylesheet" href="{% static 'css/main_module.css' %}">
         <link rel="stylesheet" href="{% static 'css/color_module.css' %}">
+        <link rel="stylesheet" href="{% static 'css/text_module.css' %}">
     </head>
 
-    <body>
+    <body class="grayBc8 grayColor1">
         <div class="grid-container">
             <header>
                 <h2 class="header-logo">Portfolio</h2>
 
 
                 {% block sidebar %}
-                    <ul class="header-navbar disableDecoration">
+                    <ul class="header-navbar">
                         <li>
                             <a href="{% url 'index' %}">Home</a>
                         </li>

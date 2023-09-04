@@ -6,34 +6,37 @@
 
 {% block content %}
     <div class="flexboxSB">
-        <h1 class="headingMd weightNormal">Portfolio Overview</h1>
+        <h1 class="headingMd weight500 margin1TB">Portfolio Overview</h1>
         <p>September 3 2023</p>
     </div>
 
-    <div class="flexboxSA">
-        <div>
-            Total Balance
+    <div class="flexboxSA grayBc7 margin1B">
+        <div class="textLeft padding1">
+            <h2 class="textNormal weight500">Total Balance</h2>
+            <p>$1500.00</p>
         </div>
 
         <div>
-            30 Day Change
+            <h3>30 Day Change</h3>
+            <p>+$100.00</p>
         </div>
 
         <div>
-            Cash
+            <h3>Cash</h3>
+            <p>$200</p>
         </div>
     </div>
     
     <div>
-        <table class="tableSmall">
+        <table class="tableSmall textSmall">
             <caption>
                 List of user assets
             </caption>
 
-            <thead class="grayBc7">
+            <thead class="grayBc7 textRight">
                 <tr>
                     <th scope="col">Icon</th>
-                    <th scope="col">Name</th>
+                    <th class="textLeft" scope="col">Name</th>
                     <th scope="col">Price</th>
                     <th scope="col">Holdings</th>
                     <th scope="col">Value</th>
@@ -42,17 +45,17 @@
 
             <tbody>
                 {% for balance in user_holdings_list %}
-                    <tr class="grayBc9">
+                    <tr class="grayBc9 textRight weight500">
                         <th scope="row">
                             <!--
                             {% load static %}
                             <img class='iconSmall' src="{% static balance.icon.url|slice:'18:' %}" />
                             -->
                         </th>
-                        <th scope="row">{{ balance.name }}</th>
-                        <th scope="row">{{ balance.latest_price }}</th>
+                        <th class="textLeft" scope="row">{{ balance.name }}</th>
+                        <th scope="row">${{ balance.latest_price }}</th>
                         <th scope="row">{{ balance.latest_holding }}</th>
-                        <th scope="row">{{ balance.latest_value }}</th>
+                        <th scope="row">${{ balance.latest_value }}</th>
                     </tr>
                 {% endfor %}
             </tbody>
