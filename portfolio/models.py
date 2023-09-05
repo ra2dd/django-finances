@@ -95,6 +95,9 @@ class Asset(models.Model):
 
     icon = models.ImageField(upload_to="portfolio/static/media/images/assets/crypto", null=True, blank=True)
     
+    class Meta:
+        ordering = ['name']
+        
     def __str__(self):
         return f'{self.ticker} - {self.name}'
     

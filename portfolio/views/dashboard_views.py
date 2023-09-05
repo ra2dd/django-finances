@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views import generic
+import json
 
 from ..models import Portfolio, Asset, AssetBalance, AssetBalanceHistory, AssetPriceHistory, Exchange, ApiConnection
 from ..utils import server_tasks, client_tasks, dashboard_balance
@@ -30,7 +31,17 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
         
         user_holdings_list = dashboard_balance.get_user_asset_holdings_with_values_list(user_all_balance_list)
         user_daily_balance_history = dashboard_balance.get_user_daily_balance_history(user_all_balance_list)
+        user_daily_balance_history_json = json.dumps([obj.__dict__ for obj in user_daily_balance_history], default=str)
 
+        latest_balance_value = user_daily_balance_history[-1].values
+
+        if len(user_daily_balance_history) > 14:
+            change_seven_days = latest_balance_value - user_daily_balance_history[-7].values
+        else:
+            change_seven_days = format(0.0, '.2f')
+
+        latest_balance_value = 1000
+        change_seven_days = 100
         """
         TODO:
             check if there is recent assetpricehistory in calculating user daily total balance list
@@ -39,6 +50,9 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
     
         context = {
             'user_holdings_list': user_holdings_list,
-            'user_daily_balance_history': user_daily_balance_history
+            'user_daily_balance_history': user_daily_balance_history,
+            'user_daily_balance_history_json': user_daily_balance_history_json,
+            'latest_balance_value': latest_balance_value,
+            'change_seven_days': change_seven_days
         }
         return context

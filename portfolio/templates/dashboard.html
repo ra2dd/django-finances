@@ -12,7 +12,14 @@
         .dashboardTotalBalance > div:nth-of-type(n+2) {
             border-left: 2px solid hsl(0, 0%, 85%);
         }
+
+        #chart-balance {
+            width: 20rem;
+            height: 10rem;
+        }
     </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -24,12 +31,18 @@
     <div class="flexboxSA grayBc5 margin1B textLeft dashboardTotalBalance">
         <div>
             <h3 class="textNormal weight500">Total Balance</h3>
-            <p class="headingXl">$1500.00</p>
+            <p class="headingXl">${{ latest_balance_value }}</p>
         </div>
 
         <div>
             <h3 class="textNormal weight500">30 Day Change</h3>
-            <p class="headingXl">+$100.00</p>
+            <p class="headingXl">
+                {% if change_seven_days < 0 %}
+                    -${{ change_seven_days }}
+                {% else %}
+                    +${{ change_seven_days }}
+                {% endif %}
+            </p>
         </div>
 
         <div>
@@ -71,8 +84,8 @@
                 {% endfor %}
             </tbody>
         </table>
-    </div>
 
+    </div>
 
     <table>
         <caption>
@@ -93,5 +106,31 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <canvas id="chart-balance"></canvas>
     
+
+    <script defer>
+        let ctx = document.getElementById("chart-balance").getContext("2d");
+        let daily_balance = JSON.parse('{{ user_daily_balance_history_json | safe }}');
+        console.log(daily_balance)
+        let chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: daily_balance.map(obj => obj.date),
+                datasets: [
+                    {
+                        label: "Portfolio value",
+                        data: daily_balance.map(obj => obj.values)
+                    }
+                ]
+            },
+            options: {
+                title: {
+                    text: 'Test chart',
+                    dispay: true
+                }
+            }
+        });
+    </script>
 {% endblock %}
