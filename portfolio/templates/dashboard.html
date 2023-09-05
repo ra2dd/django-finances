@@ -14,8 +14,8 @@
         }
 
         #chart-balance {
-            width: 20rem;
-            height: 10rem;
+            width: 40rem !important;
+            height: 20rem !important;
         }
     </style>
 
@@ -24,18 +24,18 @@
 
 {% block content %}
     <div class="flexboxSB">
-        <h1 class="headingMd weight500 margin1TB">Portfolio Overview</h1>
+        <h1 class="textLarger">Portfolio Overview</h1>
         <p>September 3 2023</p>
     </div>
 
     <div class="flexboxSA grayBc5 margin1B textLeft dashboardTotalBalance">
         <div>
-            <h3 class="textNormal weight500">Total Balance</h3>
+            <h3 class="textNormal">Total Balance</h3>
             <p class="headingXl">${{ latest_balance_value }}</p>
         </div>
 
         <div>
-            <h3 class="textNormal weight500">30 Day Change</h3>
+            <h3 class="textNormal">30 Day Change</h3>
             <p class="headingXl">
                 {% if change_seven_days < 0 %}
                     -${{ change_seven_days }}
@@ -46,7 +46,7 @@
         </div>
 
         <div>
-            <h3 class="textNormal weight500">Cash</h3>
+            <h3 class="textNormal">Cash</h3>
             <p class="headingXl">$200</p>
         </div>
     </div>
@@ -84,9 +84,9 @@
                 {% endfor %}
             </tbody>
         </table>
-
     </div>
 
+    <!--
     <table>
         <caption>
             Portfolio value history
@@ -106,9 +106,10 @@
             {% endfor %}
         </tbody>
     </table>
-
-    <canvas id="chart-balance"></canvas>
-    
+    -->
+    <div>
+        <canvas id="chart-balance"></canvas>
+    </div>
 
     <script defer>
         let ctx = document.getElementById("chart-balance").getContext("2d");
@@ -126,10 +127,13 @@
                 ]
             },
             options: {
-                title: {
-                    text: 'Test chart',
-                    dispay: true
-                }
+                responsive: false,
+                mantainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
             }
         });
     </script>
