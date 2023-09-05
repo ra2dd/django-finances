@@ -24,10 +24,13 @@
     margin: 0 0 1rem; 
 }
 
+.marginHalfB {
+    margin: 0 0 0.5rem; 
+}
+
 .marginZero {
     margin: 0 0;
 }
-
 
 padding1 {
     padding: 1rem;
@@ -36,4 +39,12 @@ padding1 {
 .iconSmall {
     max-width: 2rem;
     max-height: 2rem;
+}
+
+.displayBlock {
+    display: block;
+}
+
+.widthContent {
+    width: fit-content;
 }
