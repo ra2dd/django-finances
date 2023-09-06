@@ -1,15 +1,14 @@
-import datetime, json, string
-import urllib.request
-import sys, os
-import requests, random
+import datetime, json
+import os
+import requests
 from django.core.files import File
 from io import BytesIO
 
-# from portfolio.tasks import server_tasks
-# server_tasks.import_crypto_price_history('xlm')
-headers = {'accept': 'application/json'}
-
 from ..models import Asset, AssetPriceHistory
+from .constants import start_date
+
+
+headers = {'accept': 'application/json'}
 
 def datetime_to_timestamp(date):
     return round(datetime.datetime.timestamp(date))
@@ -163,10 +162,6 @@ def import_stock_price_history(*argv):
                 for price_history in asset_price_history:
                     price_history.delete()
 
-            # Define the start date of price history fetching
-            startDate = datetime.datetime(2023, 8, 1)
-            startDateTimestamp = datetime_to_timestamp(startDate) 
-
             # Fetch price data from constructed url   
             response = requests.get(construct_stock_price_history_url(api_name))
             json_response = json.loads(response.content)
@@ -174,9 +169,9 @@ def import_stock_price_history(*argv):
             # Create database records from fetched data
             for trading_day in json_response["Time Series (Daily)"]:
                 
-                new_date = datetime.datetime.strptime(trading_day, '%Y-%m-%d')
+                new_date = datetime.datetime.strptime(trading_day, '%Y-%m-%d').date()
 
-                if new_date >= startDate:
+                if new_date >= start_date:
                     
                     # Calculate average price from day's high and low price
                     average_price = round((float(json_response["Time Series (Daily)"][trading_day]['3. low']) + float(json_response["Time Series (Daily)"][trading_day]['2. high'])) / 2, 2)
@@ -218,22 +213,20 @@ def import_current_stock_price():
             json_response = json.loads(response.content)
             last_refreshed_day = datetime.datetime.strptime(json_response["Meta Data"]["3. Last Refreshed"],'%Y-%m-%d %H:%M:%S').date()
 
+            for trading_day in json_response["Time Series (5min)"]: 
+                new_price = json_response["Time Series (5min)"][trading_day]['1. open']
+                break
+
             # Check if last refreshed day is in the past
             if last_refreshed_day < datetime.date.today():
                 # Check if AssetPriceHistory record exists for last refreshed day in the past
                 if len(asset[0].assetpricehistory_set.filter(date=last_refreshed_day)) == 1:
                     continue
-                else:
-                    raise Exception('Fix data fetching for stock')
 
             elif last_refreshed_day == datetime.date.today():
                 
                 # Check if there is price data from today
                 price_from_today = asset[0].assetpricehistory_set.filter(date=datetime.date.today())
-                
-                for trading_day in json_response["Time Series (5min)"]: 
-                        new_price = json_response["Time Series (5min)"][trading_day]['1. open']
-                        break
                 
                 if len(price_from_today) > 1:
                     raise Exception("Cannot proceed. There is more than one price history from today.")
@@ -244,8 +237,8 @@ def import_current_stock_price():
                     else: 
                         price_from_today[0].delete()
 
-                record = AssetPriceHistory(asset=asset[0], date=datetime.date.today(), price=new_price)   
-                record.save()
+            record = AssetPriceHistory(asset=asset[0], date=last_refreshed_day, price=new_price)   
+            record.save()
 
 
 def import_currency_price_history(*argv):
@@ -269,10 +262,6 @@ def import_currency_price_history(*argv):
                 for price_history in asset_price_history:
                     price_history.delete()
 
-            # Define the start date of price history fetching
-            startDate = datetime.datetime(2023, 8, 1)
-            startDateTimestamp = datetime_to_timestamp(startDate) 
-
             # Fetch price data from constructed url   
             response = requests.get(construct_currency_price_history_url(api_name))
             json_response = json.loads(response.content)
@@ -280,9 +269,9 @@ def import_currency_price_history(*argv):
             # Create database records from fetched data
             for trading_day in json_response["Time Series FX (Daily)"]:
                 
-                new_date = datetime.datetime.strptime(trading_day, '%Y-%m-%d')
+                new_date = datetime.datetime.strptime(trading_day, '%Y-%m-%d').date()
 
-                if new_date >= startDate:
+                if new_date >= start_date:
                     
                     # Calculate average price from day's high and low price
                     average_price = round((float(json_response["Time Series FX (Daily)"][trading_day]['3. low']) + float(json_response["Time Series FX (Daily)"][trading_day]['2. high'])) / 2, 4)
@@ -323,20 +312,18 @@ def import_current_currency_price():
             response = requests.get(construct_current_currency_price_url(api_name))
             json_response = json.loads(response.content)
             last_refreshed_day = datetime.datetime.strptime(json_response["Realtime Currency Exchange Rate"]["6. Last Refreshed"],'%Y-%m-%d %H:%M:%S').date()
-
+            new_price = round(float(json_response["Realtime Currency Exchange Rate"]["5. Exchange Rate"]), 4)
+            
             # Check if last refreshed day is in the past
             if last_refreshed_day < datetime.date.today():
                 # Check if AssetPriceHistory record exists for last refreshed day in the past
                 if len(asset[0].assetpricehistory_set.filter(date=last_refreshed_day)) == 1:
                     continue
-                else:
-                    raise Exception('Fix data fetching for currency')
 
             elif last_refreshed_day == datetime.date.today():
                 
                 # Check if there is price data from today
                 price_from_today = asset[0].assetpricehistory_set.filter(date=datetime.date.today())
-                new_price = round(float(json_response["Realtime Currency Exchange Rate"]["5. Exchange Rate"]), 4)
 
                 if len(price_from_today) > 1:
                     raise Exception("Cannot proceed. There is more than one price history from today.")
@@ -347,8 +334,8 @@ def import_current_currency_price():
                     else: 
                         price_from_today[0].delete()
 
-                record = AssetPriceHistory(asset=asset[0], date=datetime.date.today(), price=new_price)   
-                record.save()
+            record = AssetPriceHistory(asset=asset[0], date=last_refreshed_day, price=new_price)   
+            record.save()
                     
 
 
