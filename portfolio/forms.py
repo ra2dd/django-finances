@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from .views import connections_views
 from .utils import client_tasks
 from .models import ApiConnection, Exchange
-from .utils.constants import start_date
+from .utils.constants import START_DATE
 
 def check_connection(exchange_name, api_key_data, secret_key_data):
     connection_response = None
@@ -62,7 +62,7 @@ class AssetBalanceHistoryForm(forms.Form):
 
     exchange = forms.TypedChoiceField(choices=exchange_choices)
     amount = forms.DecimalField()
-    date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'min': start_date, 'max': datetime.date.today()}), initial=datetime.date.today())
+    date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'min': START_DATE, 'max': datetime.date.today()}), initial=datetime.date.today())
 
     def clean(self):
         cleaned_data = super().clean()
@@ -72,8 +72,8 @@ class AssetBalanceHistoryForm(forms.Form):
         # Date validation
         if date > datetime.date.today():
             raise ValidationError('Date is too far in the future. Maximium date needs to be today or earlier.')
-        elif date < start_date:
-            raise ValidationError(f'Date is too far in the past. Date needs to be past {start_date}.')
+        elif date < START_DATE:
+            raise ValidationError(f'Date is too far in the past. Date needs to be past {START_DATE}.')
 
     
 

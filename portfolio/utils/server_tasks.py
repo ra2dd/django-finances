@@ -1,16 +1,20 @@
 import datetime, json
 import os
 import requests
+import time as t
 from django.core.files import File
 from io import BytesIO
 
 from ..models import Asset, AssetPriceHistory
-from .constants import start_date
+from .constants import START_DATE
 
 
 headers = {'accept': 'application/json'}
 
 def datetime_to_timestamp(date):
+    if type(date) == datetime.date:
+        date = datetime.datetime.combine(date, datetime.time())
+
     return round(datetime.datetime.timestamp(date))
 
 def timestamp_to_datetime(timestamp):
@@ -76,8 +80,15 @@ def import_crypto_price_history(*argv):
                     price_history.delete()
 
             # Define the start date and end date of price history fetching
-            startDate = datetime.datetime(2023, 5, 1)
-            startDateTimestamp = datetime_to_timestamp(startDate) 
+            '''
+            Start date needs to be at least 3 months in the past
+            otherwise api will return hourly or minute data range
+            '''
+            if (datetime.date.today() - datetime.timedelta(weeks=13) < START_DATE):
+                startdate = datetime.date.today() - datetime.timedelta(weeks=13)
+                startDateTimestamp = datetime_to_timestamp(startdate)
+            else:
+                startDateTimestamp = datetime_to_timestamp(START_DATE)
 
             endDate = datetime.datetime.now()
             endDateTimestamp = datetime_to_timestamp(endDate) 
@@ -89,8 +100,9 @@ def import_crypto_price_history(*argv):
             # Create database records from fetched data
             for priceHistory in json_response["prices"]:
                 
-                new_date = timestamp_to_datetime(priceHistory[0])
-                if (new_date < datetime.datetime(2023, 8, 1)):
+                new_date = timestamp_to_datetime(priceHistory[0]).date()
+                print(new_date)
+                if (new_date < START_DATE):
                     continue
 
                 print(f'adding price history for {api_name} {new_date} {priceHistory[1]}')
@@ -103,6 +115,7 @@ def import_current_crypto_price():
 
     all_crypto = Asset.objects.filter(type='cryptocurrency')
     api_name_list = []
+    api_limit = 0
 
     for crypto in all_crypto:
         api_name_list.append(crypto.api_name.lower())
@@ -137,6 +150,11 @@ def import_current_crypto_price():
                 record.save()
             
             else:
+                if(api_limit > 6):
+                    t.sleep(80)
+                    api_limit = 0
+                    
+                api_limit += 1
                 print(f'importing all history {api_asset}')
                 import_crypto_price_history(api_asset['id'])
 
@@ -171,7 +189,7 @@ def import_stock_price_history(*argv):
                 
                 new_date = datetime.datetime.strptime(trading_day, '%Y-%m-%d').date()
 
-                if new_date >= start_date:
+                if new_date >= START_DATE:
                     
                     # Calculate average price from day's high and low price
                     average_price = round((float(json_response["Time Series (Daily)"][trading_day]['3. low']) + float(json_response["Time Series (Daily)"][trading_day]['2. high'])) / 2, 2)
@@ -271,7 +289,7 @@ def import_currency_price_history(*argv):
                 
                 new_date = datetime.datetime.strptime(trading_day, '%Y-%m-%d').date()
 
-                if new_date >= start_date:
+                if new_date >= START_DATE:
                     
                     # Calculate average price from day's high and low price
                     average_price = round((float(json_response["Time Series FX (Daily)"][trading_day]['3. low']) + float(json_response["Time Series FX (Daily)"][trading_day]['2. high'])) / 2, 4)
