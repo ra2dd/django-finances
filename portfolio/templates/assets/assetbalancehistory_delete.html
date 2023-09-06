@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+    <title>Delete balance history record</title>
+{% endblock %}
+
+{% block content %}
+    <h1>Delete {{ assetbalancehistory.balance.broker.name }}</h1>
+    <p>Are you sure you want to want to delete {{ assetbalancehistory }}?</p>
+
+    <form action="" method="POST">
+        {% csrf_token %}
+            <input type="submit" value="Delete" />
+    </form>
+{% endblock %}

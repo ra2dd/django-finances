@@ -13,6 +13,7 @@
                 {{ assetbalancehistory.balance }}
                 {{ assetbalancehistory.date }}
                 {{ assetbalancehistory.amount }}
+                <a href="{% url 'assetbalancehistory-delete' pk pk2 assetbalancehistory.pk %}">Delete</a>
             </li>
         {% endfor %}
     </ul>

@@ -1,7 +1,7 @@
 from django.views import generic
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, Http404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 
 
 from ..models import Portfolio, AssetBalance, Asset, Exchange, AssetBalanceHistory
@@ -65,7 +65,6 @@ class ManualTradesListView(generic.ListView):
         )
     
 
-
 class AssetBalanceHistoryListView(generic.ListView):
     template_name = 'assets/assetbalancehistory_list.html'
     model = AssetBalanceHistory
@@ -81,6 +80,7 @@ class AssetBalanceHistoryListView(generic.ListView):
         context['pk2'] = self.kwargs['pk2']
 
         return context
+
 
 def assetbalancehistory_create(request, pk, pk2=None):
     """View function for creating assetbalancehistory records"""
@@ -138,3 +138,13 @@ def assetbalancehistory_create(request, pk, pk2=None):
     }
 
     return render(request, 'assets/assetbalancehistory_form.html', context)
+
+
+class AssetBalanceHistoryDelete(generic.DeleteView):
+    model = AssetBalanceHistory
+    template_name = 'assets/assetbalancehistory_delete.html'
+    pk_url_kwarg = 'pk3'
+
+    def get_success_url(self):
+        return reverse_lazy('assetbalancehistory', args=[str(self.kwargs['pk']), str(self.kwargs['pk2'])])
+

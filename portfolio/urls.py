@@ -15,9 +15,10 @@ urlpatterns = [
     path('assets/', assets_views.AssetListView.as_view(), name='assets'),
     path('assets/<int:pk>', assets_views.AssetDetailView.as_view(), name='asset-detail'),
     
+    path('assets/<int:pk>/<int:pk2>', assets_views.AssetBalanceHistoryListView.as_view(), name='assetbalancehistory'),
     path('assets/<int:pk>/create', assets_views.assetbalancehistory_create, name='assetbalancehistory-create'),
     path('assets/<int:pk>/<int:pk2>/create', assets_views.assetbalancehistory_create, name='assetbalancehistory-create-pk2'),
-    path('assets/<int:pk>/<int:pk2>', assets_views.AssetBalanceHistoryListView.as_view(), name='assetbalancehistory'),
+    path('assets/<int:pk>/<int:pk2>/<int:pk3>/delete', assets_views.AssetBalanceHistoryDelete.as_view(), name='assetbalancehistory-delete'),
 
     path('manualtrades', assets_views.ManualTradesListView.as_view(), name='manual-trades'),
 ]
