@@ -5,23 +5,26 @@
 {% endblock %}
 
 {% block content %}
-    <h1 class="headingMd weight500 margin1TB">Exchanges</h1>
+    <h1 class="displayNone">Exchanges</h1>
 
     {% if exchange_list %}
-        <h2>Exchanges with active Api Connection</h2>
+        <h2 class="marginTB1">Active Connection</h2>
+
         <ul class="widthContent">
             {% for exchange in exchange_list %}
                 {% if exchange.is_user_connected == True %}
-                        <li class="flexboxSB grayBc9 marginHalfB">
-                            <p>connected</p>
-                            <p class="headingMd">{{ exchange.name }}</p>
-                            <a href="{{ exchange.get_absolute_url }}">go to details</a>
-                        </li>
+                        <a href="{{ exchange.get_absolute_url }}">
+                            <li class="flexboxSB grayBc9 marginB1 paddingTB1 paddingLR3 borderRadius">
+                                <p>connected</p>
+                                <p class="headingMd flexJustifyStart marginL1">{{ exchange.name }}</p>
+                                <p class="marginL2">{{ exchange.type }}</p>
+                            </li>
+                        </a>
                 {% endif %}
             {% endfor %}
         </ul>
 
-        <h2>Exchanges with no Api Connection</h2>
+        <h2>Ready to Connect</h2>
         <ul>
             {% for exchange in exchange_list %}
                 {% if exchange.is_user_connected == False %}

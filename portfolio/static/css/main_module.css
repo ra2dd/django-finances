@@ -12,28 +12,86 @@
     align-items: center;
 }
 
-.margin1TB {
-    margin: 1rem 0; 
+.flexJustifyStart {
+    margin-right: auto;
 }
 
-.margin1HalfTB {
-    margin: 1.5rem 0; 
+
+.marginTB2 {
+    margin-top: 2rem;
+    margin-bottom: 2rem; 
 }
 
-.margin1B {
-    margin: 0 0 1rem; 
+.marginTB1 {
+    margin-top: 1rem;
+    margin-bottom: 1rem; 
 }
 
-.marginHalfB {
-    margin: 0 0 0.5rem; 
+.marginB1 {
+    margin-bottom: 1rem;
+}
+
+.marginBHalf {
+    margin-bottom: 0.5rem; 
+}
+
+.marginL2 {
+    margin-left: 2rem;
+}
+.marginL1 {
+    margin-left: 1rem;
+}
+
+.marginLR1 {
+    margin-left: 1rem;
+    margin-right: 1rem;
 }
 
 .marginZero {
     margin: 0 0;
 }
 
-padding1 {
-    padding: 1rem;
+
+
+
+.paddingTB3 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+.paddingLR3 {
+    padding-left: 3rem;
+    padding-right: 3rem;
+}
+
+.paddingTB2 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.paddingLR2 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+.paddingTB1 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.paddingLR1 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.paddingTBHalf {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.paddingLRHalf {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
 }
 
 .iconSmall {
@@ -47,4 +105,12 @@ padding1 {
 
 .widthContent {
     width: fit-content;
+}
+
+.borderRadius {
+    border-radius: 0.5rem;
+}
+
+.displayNone {
+    display: none;
 }
