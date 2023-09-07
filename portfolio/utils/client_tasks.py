@@ -71,58 +71,56 @@ def check_binance_connection(api_key, api_secret):
 
 def import_balance(exchange, api_connection, user):
 
+    # Check exchange and import assets list
     if(exchange.name.lower() == 'binance'):
         assets_amounts = import_binance_balance(api_connection.api_key, api_connection.secret_key)
+        asset_type = 'cryptocurrency'
     else:
         raise Http404(f'Importing balance from {exchange.name} Exchange not yet implemented')
         return False
     
     for fetched_asset in assets_amounts:
         portfolio = Portfolio.objects.filter(owner=user)[0]
-        asset = Asset.objects.filter(ticker=fetched_asset.ticker.lower())
 
+        # check if Asset exists in database 
+        asset = Asset.objects.filter(ticker=fetched_asset.ticker.lower()).filter(type=asset_type)
         if len(asset) == 0:
             print(f'no asset with {fetched_asset.ticker} ticker in database')
             continue
         elif len(asset) > 1:
            raise Exception('Too many assets corresponding with given ticker.') 
+        
 
-        asset_balance_record = None
+        # Check if user AssetBalance for Asset Exists
         asset_balance = AssetBalance.objects.filter(portfolio=portfolio, asset=asset[0], broker=exchange)
-
-
         if len(asset_balance) > 1: 
            raise Exception('Too many asset balances corresponding with given ticker.')
-        if len(asset_balance) == 0:
+        elif len(asset_balance) == 0:
             if fetched_asset.amount == 0:
                 continue
             else:
                 print(f'asset balance not exisiting for {fetched_asset.ticker}')
                 asset_balance_record = AssetBalance(portfolio=portfolio, asset=asset[0], broker=exchange)
                 asset_balance_record.save()
+        elif len(asset_balance) == 1:
+                print(f'creating asset balance history for {fetched_asset.ticker}') 
+                asset_balance_record = asset_balance[0]
 
-        print(f'creating asset balance history for {fetched_asset.ticker}') 
-        if asset_balance_record == None:
-            asset_balance_record = asset_balance[0]
-
-        if fetched_asset.amount == 0 or 1 == 1:
-            asset_balance_history_exists = AssetBalanceHistory.objects.filter(balance = asset_balance_record)         
-            print(asset_balance_history_exists)
-
-        check_asset_balance_history = AssetBalanceHistory.objects.filter(balance = asset_balance_record)     
-
-        if len(check_asset_balance_history) > 0:
-            latest_asset_balance_history = check_asset_balance_history.latest()    
+        # Check if AssetBalanceHistory exists for user AssetBalance
+        asset_balance_history = AssetBalanceHistory.objects.filter(balance=asset_balance_record)     
+        if len(asset_balance_history) > 0:
+            latest_asset_balance_history = asset_balance_history.latest()    
             
-            if fetched_asset.amount == 0 and latest_asset_balance_history.amount == 0:
-                    continue
-
-            if latest_asset_balance_history.date == datetime.date.today():
-                    latest_asset_balance_history.delete()
+            if fetched_asset.amount == latest_asset_balance_history.amount:
+                print(f'{fetched_asset} amount didnt change since last import')
+                continue
+            
+            elif latest_asset_balance_history.date == datetime.date.today():
+                latest_asset_balance_history.delete()
 
         asset_balance_history_record = AssetBalanceHistory(amount=fetched_asset.amount, date=datetime.date.today(), balance=asset_balance_record)
         asset_balance_history_record.save()
-        print(f'{asset_balance_history_record}\n')
+        print(f'crated: {asset_balance_history_record}\n')
         
         
 
