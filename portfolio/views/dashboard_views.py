@@ -30,6 +30,8 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
         user_all_balance_list = Portfolio.objects.filter(owner=self.request.user)[0].assetbalance_set.all()
         
         user_holdings_list = dashboard_balance.get_user_asset_holdings_with_values_list(user_all_balance_list)
+        asset_type_ratio_tuple_list = dashboard_balance.get_asset_type_ratio_tuple_list(user_holdings_list)
+        
         user_daily_balance_history = dashboard_balance.get_user_daily_balance_history(user_all_balance_list)
         user_daily_balance_history_json = json.dumps([obj.__dict__ for obj in user_daily_balance_history], default=str)
 
@@ -42,17 +44,19 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
 
         latest_balance_value = 1000
         change_seven_days = 100
+
         """
         TODO:
             check if there is recent assetpricehistory in calculating user daily total balance list
             check if price history values are duplicated in calculating user daily total balance list
         """
-    
+
         context = {
-            'user_holdings_list': user_holdings_list,
+            'user_holdings_list': user_holdings_list[:5],
             'user_daily_balance_history': user_daily_balance_history,
             'user_daily_balance_history_json': user_daily_balance_history_json,
+            'asset_type_ratio_tuple_list' :asset_type_ratio_tuple_list,
             'latest_balance_value': latest_balance_value,
-            'change_seven_days': change_seven_days
+            'change_seven_days': change_seven_days,
         }
         return context

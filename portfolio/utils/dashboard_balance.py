@@ -1,4 +1,5 @@
 import datetime
+from django.http import Http404
 
 class UserCurrentAsset:
     def __init__(self, name, ticker, type, icon, latest_price, latest_holding, latest_value):
@@ -15,6 +16,12 @@ class UserTotalBalanceHistory:
         self.date = date
         self.values = [value]
 
+asset_ratio = {
+    'cryptocurrency': 0,
+    'stock': 0,
+    'currency': 0,
+}
+
 
 def get_user_asset_holdings_with_values_list(user_all_balance_list):
     
@@ -27,12 +34,15 @@ def get_user_asset_holdings_with_values_list(user_all_balance_list):
     # Loop throgh balances to add amount, price and value attrributes to balance queryset
     for balance in user_all_balance_list:
         # TODO check if balance assetbalancehistory exists
-        print(balance)
+
         # Get asset price
         asset_latest_price = balance.asset.assetpricehistory_set.latest().price
 
         # Get asset holding
-        asset_latest_holding = balance.assetbalancehistory_set.latest().amount
+        try:
+            asset_latest_holding = balance.assetbalancehistory_set.latest().amount
+        except:
+            raise Http404('Error calculating balance, please contact site admin.')
     
         # Check if asset holding is the same as asset holding in previous iteration
         if (same_latest_balance[0] == balance.asset):
@@ -52,7 +62,7 @@ def get_user_asset_holdings_with_values_list(user_all_balance_list):
         user_holdings_list.append(UserCurrentAsset(balance.asset.name, balance.asset.ticker, balance.asset.type, balance.asset.icon, round(asset_latest_price, 2), round(asset_latest_holding, 2), round(asset_latest_value, 2)))
 
     user_holdings_list.sort(reverse=False, key=lambda h: h.latest_value)
-    return user_holdings_list[:5]
+    return user_holdings_list
 
 
 def get_user_daily_balance_history(user_all_balance_list):
@@ -245,3 +255,27 @@ def get_user_daily_balance_history(user_all_balance_list):
     
     user_daily_balance_history.sort(key=lambda b: b.date)
     return user_daily_balance_history
+
+
+def get_asset_type_ratio_tuple_list(user_holdings_list):
+    
+    # Sum user holdings based on type
+    for holding in user_holdings_list:
+        asset_ratio[holding.type] += holding.latest_value
+    
+    # Sum complete holdings value
+    asset_sum = 0
+    for dict in asset_ratio:
+        asset_sum += asset_ratio[dict]
+
+    asset_type_ratio_tuple_list = []
+
+    # Calculate asset type ratio based on the complate holdings sum
+    # Append calculated values to list as tuples
+    for dict in asset_ratio:
+        ratio = round(asset_ratio[dict] / asset_sum * 100, 2)
+        dict = dict[:1].upper() + dict[1:]
+
+        asset_type_ratio_tuple_list.append((dict, ratio))
+    
+    return asset_type_ratio_tuple_list
