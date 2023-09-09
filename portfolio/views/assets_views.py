@@ -144,7 +144,24 @@ class AssetBalanceHistoryDelete(generic.DeleteView):
     model = AssetBalanceHistory
     template_name = 'assets/assetbalancehistory_delete.html'
     pk_url_kwarg = 'pk3'
+    
+    # Specify additional logic when deleting object
+    def form_valid(self, form):
 
+        if len(AssetBalanceHistory.objects.filter(balance=self.object.balance)) == 1:
+            self.object.balance.delete()
+            self.kwargs['balance_empty'] = True
+
+        return super().form_valid(self)
+    
+    # If AssetBalanceHistory is empty redirect to asset-detail
     def get_success_url(self):
-        return reverse_lazy('assetbalancehistory', args=[str(self.kwargs['pk']), str(self.kwargs['pk2'])])
+        try:
+            if self.kwargs['balance_empty'] == True:
+                return reverse_lazy('asset-detail', args=str(self.kwargs['pk']))
+            else:
+                raise Http404('Error, please contact side admin.')
+        except:
+            return reverse_lazy('assetbalancehistory', args=[str(self.kwargs['pk']), str(self.kwargs['pk2'])])
+
 
