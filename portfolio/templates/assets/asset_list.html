@@ -2,12 +2,24 @@
 
 {% block title %}
     <title>All assets</title>
+
+    {% load static %}
+    <script src="{% static 'js/assets_script.js' %}" defer></script>
 {% endblock %}
 
 {% block content %}
     <h1>All assets</h1>
 
     <h2>List of all assets:</h2>
+
+    <div>
+        <button id="btn-all" type="button">All</button>
+        <button id="btn-crypto" type="button">Cryptocurrency</button>
+        <button id="btn-stock" type="button">Stock</button>
+        <button id="btn-currency" type="button">Currency</button>
+    </div>
+
+    <button id="btn-empty-values" type="button">Hide empty values</button>
 
     {% if asset_list %}
         <table>
@@ -24,6 +36,7 @@
                         <th scope="row"><a href="{% url 'asset-detail' asset.pk %}">{{ asset.name }}</a></th>
                         <th scope="row">{{ asset.value_object.latest_holding }}</th>
                         <th scope="row">{{ asset.value_object.latest_price }}</th>
+                        <th scope="row" class="displayNone">{{ asset.type }}</th>
                         <th scope="row">{{ asset.value_object.latest_value }}</th>
                     </tr>
                 {% endfor %}
