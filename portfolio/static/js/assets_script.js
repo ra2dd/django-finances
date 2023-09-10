@@ -2,7 +2,7 @@ const table = document.querySelector('tbody');
 
 const emptyRows = [];
 const dataRows = [];
-const index = 4;
+const index = 5;
 
 
 function getRowValue(row) {
@@ -81,7 +81,7 @@ function filterRowType(type) {
   } 
   else {
     for (const row of dataRows) {
-      if (row.children[index-1].childNodes[0].data == type) {
+      if (row.children[index+1].childNodes[0].data == type) {
         table.appendChild(row);
       }
     }    
@@ -93,7 +93,7 @@ function filterRowType(type) {
     } 
     else {
       for (const row of emptyRows) {
-        if (row.children[index-1].childNodes[0].data == type) {
+        if (row.children[index+1].childNodes[0].data == type) {
           table.appendChild(row);
         }
       }

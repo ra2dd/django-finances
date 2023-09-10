@@ -10,11 +10,8 @@ class UserAssetHoldingInfo:
 def get_asset_value_object(asset_balance_list):
     
     if len(asset_balance_list) == 0:
-        '''
         zero = format(0.0, '.2f')
-        return UserAssetHoldingInfo(zero, zero, zero)
-        '''
-        return None
+        return UserAssetHoldingInfo('', '', '')
     
     else:
         asset_holding_sum = 0
