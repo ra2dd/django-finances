@@ -30,7 +30,7 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
         user_all_balance_list = Portfolio.objects.filter(owner=self.request.user)[0].assetbalance_set.all()
         
         user_holdings_list = dashboard_balance.get_user_asset_holdings_with_values_list(user_all_balance_list)
-        asset_type_ratio_tuple_list = dashboard_balance.get_asset_type_ratio_tuple_list(user_holdings_list)
+        asset_type_ratio_tuple_list_json = json.dumps(dashboard_balance.get_asset_type_ratio_tuple_list(user_holdings_list), default=str)
         
         user_daily_balance_history = dashboard_balance.get_user_daily_balance_history(user_all_balance_list)
         user_daily_balance_history_json = json.dumps([obj.__dict__ for obj in user_daily_balance_history], default=str)
@@ -42,6 +42,7 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
         else:
             change_seven_days = format(0.0, '.2f')
 
+        
         latest_balance_value = 1000
         change_seven_days = 100
 
@@ -55,7 +56,7 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
             'user_holdings_list': user_holdings_list[:5],
             'user_daily_balance_history': user_daily_balance_history,
             'user_daily_balance_history_json': user_daily_balance_history_json,
-            'asset_type_ratio_tuple_list' :asset_type_ratio_tuple_list,
+            'asset_type_ratio_tuple_list_json': asset_type_ratio_tuple_list_json,
             'latest_balance_value': latest_balance_value,
             'change_seven_days': change_seven_days,
         }
