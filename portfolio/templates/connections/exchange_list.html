@@ -27,7 +27,7 @@
         <h2>Ready to Connect</h2>
         <ul>
             {% for exchange in exchange_list %}
-                {% if exchange.is_user_connected == False %}
+                {% if exchange.is_user_connected == False and exchange.name.lower != 'manual trades' %}
                     <li>
                         {{ exchange.name }}
                         <br />

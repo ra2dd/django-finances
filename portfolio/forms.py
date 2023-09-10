@@ -13,7 +13,7 @@ def check_connection(exchange_name, api_key_data, secret_key_data):
     if exchange_name == 'binance':
         connection_response = client_tasks.check_binance_connection(api_key_data, secret_key_data)
     elif exchange_name == 'manual trades':
-        raise ValidationError(f'Manual Trades is a persistent connection. Please go to connections and select different exchange.')
+        raise ValidationError(f'Manual Trades api connection is unavailable. Please go to connections and select different exchange.')
 
     if connection_response == True:
         pass

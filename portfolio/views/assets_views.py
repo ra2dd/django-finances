@@ -3,13 +3,13 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse, reverse_lazy
 
-
 from ..models import Portfolio, AssetBalance, Asset, Exchange, AssetBalanceHistory
 from ..utils import dashboard_balance, assets_util
 from ..forms import AssetBalanceHistoryForm
 
 def get_user_portfolio(self):
     return get_object_or_404(Portfolio, owner=self.request.user)
+
 
 class AssetListView(generic.ListView):
     
@@ -50,20 +50,7 @@ class AssetDetailView(generic.DetailView):
         setattr(asset_obj, 'value_object', assets_util.get_asset_value_object(asset_balances))
 
         return context
-
-
-class ManualTradesListView(generic.ListView):
-    template_name = 'assets/manualtrades_list.html'
-    model = AssetBalance
-
-    def get_queryset(self):
-        exchange = Exchange.objects.filter(name='Manual Trades')[0]
-        return (
-            AssetBalance.objects
-            .filter(portfolio=get_user_portfolio(self))
-            .filter(broker=exchange)
-        )
-    
+   
 
 class AssetBalanceHistoryListView(generic.ListView):
     template_name = 'assets/assetbalancehistory_list.html'
