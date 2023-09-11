@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views import generic
-import json
+import json, datetime
 
 from ..models import Portfolio, Asset, AssetBalance, AssetBalanceHistory, AssetPriceHistory, Exchange, ApiConnection
 from ..utils import server_tasks, client_tasks, dashboard_balance
@@ -42,6 +42,8 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
         else:
             change_seven_days = format(0.0, '.2f')
 
+        current_date = datetime.datetime.now().strftime("%B %-d, %Y")
+
         
         latest_balance_value = 1000
         change_seven_days = 100
@@ -59,5 +61,6 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
             'asset_type_ratio_tuple_list_json': asset_type_ratio_tuple_list_json,
             'latest_balance_value': latest_balance_value,
             'change_seven_days': change_seven_days,
+            'current_date': current_date,
         }
         return context
