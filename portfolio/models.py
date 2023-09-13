@@ -35,13 +35,12 @@ class Exchange(models.Model):
     url = models.URLField(max_length=200, blank=True)
 
     api_url = models.URLField(max_length=200, blank=True)
-
-    @property
-    def is_user_connected(self):
-        return bool(ApiConnection.objects.filter(broker=self.id))
     
     class Meta:
         ordering = ['name']
+
+    def is_user_connected(self, user_obj):
+        return bool(ApiConnection.objects.filter(broker=self.id).filter(owner=user_obj))
 
     def get_absolute_url(self):
         """Returns the URL to access a detail record for exchange."""

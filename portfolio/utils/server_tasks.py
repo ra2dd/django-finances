@@ -58,22 +58,27 @@ def construct_current_currency_price_url(symbol):
     return f'https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency={symbol}&apikey={os.environ.get("ALPHAVANTAGE_API_KEY")}'
 
 
+def check_query_len_euqals_one(asset_query):
+    if len(asset_query) > 1:
+        raise Exception("Cannot fetch data. There is more than one asset with given api name.")
+    
+    elif len(asset_query) == 0:
+        raise Exception("Cannot fetch data. There is no asset with given api_name.")
+    
+    elif len(asset_query) == 1:
+        return True
+
+
 def import_crypto_price_history(*argv):
     
     for api_name in argv:
         asset = Asset.objects.filter(api_name=api_name.lower()).filter(type='cryptocurrency')
                                     
-        if len(asset) > 1:
-            raise Exception("Cannot fetch data. There is more than one asset with given api name.")
-        
-        elif len(asset) == 0:
-            raise Exception("Cannot fetch data. There is no asset with given api_name.")
-        
-        elif len(asset) == 1:
+        if check_query_len_euqals_one(asset) == True:
             
             # Check if there are any price history for given assset
-            if len(asset[0].assetpricehistory_set.all()) > 0:
-                asset_price_history = asset[0].assetpricehistory_set.all()
+            asset_price_history = asset[0].assetpricehistory_set.all()
+            if len(asset_price_history) > 0:
 
                 # Delete all asset price history
                 for price_history in asset_price_history:
@@ -126,13 +131,8 @@ def import_current_crypto_price():
     for api_asset in json_response:
         asset = Asset.objects.filter(api_name=api_asset['id'].lower()).filter(type='cryptocurrency')
                                     
-        if len(asset) > 1:
-            raise Exception("Cannot fetch data. There is more than one asset with given api id.")
-        
-        elif len(asset) == 0:
-            raise Exception("Cannot fetch data. There is no asset with given api id.")
-        
-        elif len(asset) == 1:
+        if check_query_len_euqals_one(asset) == True:
+
             # Check if there is price data from previous day
             if len(asset[0].assetpricehistory_set.filter(date=datetime.date.today() - datetime.timedelta(days=1))) == 1:
                 
@@ -164,13 +164,7 @@ def import_stock_price_history(*argv):
     for api_name in argv:
         asset = Asset.objects.filter(api_name=api_name.lower()).filter(type='stock')
                                     
-        if len(asset) > 1:
-            raise Exception("Cannot fetch data. There is more than one asset with given api name.")
-        
-        elif len(asset) == 0:
-            raise Exception("Cannot fetch data. There is no asset with given api_name.")
-        
-        elif len(asset) == 1:
+        if check_query_len_euqals_one(asset) == True:
             
             # Check if there are any price history for given assset
             if len(asset[0].assetpricehistory_set.all()) > 0:
@@ -206,13 +200,8 @@ def import_current_stock_price():
         api_name = stock.api_name.lower()
         asset = Asset.objects.filter(api_name=api_name).filter(type='stock')
                                     
-        if len(asset) > 1:
-            raise Exception("Cannot fetch data. There is more than one asset with given api id.")
-        
-        elif len(asset) == 0:
-            raise Exception("Cannot fetch data. There is no asset with given api id.")
-        
-        elif len(asset) == 1:
+        if check_query_len_euqals_one(asset) == True:
+
             # Check if past data exists for an asset
             previous_day = datetime.date.today() - datetime.timedelta(days=1)
             missing_day_count = 0
@@ -264,13 +253,7 @@ def import_currency_price_history(*argv):
     for api_name in argv:
         asset = Asset.objects.filter(api_name=api_name.lower()).filter(type='currency')
                                     
-        if len(asset) > 1:
-            raise Exception("Cannot fetch data. There is more than one asset with given api name.")
-        
-        elif len(asset) == 0:
-            raise Exception("Cannot fetch data. There is no asset with given api_name.")
-        
-        elif len(asset) == 1:
+        if check_query_len_euqals_one(asset) == True:
             
             # Check if there are any price history for given assset
             if len(asset[0].assetpricehistory_set.all()) > 0:
@@ -306,13 +289,8 @@ def import_current_currency_price():
         api_name = currency.api_name.lower()
         asset = Asset.objects.filter(api_name=api_name).filter(type='currency')
                                     
-        if len(asset) > 1:
-            raise Exception("Cannot fetch data. There is more than one asset with given api id.")
-        
-        elif len(asset) == 0:
-            raise Exception("Cannot fetch data. There is no asset with given api id.")
-        
-        elif len(asset) == 1:
+        if check_query_len_euqals_one(asset) == True:
+
             # Check if past data exists for an asset
             previous_day = datetime.date.today() - datetime.timedelta(days=1)
             missing_day_count = 0
@@ -359,7 +337,7 @@ def import_current_currency_price():
 
 def get_crypto_assets():
     
-    response = requests.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=16&page=1&sparkline=false&locale=en', headers=headers)
+    response = requests.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=6&page=1&sparkline=false&locale=en', headers=headers)
     json_response = json.loads(response.content)
     # print(json.dumps(json_response, indent=4))
 
@@ -388,11 +366,4 @@ def get_crypto_assets():
         elif len(asset) > 1:
             raise Exception('Too many assets with given response api_name')
         elif len(asset) == 1:
-            print(f'asset with api_name {response_asset["id"]} exists')  
-
-    import_current_crypto_price()          
-
-            
-
-                
-
+            print(f'asset with api_name {response_asset["id"]} exists')           

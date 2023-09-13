@@ -10,7 +10,7 @@
     <h2>{{ exchange.name }} Exchange</h2>
 
     <a href="{% url 'apiconnection-add' exchange.pk %}">
-        {% if api_connection_exists == True %}
+        {% if exchange.is_user_connected == True %}
             <p>
                 Update exchange api connection
             </p>    
@@ -21,7 +21,7 @@
         {% endif %}
     </a>
 
-    {% if api_connection_exists == True %}
+    {% if exchange.is_user_connected == True %}
         <a href="{% url 'apiconnection-delete' exchange.pk %}">
             <p>
                 Delete exchange api connection

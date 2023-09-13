@@ -145,7 +145,7 @@ class AssetBalanceHistoryDelete(generic.DeleteView):
     def get_success_url(self):
         try:
             if self.kwargs['balance_empty'] == True:
-                return reverse_lazy('asset-detail', args=str(self.kwargs['pk']))
+                return reverse_lazy('asset-detail', args=[str(self.kwargs['pk'])])
             else:
                 raise Http404('Error, please contact side admin.')
         except:

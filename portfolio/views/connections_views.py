@@ -23,20 +23,13 @@ class ExchangeListView(generic.ListView, LoginRequiredMixin):
     template_name = 'connections/exchange_list.html'
     model = Exchange
 
-    def get_context_data(self, **kwargs):
-        
-        '''
-        connection = ApiConnection.objects.filter(owner=self.request.user).filter(broker=Exchange.objects.filter(name='Binance')[0])[0] 
-        api_key = connection.api_key
-        secret_key = connection.secret_key
-
-        #client_tasks.import_binance_balance(api_key, secret_key)
-        client_tasks.import_binance_balance(api_key, secret_key)
-        '''
-        # server_tasks.get_crypto_assets()
-
-    
+    def get_context_data(self, **kwargs):        
         context = super().get_context_data(**kwargs)
+        
+        obj_list = context['object_list']
+        for obj in obj_list:
+            setattr(obj, 'is_user_connected', obj.is_user_connected(self.request.user))
+
         return context
 
 
@@ -47,15 +40,9 @@ class ExchangeDetailView(generic.DetailView, LoginRequiredMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        api_connection = ApiConnection.objects.filter(broker=fetch_exchange(self)).filter(owner=self.request.user)
-        api_connection_exists = None
-        if len(api_connection) == 0:
-            api_connection_exists = False
-        else:
-            api_connection_exists = True
-
-        context["api_connection_exists"] = api_connection_exists
+        
+        object = context['object']
+        setattr(object, 'is_user_connected', object.is_user_connected(self.request.user))
 
         return context
 
