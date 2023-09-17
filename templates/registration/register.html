@@ -1,0 +1,26 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Register</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+            <table>
+                {% for field in form %}
+                    <tr>
+                        <th>
+                            {{ field.errors }}
+                            <label for="{{field.id}}">{{ field.label }}:</label>
+                        </th>
+                        <td>{{ field }}</td>
+                    </tr>
+                {% endfor %}
+
+                <tr>
+                    <td>
+                        <input type="submit" value="Register"/>
+                    </td>
+                </tr>
+            </table>
+    </form>
+{% endblock %}
