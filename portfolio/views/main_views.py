@@ -4,7 +4,7 @@ from django.views import generic
 import json, datetime
 
 from ..models import Portfolio, Asset, AssetBalance, AssetBalanceHistory, AssetPriceHistory, Exchange, ApiConnection
-from ..utils import server_tasks, client_tasks, dashboard_balance
+from ..utils import server_tasks, client_tasks, dashboard_util
      
      
 def index(request):
@@ -29,25 +29,27 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
         # Get all asset balances of current user portfolio
         user_all_balance_list = Portfolio.objects.filter(owner=self.request.user)[0].assetbalance_set.all()
         
-        user_holdings_list = dashboard_balance.get_user_asset_holdings_with_values_list(user_all_balance_list)
-        asset_type_ratio_tuple_list_json = json.dumps(dashboard_balance.get_asset_type_ratio_tuple_list(user_holdings_list), default=str)
+        user_holdings_list = dashboard_util.get_user_asset_holdings_with_values_list(user_all_balance_list)
+        asset_type_ratio_tuple_list_json = json.dumps(dashboard_util.get_asset_type_ratio_tuple_list(user_holdings_list), default=str)
         
-        user_daily_balance_history = dashboard_balance.get_user_daily_balance_history(user_all_balance_list)
+        user_daily_balance_history = dashboard_util.get_user_daily_balance_history(user_all_balance_list)
         user_daily_balance_history_json = json.dumps([obj.__dict__ for obj in user_daily_balance_history], default=str)
 
         latest_balance_value = user_daily_balance_history[-1].values
 
-        if len(user_daily_balance_history) > 14:
-            change_seven_days = latest_balance_value - user_daily_balance_history[-7].values
+        if len(user_daily_balance_history) > 30:
+            balance_change = (30, latest_balance_value - user_daily_balance_history[-30].values)
+        elif len(user_daily_balance_history) > 7:
+            balance_change = (7, latest_balance_value - user_daily_balance_history[-7].values)
         else:
-            change_seven_days = format(0.0, '.2f')
+            balance_change = (0, format(0.0, '.2f'))
 
         current_date = datetime.datetime.now().strftime("%B %-d, %Y")
 
         
         latest_balance_value = 1000
-        change_seven_days = 100
-
+        balance_change = (7, 100)
+        print(asset_type_ratio_tuple_list_json)
         """
         TODO:
             check if there is recent assetpricehistory in calculating user daily total balance list
@@ -56,11 +58,10 @@ class DashboardView(generic.TemplateView, LoginRequiredMixin):
 
         context = {
             'user_holdings_list': user_holdings_list[:5],
-            'user_daily_balance_history': user_daily_balance_history,
             'user_daily_balance_history_json': user_daily_balance_history_json,
             'asset_type_ratio_tuple_list_json': asset_type_ratio_tuple_list_json,
             'latest_balance_value': latest_balance_value,
-            'change_seven_days': change_seven_days,
+            'balance_change': balance_change,
             'current_date': current_date,
         }
         return context

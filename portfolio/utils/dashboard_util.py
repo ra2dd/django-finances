@@ -11,7 +11,7 @@ class UserCurrentAsset:
         self.latest_holding = latest_holding
         self.latest_value = latest_value
 
-class UserTotalBalanceHistory:
+class TotalDayBalance:
     def __init__(self, date, value):
         self.date = date
         self.values = [value]
@@ -84,7 +84,6 @@ def get_user_daily_balance_history(user_all_balance_list):
         last_price_history = None
 
         print(f'start {balance}')
-        test = 0
 
         # loop through user's all AssetBalanceHistory objects associated with certain AssetBalance
         for balance_history in balance.assetbalancehistory_set.all():
@@ -131,7 +130,7 @@ def get_user_daily_balance_history(user_all_balance_list):
                                 break
 
                         if not added_to_existing_list:                      
-                            user_daily_balance_history.append(UserTotalBalanceHistory(last_date, last_value))
+                            user_daily_balance_history.append(TotalDayBalance(last_date, last_value))
 
                         records_filled = True   
                 """
@@ -189,7 +188,7 @@ def get_user_daily_balance_history(user_all_balance_list):
                 # if user_daily_balance_history doesn't have object with date matching current AssetBalanceHistory
                 # create new object in user_daily_balance_history and add current AssetBalanceHistory object
                 if not added_to_existing_list:                      
-                    user_daily_balance_history.append(UserTotalBalanceHistory(balance_history.date, last_value))
+                    user_daily_balance_history.append(TotalDayBalance(balance_history.date, last_value))
 
                 # set last_date so we know last date in current AssetBalance that was added into user_daily_balance_history
                 # helpful in filling not existing dates in AssetBalanceHistory between existing dates
@@ -241,7 +240,7 @@ def get_user_daily_balance_history(user_all_balance_list):
                         break
 
                 if not added_to_existing_list:                      
-                    user_daily_balance_history.append(UserTotalBalanceHistory(last_date, last_value))
+                    user_daily_balance_history.append(TotalDayBalance(last_date, last_value))
 
     # loop for adding all balance values in respective dates
     for day_balance in user_daily_balance_history:
@@ -273,9 +272,10 @@ def get_asset_type_ratio_tuple_list(user_holdings_list):
     # Calculate asset type ratio based on the complate holdings sum
     # Append calculated values to list as tuples
     for dict in asset_ratio:
+        value = asset_ratio[dict]
         ratio = round(asset_ratio[dict] / asset_sum * 100, 2)
         dict = dict[:1].upper() + dict[1:]
 
-        asset_type_ratio_tuple_list.append((dict, ratio))
+        asset_type_ratio_tuple_list.append((dict, ratio, value))
     
     return asset_type_ratio_tuple_list

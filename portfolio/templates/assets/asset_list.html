@@ -35,18 +35,18 @@
             <tbody class="grayBc9 grayColor3">
                 {% for asset in asset_list %}
                     <tr>
-                        <th scope="row">
+                        <td scope="row">
                             <!--
                             {% load static %}
                             <img class='iconSmall' src="{% static assettest.icon.url|slice:'18:' %}" />
                             -->
-                        </th>
-                        <th scope="row">{{ asset.ticker.upper }}</th>
-                        <th class="grayColor1" scope="row"><a href="{% url 'asset-detail' asset.pk %}">{{ asset.name }}</a></th>
-                        <th scope="row">{{ asset.value_object.latest_holding }}</th>
-                        <th scope="row">{{ asset.value_object.latest_price }}</th>
-                        <th class="grayColor1" scope="row">{{ asset.value_object.latest_value }}</th>
-                        <th scope="row" class="displayNone">{{ asset.type }}</th>
+                        </td>
+                        <td scope="row">{{ asset.ticker.upper }}</td>
+                        <td class="grayColor1" scope="row"><a href="{% url 'asset-detail' asset.pk %}">{{ asset.name }}</a></td>
+                        <td scope="row">{{ asset.value_object.latest_holding }}</td>
+                        <td scope="row">{{ asset.value_object.latest_price }}</td>
+                        <td class="grayColor1" scope="row">{{ asset.value_object.latest_value }}</td>
+                        <td scope="row" class="displayNone">{{ asset.type }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

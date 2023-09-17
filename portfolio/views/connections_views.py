@@ -1,13 +1,12 @@
-from typing import Any, Dict, Optional
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
-from django.db import models
 from django.views import generic
 from django.urls import reverse, reverse_lazy
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404
 from django.views.decorators.http import require_http_methods
-from django.contrib.auth.hashers import make_password
+from django.views.decorators.csrf import csrf_protect
 from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
 
 from ..models import Exchange, ApiConnection, AssetPriceHistory, Asset, AssetBalance, AssetBalanceHistory
 from ..utils import client_tasks, server_tasks
@@ -67,8 +66,6 @@ class ApiConnectionAdd(generic.CreateView, LoginRequiredMixin):
         self.object = form.save(commit=False)
         self.object.broker = fetch_exchange(self)
         self.object.owner = self.request.user
-        # self.object.api_key = make_password(self.object.api_key)
-        # self.object.secret_key = make_password(self.object.secret_key)
         self.object.save()
 
         return super().form_valid(form)

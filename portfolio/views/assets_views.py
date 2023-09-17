@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse, reverse_lazy
 
 from ..models import Portfolio, AssetBalance, Asset, Exchange, AssetBalanceHistory
-from ..utils import dashboard_balance, assets_util
+from ..utils import assets_util
 from ..forms import AssetBalanceHistoryForm
 
 def get_user_portfolio(self):

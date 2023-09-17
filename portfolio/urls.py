@@ -1,10 +1,10 @@
 from django.urls import path
 from . import views
-from .views import connections_views, dashboard_views, assets_views
+from .views import connections_views, main_views, assets_views
 
 urlpatterns = [
-    path('', dashboard_views.index, name='index'),
-    path('dashboard/', dashboard_views.DashboardView.as_view(), name='dashboard'),
+    path('', main_views.index, name='index'),
+    path('dashboard/', main_views.DashboardView.as_view(), name='dashboard'),
 
     path('exchanges/', connections_views.ExchangeListView.as_view(), name='exchanges'),
     path('exchanges/<int:pk>', connections_views.ExchangeDetailView.as_view(), name='exchange-detail'),

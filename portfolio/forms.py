@@ -60,7 +60,7 @@ class AssetBalanceHistoryForm(forms.Form):
     
     exchange_choices = list(map(return_exchange_choice_tuple, Exchange.objects.all())) 
 
-    exchange = forms.TypedChoiceField(choices=exchange_choices)
+    exchange = forms.ChoiceField(choices=exchange_choices)
     amount = forms.DecimalField()
     date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'min': START_DATE, 'max': datetime.date.today()}), initial=datetime.date.today())
 

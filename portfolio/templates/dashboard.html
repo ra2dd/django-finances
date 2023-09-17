@@ -19,12 +19,18 @@
         </div>
 
         <div>
-            <h3 class="textNormal">30 Day Change</h3>
-            <p class="headingXl">
-                {% if change_seven_days < 0 %}
-                    -${{ change_seven_days }}
+            <h3 class="textNormal">
+                {% if balance_change.0 == 30 %}
+                    30 Day Change
                 {% else %}
-                    +${{ change_seven_days }}
+                    7 Day Change
+                {% endif %}
+            </h3>
+            <p class="headingXl">
+                {% if balance_change.1 < 0 %}
+                    -${{ balance_change.1 }}
+                {% else %}
+                    +${{ balance_change.1 }}
                 {% endif %}
             </p>
         </div>
@@ -54,43 +60,22 @@
             <tbody>
                 {% for balance in user_holdings_list %}
                     <tr class="grayBc9 textRight">
-                        <th scope="row">
+                        <td scope="row">
                             <!--
                             {% load static %}
                             <img class='iconSmall' src="{% static balance.icon.url|slice:'18:' %}" />
                             -->
-                        </th>
-                        <th class="textLeft" scope="row">{{ balance.name }}</th>
-                        <th scope="row">${{ balance.latest_price }}</th>
-                        <th scope="row">{{ balance.latest_holding }}</th>
-                        <th scope="row">${{ balance.latest_value }}</th>
+                        </td>
+                        <td class="textLeft" scope="row">{{ balance.name }}</td>
+                        <td scope="row">${{ balance.latest_price }}</td>
+                        <td scope="row">{{ balance.latest_holding }}</td>
+                        <td scope="row">${{ balance.latest_value }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 
-    <!--
-    <table>
-        <caption>
-            Portfolio value history
-        </caption>
-
-        <thead>
-            <th scope="col">Date</th>
-            <th scope="col">Value</th>
-        </thead>
-
-        <tbody>
-            {% for total_balance in user_daily_balance_history %}
-                <tr>
-                    <th scope="row">{{ total_balance.date }}</th>
-                    <th scope="row">{{ total_balance.values }}</th>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    -->
     <div>
         <canvas id="chartBalance"></canvas>
     </div>
