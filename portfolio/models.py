@@ -68,10 +68,6 @@ class ApiConnection(models.Model):
         null=True
     )
 
-    def get_absolute_url(self):
-        """Returns the URL to access a detail record for exchange."""
-        return reverse('connection-detail', args=[str(self.id)])
-
     def __str__(self):
         """String for representing the Model object"""
         return f'{self.owner.username[0].upper() + self.owner.username[1:]} api keys - {self.broker}'

@@ -2,7 +2,6 @@ import datetime
 from django import forms
 from django.core.exceptions import ValidationError
 
-from .views import connections_views
 from .utils import client_util
 from .models import ApiConnection, Exchange
 from .utils.constants import START_DATE
@@ -49,7 +48,7 @@ class ConnectionAddModelForm(forms.ModelForm):
             raise ValidationError('Error, please contact site admin.')
     
     class Meta:
-        model = connections_views.ApiConnection
+        model = ApiConnection
         fields = ['api_key', 'secret_key']
 
 
