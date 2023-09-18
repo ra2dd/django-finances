@@ -21,7 +21,7 @@ def register(request):
             portfolio_record = Portfolio(owner=user)
             portfolio_record.save()
 
-            return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect(reverse('login'))
 
     else:
         form = RegistrationForm()
@@ -29,8 +29,5 @@ def register(request):
     context = { 
         'form': form,
     }
-    
-    for field in form:
-        print(field.name)
 
     return render(request, 'registration/register.html', context)

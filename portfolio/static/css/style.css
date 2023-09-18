@@ -133,3 +133,13 @@ Asset List Table styling
     padding: 1rem 2rem 0.75rem;
     border-bottom: solid 2px hsl(0, 0%, 91%);
 }
+
+
+/*
+    Styling forms made with table
+*/
+.tableForm {
+    display: flex;
+    justify-content: center;
+    
+}

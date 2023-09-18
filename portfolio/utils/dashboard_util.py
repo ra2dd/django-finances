@@ -273,7 +273,10 @@ def get_asset_type_ratio_tuple_list(user_holdings_list):
     # Append calculated values to list as tuples
     for dict in asset_ratio:
         value = asset_ratio[dict]
-        ratio = round(asset_ratio[dict] / asset_sum * 100, 2)
+        if(asset_sum > 0):
+            ratio = round(asset_ratio[dict] / asset_sum * 100, 2)
+        else:
+            ratio = 0
         dict = dict[:1].upper() + dict[1:]
 
         asset_type_ratio_tuple_list.append((dict, ratio, value))

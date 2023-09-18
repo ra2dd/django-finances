@@ -1,7 +1,7 @@
 {% extends "base_generic.html" %}
 
 {% block title %}
-    <title>{{ user.get_username }} Dashboard</title>
+    <title>Dashboard {{ user.get_username }}</title>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
 {% endblock %}
@@ -12,6 +12,7 @@
         <p>{{ current_date }}</p>
     </div>
 
+    {% if user_holdings_list %}
     <div class="flexboxSA grayBc5 marginB1 textLeft dashboardTotalBalance">
         <div>
             <h3 class="textNormal">Total Balance</h3>
@@ -136,4 +137,21 @@
             }
         });
     </script>
+
+    {% else %}
+        <div>
+            <p>You don't seem to have any asset balances associated with your account.</p>
+            <p>
+                You can add import information about your assets 
+                by visiting <a href="{% url 'exchanges' %}">Connections tab</a>
+                and importing balance information using exchange keys directly into 
+                your portfolio.
+            </p>
+            <p>
+                You can also add data about your assets manually by visiting
+                <a href="{% url 'assets' %}">Assets list</a>, choosing
+                your asset and adding information about your holdings.
+            </p>
+        </div>
+    {% endif %}
 {% endblock %}
