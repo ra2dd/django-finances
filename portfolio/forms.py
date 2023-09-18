@@ -3,7 +3,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 from .views import connections_views
-from .utils import client_tasks
+from .utils import client_util
 from .models import ApiConnection, Exchange
 from .utils.constants import START_DATE
 
@@ -11,7 +11,7 @@ def check_connection(exchange_name, api_key_data, secret_key_data):
     connection_response = None
 
     if exchange_name == 'binance':
-        connection_response = client_tasks.check_binance_connection(api_key_data, secret_key_data)
+        connection_response = client_util.check_binance_connection(api_key_data, secret_key_data)
     elif exchange_name == 'manual trades':
         raise ValidationError(f'Manual Trades api connection is unavailable. Please go to connections and select different exchange.')
 

@@ -1,10 +1,10 @@
 from django.shortcuts import render
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import generic
 import json, datetime
 
-from ..models import Portfolio, Asset, AssetBalance, AssetBalanceHistory, AssetPriceHistory, Exchange, ApiConnection
-from ..utils import server_tasks, client_tasks, dashboard_util
+from ..models import Portfolio
+from ..utils import dashboard_util
      
      
 def index(request):

@@ -1,10 +1,8 @@
 from binance.spot import Spot
-import datetime, json, string
-import os
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponseRedirect, Http404
+import datetime
+from django.http import Http404
 
-from ..models import Asset, AssetPriceHistory, AssetBalance, AssetBalanceHistory, Exchange, Portfolio
+from ..models import Asset, AssetBalance, AssetBalanceHistory, Portfolio
 
 class AssetsAmount():
     def __init__(self, ticker, amount):

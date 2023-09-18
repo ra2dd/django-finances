@@ -4,12 +4,10 @@ from django.views import generic
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect, Http404
 from django.views.decorators.http import require_http_methods
-from django.views.decorators.csrf import csrf_protect
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404
 
-from ..models import Exchange, ApiConnection, AssetPriceHistory, Asset, AssetBalance, AssetBalanceHistory
-from ..utils import client_tasks, server_tasks
+from ..models import Exchange, ApiConnection, AssetBalance, AssetBalanceHistory
+from ..utils import client_util
 from ..forms import ConnectionAddModelForm
 
 def fetch_exchange(self):
@@ -135,6 +133,6 @@ def fetch_apiconnection_balance_view(request, pk):
             raise Http404("Connot update connection data, too many api connections.")
   
         elif(len(api_connection) == 1):
-            client_tasks.import_balance(exchange, api_connection[0], request.user)    
+            client_util.import_balance(exchange, api_connection[0], request.user)    
         
         return HttpResponseRedirect(reverse('exchange-detail', args=str(pk)))

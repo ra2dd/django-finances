@@ -1,5 +1,3 @@
-import datetime
-
 class UserAssetHoldingInfo:
     def __init__(self, latest_price, latest_holding, latest_value):
         self.latest_price = latest_price

@@ -2,6 +2,8 @@ from django.views import generic
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse, reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 
 from ..models import Portfolio, AssetBalance, Asset, Exchange, AssetBalanceHistory
 from ..utils import assets_util
@@ -11,18 +13,10 @@ def get_user_portfolio(self):
     return get_object_or_404(Portfolio, owner=self.request.user)
 
 
-class AssetListView(generic.ListView):
+class AssetListView(generic.ListView, LoginRequiredMixin):
     
     template_name = 'assets/asset_list.html'
     model = Asset
-
-    '''
-    def get_queryset(self):
-        queryset = Asset.objects.all()
-
-        for asset in queryset:
-            asset_balance_list = asset.assetbalance_set.filter(portfolio = )
-    '''
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -36,7 +30,7 @@ class AssetListView(generic.ListView):
         return context
     
 
-class AssetDetailView(generic.DetailView):
+class AssetDetailView(generic.DetailView, LoginRequiredMixin):
     template_name = 'assets/asset_detail.html'
     model = Asset
 
@@ -52,7 +46,7 @@ class AssetDetailView(generic.DetailView):
         return context
    
 
-class AssetBalanceHistoryListView(generic.ListView):
+class AssetBalanceHistoryListView(generic.ListView, LoginRequiredMixin):
     template_name = 'assets/assetbalancehistory_list.html'
     model = AssetBalanceHistory
 
@@ -69,6 +63,7 @@ class AssetBalanceHistoryListView(generic.ListView):
         return context
 
 
+@login_required
 def assetbalancehistory_create(request, pk, pk2=None):
     """View function for creating assetbalancehistory records"""
     
@@ -127,7 +122,7 @@ def assetbalancehistory_create(request, pk, pk2=None):
     return render(request, 'assets/assetbalancehistory_form.html', context)
 
 
-class AssetBalanceHistoryDelete(generic.DeleteView):
+class AssetBalanceHistoryDelete(generic.DeleteView, LoginRequiredMixin):
     model = AssetBalanceHistory
     template_name = 'assets/assetbalancehistory_delete.html'
     pk_url_kwarg = 'pk3'
