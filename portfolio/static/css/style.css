@@ -141,5 +141,88 @@ Asset List Table styling
 .tableForm {
     display: flex;
     justify-content: center;
-    
+    margin-top: 4rem;
+    text-align: left;
+}
+
+.tableForm h1 {
+    display: none;
+}
+
+.tableForm > div {
+    background-color: hsl(0, 0%, 97%);
+    padding: 3rem 4rem;
+    border-radius: 1rem;
+}
+
+.tableForm td {
+    display: block;
+}
+
+.tableForm th {
+    display: block;
+    font-weight: 500;
+    font-size: 1rem;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.tableForm input {
+    all: unset;
+    border-radius: 0.25rem;   
+}
+
+.tableForm input: {
+    background-color: hsl(0, 0%, 91%); 
+}
+
+.tableForm input[type="text"], input[type="password"], input[type="email"] {
+    background-color: hsl(0, 0%, 95%);
+    width: 20em;
+    height: 1.5em;
+    font-size: 1.125rem;
+    padding: 0.5rem 0.5rem
+}
+
+.tableForm input[type="password"] {
+    color: hsl(0, 0%, 33%);
+}
+
+.tableForm form > div {
+    display: flex;
+    justify-content: right;
+}
+
+.tableForm input[type="submit"] {
+    margin-top: 2rem;
+    padding: 0.5rem 1rem;
+    font-size: 1.125rem;
+    color: hsl(0, 0%, 95%);
+    background-color: hsl(0, 0%, 33%);
+}
+
+.tableForm input[type="submit"]:hover {
+    cursor: pointer;
+}
+
+.tableForm input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus {
+    border: 1px solid hsl(0, 0%, 85%);
+}
+
+.tableForm form ~ p {
+    font-size: 0.875rem;
+}
+
+.tableForm p {
+    margin-top: 1rem;
+    color: hsl(0, 0%, 20%);
+    max-width: 23.5rem;
+}
+
+.tableForm .formError {
+    font-size: 1rem;
+    background-color: hsl(0, 0%, 53%);
+    color:hsl(0, 0%, 97%);
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
 }

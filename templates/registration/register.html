@@ -1,26 +1,30 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <h1>Register</h1>
 
-    <form method="POST">
-        {% csrf_token %}
-            <table>
-                {% for field in form %}
-                    <tr>
-                        <th>
-                            {{ field.errors }}
-                            <label for="{{field.id}}">{{ field.label }}:</label>
-                        </th>
-                        <td>{{ field }}</td>
-                    </tr>
-                {% endfor %}
+    <div class="tableForm">
+        <div>
+            <h1>Register</h1>
 
-                <tr>
-                    <td>
+            <form method="POST">
+                {% csrf_token %}
+                    <table>
+                        {% for field in form %}
+                            <tr>
+                                <th>
+                                    {{ field.errors }}
+                                    <label for="{{field.id}}">{{ field.label }}:</label>
+                                </th>
+                                <td>{{ field }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    <div>
                         <input type="submit" value="Register"/>
-                    </td>
-                </tr>
-            </table>
-    </form>
+                    </div>
+            </form>
+
+            <p>Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+        </div>
+    </div>
 {% endblock %}
