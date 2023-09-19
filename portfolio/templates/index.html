@@ -5,18 +5,38 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Portfolio - asset management</h1>
+    <div class="indexPage">
+        <h1 class="displayNone">Asset management app</h1>
 
-    <h2>Portfolio test</h2>
+        <div class="flexboxSA" style="margin: 3rem 1rem 0;">
+            <h2 class="heading3Xl weight700">All assets in one place</h2>
+        </div>
 
-    <p>{{ portfolio_object }}</p>
+        <div class="flexboxSA indexDesc">
+            <div>
+                <h3 class="headingMd weight700">About the app</h3>
+                <p>Portfolio is an app for displaying up-to-date data about your assets. 
+                    You can connect to your favourite crypto exchange or brokerage and import data to your 
+                    account automatically. Analyze your investments with coherent dashboard 
+                    including historical charts and effective data panels.
+                </p>
+            </div>
+            {% load static %}
+            <div>
+                <img src="{% static 'media/images/generic/finances-illustration.svg' %}" />
+            </div>
+        </div>
 
-    <p class="textSmall">User adds AssetBalancehistory record. If AssetBalance exists for an Asset AssetBalanceHistory record gets created. Otherwise AssetBalance gets created as well.</p>
-    <p class="">User adds AssetBalancehistory record. If AssetBalance exists for an Asset AssetBalanceHistory record gets created. Otherwise AssetBalance gets created as well.</p>
-    <p class="textLarger">User adds AssetBalancehistory record. If AssetBalance exists for an Asset AssetBalanceHistory record gets created. Otherwise AssetBalance gets created as well.</p>
-    <p class="headingMd">User adds AssetBalancehistory record. If AssetBalance exists for an Asset AssetBalanceHistory record gets created. Otherwise AssetBalance gets created as well.</p>
-    <p class="headingLg">User adds AssetBalancehistory record. If AssetBalance exists for an Asset AssetBalanceHistory record gets created. Otherwise AssetBalance gets created as well.</p>
-    <p class="headingXl">User adds AssetBalancehistory record. If AssetBalance exists for an Asset AssetBalanceHistory record gets created. Otherwise AssetBalance gets created as well.</p>
-    <p class="heading2Xl">User adds AssetBalancehistory record. If AssetBalance exists for an Asset AssetBalanceHistory record gets created. Otherwise AssetBalance gets created as well.</p>
-    <p class="heading3Xl">User adds AssetBalancehistory record. If AssetBalance exists for an Asset AssetBalanceHistory record gets created. Otherwise AssetBalance gets created as well.</p>
+        <section class="flexboxSA infoBoxes mt-3">
+            <div>
+                Support for stocks, currencies and digital assets.
+            </div>
+            <div>
+                Import data from exchanges or add balances manually.
+            </div>
+            <div>
+                Up to date price information about all assets.
+            </div>
+        </section>
+    </div>
 {% endblock %}

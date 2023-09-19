@@ -226,3 +226,47 @@ Asset List Table styling
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
 }
+
+
+
+/*
+    Styling index page
+*/
+.infoBoxes > div {
+    max-width: 28%;
+    background-color: hsl(0, 0%, 97%);
+    color: hsl(0, 0%, 20%);
+    padding: 2rem 1rem;
+    margin: 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.indexDesc {
+    gap: 1rem;
+}
+
+.indexDesc div {
+    margin: 2rem 1rem;
+}
+
+.indexDesc div:nth-child(1) {
+    flex: 1.3;
+}
+
+.indexDesc > div > h3 {
+    margin-bottom: 1rem;
+}
+
+.indexDesc div:nth-child(2) {
+    flex: 1;
+}
+
+@media screen and (max-width: 500px) {
+    .indexDesc div:nth-child(2) {
+        display: none;
+    }
+
+    .infoBoxes > * {
+        min-width: 90%;
+    }
+}

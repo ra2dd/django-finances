@@ -3,3 +3,4 @@
 *.sqlite3
 .env
 portfolio/static/media/images/assets
+portfolio/static/media/images
