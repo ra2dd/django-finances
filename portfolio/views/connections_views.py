@@ -14,7 +14,7 @@ def fetch_exchange(self):
     return Exchange.objects.filter(pk=self.kwargs['pk'])[0]
 
 
-class ExchangeListView(generic.ListView, LoginRequiredMixin):
+class ExchangeListView(LoginRequiredMixin, generic.ListView):
     """View function for listing exchanges and their user wallet connections"""
 
     template_name = 'connections/exchange_list.html'
@@ -30,7 +30,7 @@ class ExchangeListView(generic.ListView, LoginRequiredMixin):
         return context
 
 
-class ExchangeDetailView(generic.DetailView, LoginRequiredMixin):
+class ExchangeDetailView(LoginRequiredMixin, generic.DetailView):
     """View function for displaying exchange details and its user connection info"""
     model = Exchange
     template_name = 'connections/exchange_detail.html'
@@ -44,7 +44,7 @@ class ExchangeDetailView(generic.DetailView, LoginRequiredMixin):
         return context
 
 
-class ApiConnectionAdd(generic.CreateView, LoginRequiredMixin):
+class ApiConnectionAdd(LoginRequiredMixin, generic.CreateView):
     """View function for adding user ApiConnection to exchange"""
 
     model = ApiConnection
@@ -81,7 +81,7 @@ class ApiConnectionAdd(generic.CreateView, LoginRequiredMixin):
     # TODO: disable autocomplete in forms
 
 
-class ApiConnectionDelete(generic.DeleteView, LoginRequiredMixin):
+class ApiConnectionDelete(LoginRequiredMixin, generic.DeleteView):
     model = ApiConnection
     template_name = 'connections/apiconnection_delete.html'
 
@@ -114,8 +114,8 @@ class ApiConnectionDelete(generic.DeleteView, LoginRequiredMixin):
         return super().form_valid(self)
 
 
-@require_http_methods(["GET"])
 @login_required
+@require_http_methods(["GET"])
 def fetch_apiconnection_balance_view(request, pk):
 
     if request.method == 'GET':
