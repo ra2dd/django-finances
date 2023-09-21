@@ -5,16 +5,22 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Add  Api Connection</h1>
+    <div class="tableForm">
+        <div>
+            <h1>Add Api Connection</h1>
 
-    <h2>{{ exchange.name }} Exchange</h2>
-
-    <form action="" method="post">
-        {% csrf_token %}
-            <table>
-                {{ form.as_table }}
-            </table>
-
-            <input type="submit" value="Add" />
-    </form>
+            <h2 class="formHeader">{{ exchange.name }} Exchange</h2>
+        
+            <form action="" method="post">
+                {% csrf_token %}
+                    <table>
+                        {{ form.as_table }}
+                    </table>
+                    
+                    <div class="submitCtn">
+                        <input type="submit" value="Add Api Connection" />
+                    </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}

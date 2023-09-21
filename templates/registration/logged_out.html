@@ -1,7 +1,13 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <h2>Logout page</h2>
-    <p>Succesfully Logged out.</p>
-    <a href="{% url 'login' %}">Click here to login again.</a>
+    <div class="tableForm">
+        <div>
+            <h1>Logout page</h1>
+            <p>Succesfully Logged out.</p>
+            <p>
+                <a href="{% url 'login' %}">Log in again?</a>
+            </p>
+        </div>
+    </div>
 {% endblock %}

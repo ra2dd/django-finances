@@ -5,11 +5,21 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Delete {{ assetbalancehistory.balance.broker.name }}</h1>
-    <p>Are you sure you want to want to delete {{ assetbalancehistory }}?</p>
+    <div class="tableForm">
+        <div>
+            <h1>Delete {{ assetbalancehistory.balance.asset.name }} balance record</h1>
 
-    <form action="" method="POST">
-        {% csrf_token %}
-            <input type="submit" value="Delete" />
-    </form>
+            <p>Are you sure you want to want to delete 
+                {{ assetbalancehistory.balance.broker.name }}
+                {{ assetbalancehistory.balance.asset.name }} record from
+                {{ assetbalancehistory.date }}?</p>
+        
+            <form action="" method="POST">
+                {% csrf_token %}
+                    <div>
+                        <input type="submit" value="Delete" />
+                    </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}

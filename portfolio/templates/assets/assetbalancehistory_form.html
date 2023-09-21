@@ -5,13 +5,19 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Add record for {{ asset.name }}</h1>
-    <form action="" method="post">
-        {% csrf_token %}
-            <table>
-                {{ form.as_table }}
-            </table>
-
-            <input type="submit" value="Submit" />
-    </form>
+    <div class="tableForm">
+        <div>
+            <h2 class="formHeader">Add record for {{ asset.name }}</h1>
+            <form action="" method="post">
+                {% csrf_token %}
+                    <table>
+                        {{ form.as_table }}
+                    </table>
+                    
+                    <div>
+                        <input type="submit" value="Submit" />
+                    </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}
