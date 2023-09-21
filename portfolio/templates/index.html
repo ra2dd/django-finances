@@ -38,5 +38,19 @@
                 Up to date price information about all assets.
             </div>
         </section>
+
+        <div class="indexRegister flexboxCenter">
+            <h2 class="headingMd">Get greater awarness about your investments.</h2>
+        
+            <p class="heading2Xl">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}">Enter App</a>
+                    
+                {% else %}
+                    <a href="{% url 'register' %}">Register Now</a>
+
+                {% endif %}
+            </p>
+        </div>
     </div>
 {% endblock %}

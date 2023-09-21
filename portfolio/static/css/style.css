@@ -20,8 +20,9 @@ header
 {
     display: flex;
     flex-flow: row wrap;
-    align-items: center;
+    align-items: baseline;
     justify-content: space-between;
+    width: 100%;
 
     grid-area: header;
 
@@ -49,10 +50,22 @@ footer
     justify-content: space-around;
 }
 
-.header-navbar > *
-{
-    margin: 0.25rem;
+.header-navbar > li {
+    margin-left: 2rem;
+    color: hsl(0, 0%, 33%);
 }
+
+.header-navbar > li > a {
+    text-decoration: none;
+}
+
+.header-navbar > li > .active {
+    background-color: hsl(0, 0%, 85%);
+    color: hsl(0, 0%, 20%) !important;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
 
 header > .header-logo
 {
@@ -269,4 +282,8 @@ Asset List Table styling
     .infoBoxes > * {
         min-width: 90%;
     }
+}
+
+.indexRegister {
+    margin: 3rem 0.5rem 1rem;
 }

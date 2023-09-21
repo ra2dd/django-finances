@@ -12,6 +12,14 @@
     align-items: center;
 }
 
+.flexboxCenter {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    gap: 1rem;
+    align-items: baseline;
+}
+
 .flexJustifyStart {
     margin-right: auto;
 }
