@@ -5,6 +5,7 @@ from .views import connections_views, main_views, assets_views
 urlpatterns = [
     path('', main_views.index, name='index'),
     path('dashboard/', main_views.DashboardView.as_view(), name='dashboard'),
+    path('demo/', main_views.DemoView.as_view(), name='demo'),
 
     path('exchanges/', connections_views.ExchangeListView.as_view(), name='exchanges'),
     path('exchanges/<int:pk>', connections_views.ExchangeDetailView.as_view(), name='exchange-detail'),

@@ -359,7 +359,7 @@ def get_crypto_assets():
             fetch_headers = {'User-Agent': 'Mozilla/5.0 (Linux; Android 13; SM-S901B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36'}
             image_request = requests.get(response_asset["image"], headers=fetch_headers)
            
-            asset_record = Asset(name=response_asset["name"], api_name=response_asset["id"], ticker=response_asset["symbol"], type='cryptocurrency')
+            asset_record = Asset(name=response_asset["name"], api_name=response_asset["id"], ticker=response_asset["symbol"].upper(), type='cryptocurrency')
             asset_record.icon.save(response_asset["symbol"] + '.png', File.open(BytesIO(image_request.content)))           
             asset_record.save()
 

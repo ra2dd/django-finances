@@ -42,6 +42,12 @@
                         <li>
                             <a href="{% url 'assets' %}">Asset holdings</a>
                         </li>
+                    
+                    {% else %}
+                        <li>
+                            <a href="{% url 'demo' %}">Demo</a>
+                        </li>
+                        
                     {% endif %}
                 </ul>
 

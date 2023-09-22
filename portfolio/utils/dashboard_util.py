@@ -1,5 +1,9 @@
-import datetime
+import json, datetime, random
 from django.http import Http404
+from django.shortcuts import get_object_or_404
+
+from .constants import START_DATE
+from ..models import Portfolio, AssetBalance, AssetBalanceHistory, Asset, Exchange
 
 class UserCurrentAsset:
     def __init__(self, name, ticker, type, icon, latest_price, latest_holding, latest_value):
@@ -282,3 +286,78 @@ def get_asset_type_ratio_tuple_list(user_holdings_list):
         asset_type_ratio_tuple_list.append((dict, ratio, value))
     
     return asset_type_ratio_tuple_list
+
+
+def get_dashboard_context(user_obj):
+
+    current_date = datetime.datetime.now().strftime("%B %-d, %Y")
+
+    # Get all asset balances of current user portfolio
+    user_all_balance_list = Portfolio.objects.filter(owner=user_obj)[0].assetbalance_set.all()
+    
+    # Get list of user asset holdings
+    user_holdings_list = get_user_asset_holdings_with_values_list(user_all_balance_list)
+
+    if len(user_holdings_list) > 0:
+        asset_ratio = get_asset_type_ratio_tuple_list(user_holdings_list)
+        asset_type_ratio_tuple_list_json = json.dumps(asset_ratio, default=str)
+        
+        user_daily_balance_history = get_user_daily_balance_history(user_all_balance_list)
+        user_daily_balance_history_json = json.dumps([obj.__dict__ for obj in user_daily_balance_history], default=str)
+
+        if len(user_daily_balance_history) > 0: 
+            latest_balance_value = user_daily_balance_history[-1].values
+
+            if len(user_daily_balance_history) > 30:
+                balance_change = (30, latest_balance_value - user_daily_balance_history[-30].values)
+            elif len(user_daily_balance_history) > 7:
+                balance_change = (7, latest_balance_value - user_daily_balance_history[-7].values)
+            else:
+                balance_change = (0, format(0.0, '.2f'))
+
+        context = {
+            'user_holdings_list': user_holdings_list[:5],
+            'user_daily_balance_history_json': user_daily_balance_history_json,
+            'asset_type_ratio_tuple_list_json': asset_type_ratio_tuple_list_json,
+            'latest_balance_value': latest_balance_value,
+            'balance_change': balance_change,
+            'current_date': current_date,
+        }
+        return context
+
+    else:
+        context = {
+            'current_date': current_date
+        }
+
+        return context
+    
+
+def create_test_user_data(user):
+    portfolio = get_object_or_404(Portfolio, owner=user)
+
+    asset_data = [(['KO', 'IBM'], 'stock'), (['ETH', 'BNB'], 'crypto'), (['EUR'], 'currency')]
+    exchange = get_object_or_404(Exchange, name='Manual Trades')
+
+    for type in asset_data:
+        for ticker in type[0]:
+            print(ticker)
+            asset = get_object_or_404(Asset, ticker=ticker)
+            assetbalance_record = AssetBalance(portfolio=portfolio, asset=asset, broker=exchange)
+            assetbalance_record.save()
+
+            match type[1]:
+                case 'stock':
+                    amount = 0.8
+                case 'crypto':
+                    amount = 0.4
+                case 'currency':
+                    amount = 300 
+
+            date = START_DATE
+            
+            for day in range(4):
+                date = date + datetime.timedelta(days=random.randint(4,6))
+                amount = round(amount * (1 + random.randint(1,3)/100), 2)
+                abh_record = AssetBalanceHistory(amount=amount, date=date, balance=assetbalance_record)
+                abh_record.save()            

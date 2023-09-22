@@ -34,9 +34,10 @@ class AssetBalanceAdmin(admin.ModelAdmin):
 @admin.register(AssetBalanceHistory)
 class AssetBalanceHistoryAdmin(admin.ModelAdmin):
     list_filter = [
-         ('balance__asset', admin.RelatedOnlyFieldListFilter),
-         ('balance__broker', admin.RelatedOnlyFieldListFilter),
-         ('date'),
+        ('balance__broker', admin.RelatedOnlyFieldListFilter),
+        ('balance__portfolio', admin.RelatedOnlyFieldListFilter),
+        ('date'),
+        ('balance__asset', admin.RelatedOnlyFieldListFilter),
     ]
 
     list_display = ('balance', 'round_amount', 'date')
