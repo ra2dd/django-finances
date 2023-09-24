@@ -1,5 +1,7 @@
 from binance.spot import Spot
-import datetime
+import gate_api
+
+import datetime, json
 from django.http import Http404
 
 from ..models import Asset, AssetBalance, AssetBalanceHistory, Portfolio
@@ -22,11 +24,18 @@ def timestamp_to_datetime(timestamp):
         return datetime.datetime.fromtimestamp(timestamp)
     else:
         raise Exception(f'Timestamp length is out of range - {timestamp_length}')
-
+    
 
 '''Bianance api connection'''
 def get_binance_client(api_key, api_secret):
     return Spot(base_url='https://testnet.binance.vision', api_key=api_key, api_secret=api_secret)
+
+def get_gateio_configuration(api_key, api_secret):
+    return gate_api.Configuration (
+        host = "https://api.gateio.ws/api/v4",
+        key = api_key,
+        secret = api_secret
+    )
 
 
 def import_binance_balance(api_key, api_secret):
@@ -47,11 +56,33 @@ def import_binance_balance(api_key, api_secret):
     return assets_amounts
 
 
+def import_gateio_balance(api_key, api_secret):
+
+    if check_gateio_connection(api_key, api_secret) != True:
+        return False
+    
+    api_client = gate_api.ApiClient(get_gateio_configuration(api_key, api_secret))
+
+    api_instance = gate_api.SpotApi(api_client)
+    user_balance = api_instance.list_spot_accounts()
+
+    assets_amounts = []
+    for balance in user_balance:
+
+        assets_amounts.append(AssetsAmount(balance.currency, float(balance.available) + float(balance.locked)))
+
+        print(balance.currency)
+        print(float(balance.available) + float(balance.locked))
+
+
+    return assets_amounts
+
+
 def check_binance_connection(api_key, api_secret):
 
     client = get_binance_client(api_key, api_secret)
 
-    # Check biannce api connection
+    # Check bianace api connection
     if client.ping() == {}:
         try:
             # Check if binance api keys are correct
@@ -66,12 +97,34 @@ def check_binance_connection(api_key, api_secret):
         return 'no-connection'
     
 
+def check_gateio_connection(api_key, api_secret):
+
+    api_client = gate_api.ApiClient(get_gateio_configuration(api_key, api_secret))
+    
+    # Check api connection
+    if gate_api.EarnUniApi(api_client).list_uni_currencies():
+        try:
+            # Check if api keys are correct
+            api_instance = gate_api.SpotApi(api_client)
+            api_instance.list_spot_accounts()
+        except:
+            return False
+        
+        # If api keys ok -> return True
+        return True
+    
+    else:
+        return 'no-connection'
+    
 
 def import_balance(exchange, api_connection, user):
 
     # Check exchange and import assets list
     if(exchange.name.lower() == 'binance'):
         assets_amounts = import_binance_balance(api_connection.api_key, api_connection.secret_key)
+        asset_type = 'cryptocurrency'
+    elif(exchange.name.lower() == 'gate.io'):
+        assets_amounts = import_gateio_balance(api_connection.api_key, api_connection.secret_key)
         asset_type = 'cryptocurrency'
     else:
         raise Http404(f'Importing balance from {exchange.name} Exchange not yet implemented')
@@ -81,7 +134,7 @@ def import_balance(exchange, api_connection, user):
         portfolio = Portfolio.objects.filter(owner=user)[0]
 
         # check if Asset exists in database 
-        asset = Asset.objects.filter(ticker=fetched_asset.ticker.lower()).filter(type=asset_type)
+        asset = Asset.objects.filter(ticker=fetched_asset.ticker.upper()).filter(type=asset_type)
         if len(asset) == 0:
             print(f'no asset with {fetched_asset.ticker} ticker in database')
             continue

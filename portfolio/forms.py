@@ -11,6 +11,8 @@ def check_connection(exchange_name, api_key_data, secret_key_data):
 
     if exchange_name == 'binance':
         connection_response = client_util.check_binance_connection(api_key_data, secret_key_data)
+    elif exchange_name == 'gate.io':
+        connection_response = client_util.check_gateio_connection(api_key_data, secret_key_data)
     elif exchange_name == 'manual trades':
         raise ValidationError(f'Manual Trades api connection is unavailable. Please go to connections and select different exchange.')
 
