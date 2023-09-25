@@ -5,24 +5,46 @@
 {% endblock %}
 
 {% block content %}
-    <h1>{{ asset.name }} {{ asset.type }} Detail</h1>
+    <div class="detailPanel">
+        <div>
+            <h1>Asset Detail</h1>
 
-    <p>
-        Price: {{ asset.value_object.latest_price }}
-        Amount: {{ asset.value_object.latest_holding }}
-        Value: {{ asset.value_object.latest_value }}
-    </p>
-    <ul>
-        {% for balance in user_assetbalance %}
-            <li>
-                <a href="{% url 'assetbalancehistory' asset.pk balance.pk %}">
-                    Go to assetbalancehistory list
-                </a>
-                {{ balance.broker }}
-                {{ balance.assetbalancehistory_set.latest.amount }}
-            </li>
-        {% endfor %}
+            <div class="infoHeader">
+                <h2 class="secondaryInfo">{{ asset.name }} <span>{{ asset.type }}</span></h2>
+                <p class="mainInfo">${{ asset.value_object.latest_price }}</p>
 
-        <a href="{% url 'assetbalancehistory-create' asset.pk %}">Create new assetbalancehistory</a>
-    </ul>
+                {% if user_assetbalance %}
+                    <p>
+                        Amount: {{ asset.value_object.latest_holding }}
+                        Value: {{ asset.value_object.latest_value }}
+                    </p>     
+                {% endif %}
+            </div>
+
+            <ul>
+                {% for balance in user_assetbalance %}
+                    <li>
+                        <a href="{% url 'assetbalancehistory' asset.pk balance.pk %}">
+                            <div class="mainListItem">
+                                <p>{{ balance.broker }}</p>
+                                <p>{{ balance.assetbalancehistory_set.latest.round_amount }}</p>
+                            </div>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <a href="{% url 'assetbalancehistory-create' asset.pk %}">
+                {% if user_assetbalance %}
+                    <div class="btn terButton">
+                        <p>Create new assetbalancehistory</p>
+                    </div>
+                {% else %}
+                <div class="btn mainButton">
+                    <p>Create new assetbalancehistory</p>
+                </div>
+                {% endif %}
+            </a>
+        </div>  
+    </div>
 {% endblock %}

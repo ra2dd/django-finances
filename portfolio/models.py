@@ -162,6 +162,9 @@ class AssetBalanceHistory(models.Model):
         ordering = ['date']
         get_latest_by = ['date']
 
+    def round_amount(self):
+        return round(self.amount, 2)
+
     def __str__(self):
         return f'{self.balance} - {self.amount}'
 

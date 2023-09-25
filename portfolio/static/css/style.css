@@ -232,7 +232,7 @@ header > .header-user
     margin-bottom: 3rem;
 }
 
-.detailPanel .btn {
+.btn {
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
     display: flex;
@@ -242,24 +242,71 @@ header > .header-user
     width: 20rem;
 }
 
-.detailPanel .mainButton {
+.mainButton {
     background-color: hsl(0, 0%, 33%);
     color: hsl(0, 0%, 97%);
 }
 
-.detailPanel .secButton {
+.secButton {
     background-color: hsl(0, 0%, 93%);
 }
 
-.detailPanel .delButton {
+.terButton {
     border: 2px solid hsl(0, 0%, 85%);
     color: hsl(0, 0%, 33%);
 }
 
-.detailPanel .btn p{
+.btn p{
     margin: 0;
     padding: 0;
 }
+
+.mainListItem {
+    margin-bottom: 1rem;
+    padding: 0.5rem 3rem;
+    background-color: hsl(0, 0%, 93%);
+    border-radius: 0.5rem;
+
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mainListItem:hover {
+    background-color: hsl(0, 0%, 91%);
+}
+
+.secondaryListItem {
+    margin-bottom: 1rem;
+    padding: 0.25rem 2rem;
+    background-color: hsl(0, 0%, 93%);
+    border-radius: 0.5rem;
+
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.detailPanel ul {
+    margin-bottom: 2rem;
+}
+
+.infoHeader .secondaryInfo {
+    font-size: 1.5rem;
+}
+.infoHeader .secondaryInfo span{
+    margin-left: 0.25rem;
+    font-size: 1rem;
+    color: hsl(0, 0%, 33%);
+}
+
+.infoHeader .mainInfo {
+    font-size: 1.875rem;
+}
+
+
 
 
 

@@ -5,19 +5,34 @@
 {% endblock %}
 
 {% block content %}
-    <h1>AssetBalanceHistory</h1>
 
-    <ul>
-        {% for assetbalancehistory in assetbalancehistory_list %}
-            <li>
-                {{ assetbalancehistory.balance }}
-                {{ assetbalancehistory.date }}
-                {{ assetbalancehistory.amount }}
-                <a href="{% url 'assetbalancehistory-delete' pk pk2 assetbalancehistory.pk %}">Delete</a>
-            </li>
-        {% endfor %}
-    </ul>
-    <a href="{% url 'assetbalancehistory-create-pk2' pk pk2 %}">
-        Create new record
-    </a>
+    <div class="detailPanel">
+        <div>
+            <h1>Asset Balance History</h1>
+
+            <div class="infoHeader">
+                <h2 class="mainInfo">{{ assetbalancehistory_list.0.balance.asset.name }}</h2>
+                <p class="secondaryInfo">{{ assetbalancehistory_list.0.balance.broker.name }}</p>    
+            </div>
+
+            <ul>
+                {% for assetbalancehistory in assetbalancehistory_list %}
+                    <li class="secondaryListItem">
+                        <p>{{ assetbalancehistory.date }}</p>
+                        <p>{{ assetbalancehistory.round_amount }}</p>
+                            <a href="{% url 'assetbalancehistory-delete' pk pk2 assetbalancehistory.pk %}">
+                                <p class="grayColor3">Delete</p>
+                            </a>
+
+                    </li>
+                {% endfor %}
+            </ul>
+            <a href="{% url 'assetbalancehistory-create-pk2' pk pk2 %}">
+                <div class="btn secButton">
+                    <p>Create new record</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
 {% endblock %}

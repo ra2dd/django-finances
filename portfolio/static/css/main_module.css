@@ -44,3 +44,7 @@
 .displayNone {
     display: none;
 }
+
+.autoWidth {
+    width: auto;
+}

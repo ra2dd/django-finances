@@ -5,11 +5,11 @@ class UserAssetHoldingInfo:
         self.latest_value = latest_value
 
 
-def get_asset_value_object(asset_balance_list):
+def get_asset_value_object(asset_balance_list, asset):
     
     if len(asset_balance_list) == 0:
-        zero = format(0.0, '.2f')
-        return UserAssetHoldingInfo('', '', '')
+        asset_latest_price = round(asset.assetpricehistory_set.latest().price, 2)
+        return UserAssetHoldingInfo(asset_latest_price, '', '')
     
     else:
         asset_holding_sum = 0

@@ -25,7 +25,7 @@ class AssetListView(generic.ListView, LoginRequiredMixin):
         for asset in asset_list:
             asset_balances = asset.assetbalance_set.filter(portfolio=get_user_portfolio(self)).filter(asset=asset)
             
-            setattr(asset, 'value_object', assets_util.get_asset_value_object(asset_balances))
+            setattr(asset, 'value_object', assets_util.get_asset_value_object(asset_balances, asset))
 
         return context
     
@@ -42,7 +42,7 @@ class AssetDetailView(generic.DetailView, LoginRequiredMixin):
         user_assetbalance = asset_obj.assetbalance_set.filter(portfolio=get_user_portfolio(self)).filter(asset=asset_obj)
         context['user_assetbalance'] = user_assetbalance
 
-        setattr(asset_obj, 'value_object', assets_util.get_asset_value_object(user_assetbalance))
+        setattr(asset_obj, 'value_object', assets_util.get_asset_value_object(user_assetbalance, asset_obj))
 
         return context
    
