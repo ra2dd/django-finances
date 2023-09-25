@@ -123,7 +123,7 @@ header > .header-user
 
 
 /*
-Asset List Table styling
+    Asset List Table styling
 */
 .tableAssetList tbody, thead tr *:nth-child(2), *:nth-child(3) {
     text-align: left;
@@ -152,9 +152,9 @@ Asset List Table styling
 
 
 /*
-    Styling center panel
+    Styling list panels
 */
-.centerPanel {
+.listPanel {
     display: flex;
     justify-content: center;
     margin-top: 4%;
@@ -162,15 +162,15 @@ Asset List Table styling
     text-align: left;
 }
 
-.centerPanel div ul {
+.listPanel div ul {
     width: fit-content;
 }
-.centerPanel li {
+.listPanel li {
     margin-bottom: 1rem;
     padding: 1rem 3rem;
     background-color: hsl(0, 0%, 97%);
     border-radius: 0.5rem;
-    min-width: 22rem;
+    min-width: 25rem;
 
     display: flex;
     flex-flow: row wrap;
@@ -178,18 +178,18 @@ Asset List Table styling
     align-items: center;
 }
 
-.centerPanel li:hover {
+.listPanel li:hover {
     background-color: hsl(0, 0%, 91%);
 }
 
-.centerPanel li > p:nth-of-type(1) {
+.listPanel li > p:nth-of-type(1) {
     margin-left: 1rem;
     margin-right: auto;
 
     font-size: 1.5rem;
 }
 
-.centerPanel li > p:nth-of-type(2) {
+.listPanel li > p:nth-of-type(2) {
     margin-left: 2rem;
     color: hsl(0, 0%, 33%);
     width: min-content;
@@ -197,14 +197,72 @@ Asset List Table styling
     font-size: 0.875rem;
 }
 
-.centerPanel li img {
+.listPanel li img {
     max-width: 2rem;
     max-height: 2rem;
 }
 
-.centerPanel .headingDivider {
+.listPanel .headingDivider {
     margin-top: 2rem;
 }
+
+
+/*
+    Styling detail panels
+*/
+.detailPanel {
+    display: flex;
+    justify-content: center;
+    margin-top: 8%;
+    text-align: left;
+}
+
+.detailPanel h1 {
+    display: none;
+}
+
+.detailPanel > div {
+    background-color: hsl(0, 0%, 97%);
+    padding: 3rem 4rem;
+    border-radius: 1rem;
+}
+
+.detailPanel .mainHeader {
+    font-size: 1.875rem;
+    margin-bottom: 3rem;
+}
+
+.detailPanel .btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+
+    width: 20rem;
+}
+
+.detailPanel .mainButton {
+    background-color: hsl(0, 0%, 33%);
+    color: hsl(0, 0%, 97%);
+}
+
+.detailPanel .secButton {
+    background-color: hsl(0, 0%, 93%);
+}
+
+.detailPanel .delButton {
+    border: 2px solid hsl(0, 0%, 85%);
+    color: hsl(0, 0%, 33%);
+}
+
+.detailPanel .btn p{
+    margin: 0;
+    padding: 0;
+}
+
+
+
 
 
 /*
@@ -318,7 +376,6 @@ input[type="number"], input[type="date"], select {
 .errorlist > li + li {
     margin-top: 0.25rem;
 }
-
 
 
 /*
