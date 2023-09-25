@@ -7,34 +7,50 @@
 {% block content %}
     <h1 class="displayNone">Exchanges</h1>
 
-    {% if exchange_list %}
-        <h2 class="marginTB1">Active Connection</h2>
+    <div class="centerPanel">
+        <div>
 
-        <ul class="widthContent">
+    {% if exchange_list %}
+        <h2>Active Connection</h2>
+
+        <ul>
             {% for exchange in exchange_list %}
                 {% if exchange.is_user_connected == True %}
                         <a href="{{ exchange.get_absolute_url }}">
-                            <li class="flexboxSB grayBc9 marginB1 paddingTB1 paddingLR3 borderRadius">
-                                <p>connected</p>
-                                <p class="headingMd flexJustifyStart marginL1">{{ exchange.name }}</p>
-                                <p class="marginL2">{{ exchange.type }}</p>
+                            <li>
+                                <img src="" />
+                                <p>{{ exchange.name }}</p>
+                                <p>{{ exchange.get_type_display }}</p>
                             </li>
                         </a>
                 {% endif %}
             {% endfor %}
-        </ul>
 
-        <h2>Ready to Connect</h2>
-        <ul>
+
+            <h2 class="headingDivider">Ready to Connect</h2>
+
             {% for exchange in exchange_list %}
                 {% if exchange.is_user_connected == False and exchange.name.lower != 'manual trades' %}
-                    <li>
-                        {{ exchange.name }}
-                        <br />
-                        <a href="{{ exchange.get_absolute_url }}">go to details</a>
-                </li>
+                    <a href="{{ exchange.get_absolute_url }}">
+                        <li>
+                            <img src="" />
+                            <p>{{ exchange.name }}</p>
+                            <p>{{ exchange.get_type_display }}</p>
+                        </li>
+                    </a>
                 {% endif %}
             {% endfor %}
+
+            <h2 class="headingDivider">Coming Soon</h2>
+                <li>
+                    <img href="" >
+                    <p>Coinbase</p>
+                    <p>Cryptocurrency Exchange</p>
+                </li>
+
         </ul>
     {% endif %}
+
+        </div>
+    </div>
 {% endblock %}

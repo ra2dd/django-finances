@@ -352,7 +352,7 @@ def get_crypto_assets():
     '''
 
     for response_asset in json_response:
-        asset = Asset.objects.filter(api_name=response_asset['id'])
+        asset = Asset.objects.filter(api_name=response_asset['id']).filter(type='cryptocurrency')
         if len(asset) == 0:
             print(f'no asset with api_name {response_asset["id"]}')
             
@@ -364,6 +364,6 @@ def get_crypto_assets():
             asset_record.save()
 
         elif len(asset) > 1:
-            raise Exception('Too many assets with given response api_name')
+            raise Exception(f'Too many assets records with api_name {response_asset["id"]}')
         elif len(asset) == 1:
             print(f'asset with api_name {response_asset["id"]} exists')           

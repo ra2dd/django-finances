@@ -19,7 +19,7 @@
 header
 {
     display: flex;
-    flex-flow: row wrap;
+    flex-flow: row;
     align-items: baseline;
     justify-content: space-between;
     width: 100%;
@@ -97,6 +97,9 @@ header > .header-user
     padding: 0.75rem 2rem;
 }
 
+.dashboardTotalBalance {
+    
+}
 
 .dashboardTotalBalance > div {
     width: 33%;
@@ -149,12 +152,68 @@ Asset List Table styling
 
 
 /*
+    Styling center panel
+*/
+.centerPanel {
+    display: flex;
+    justify-content: center;
+    margin-top: 4%;
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.centerPanel div ul {
+    width: fit-content;
+}
+.centerPanel li {
+    margin-bottom: 1rem;
+    padding: 1rem 3rem;
+    background-color: hsl(0, 0%, 97%);
+    border-radius: 0.5rem;
+    min-width: 22rem;
+
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.centerPanel li:hover {
+    background-color: hsl(0, 0%, 91%);
+}
+
+.centerPanel li > p:nth-of-type(1) {
+    margin-left: 1rem;
+    margin-right: auto;
+
+    font-size: 1.5rem;
+}
+
+.centerPanel li > p:nth-of-type(2) {
+    margin-left: 2rem;
+    color: hsl(0, 0%, 33%);
+    width: min-content;
+
+    font-size: 0.875rem;
+}
+
+.centerPanel li img {
+    max-width: 2rem;
+    max-height: 2rem;
+}
+
+.centerPanel .headingDivider {
+    margin-top: 2rem;
+}
+
+
+/*
     Styling forms made with table
 */
 .tableForm {
     display: flex;
     justify-content: center;
-    margin-top: 4rem;
+    margin-top: 8%;
     text-align: left;
 }
 

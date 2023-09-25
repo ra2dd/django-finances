@@ -39,9 +39,10 @@ class AssetDetailView(generic.DetailView, LoginRequiredMixin):
         
         asset_obj = context['object']
 
-        asset_balances = asset_obj.assetbalance_set.filter(portfolio=get_user_portfolio(self)).filter(asset=asset_obj)
-        
-        setattr(asset_obj, 'value_object', assets_util.get_asset_value_object(asset_balances))
+        user_assetbalance = asset_obj.assetbalance_set.filter(portfolio=get_user_portfolio(self)).filter(asset=asset_obj)
+        context['user_assetbalance'] = user_assetbalance
+
+        setattr(asset_obj, 'value_object', assets_util.get_asset_value_object(user_assetbalance))
 
         return context
    
@@ -51,9 +52,11 @@ class AssetBalanceHistoryListView(generic.ListView, LoginRequiredMixin):
     model = AssetBalanceHistory
 
     def get_queryset(self):
-        return (
-            AssetBalanceHistory.objects.filter(balance_id=self.kwargs['pk2'])
-        )
+        balance = get_object_or_404(AssetBalance, pk=self.kwargs['pk2'])
+        if balance.portfolio.owner == self.request.user:
+            return AssetBalanceHistory.objects.filter(balance=balance)
+        else:
+            return None
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

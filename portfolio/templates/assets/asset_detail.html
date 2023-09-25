@@ -13,7 +13,7 @@
         Value: {{ asset.value_object.latest_value }}
     </p>
     <ul>
-        {% for balance in asset.assetbalance_set.all %}
+        {% for balance in user_assetbalance %}
             <li>
                 <a href="{% url 'assetbalancehistory' asset.pk balance.pk %}">
                     Go to assetbalancehistory list
