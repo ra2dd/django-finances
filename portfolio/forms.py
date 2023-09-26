@@ -56,10 +56,10 @@ class ConnectionAddModelForm(forms.ModelForm):
 
 class AssetBalanceHistoryForm(forms.Form):
     
-    def return_exchange_choice_tuple(obj):
+    def get_e_choices(obj):
         return (obj.pk, obj.name)
     
-    exchange_choices = list(map(return_exchange_choice_tuple, Exchange.objects.all())) 
+    exchange_choices = list(map(get_e_choices, Exchange.objects.all())) 
 
     exchange = forms.ChoiceField(choices=exchange_choices)
     amount = forms.DecimalField()

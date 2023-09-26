@@ -65,7 +65,7 @@ def get_user_asset_holdings_with_values_list(user_all_balance_list):
         # Create UserCurrentAsset object and append it to the context list
         user_holdings_list.append(UserCurrentAsset(balance.asset.name, balance.asset.ticker, balance.asset.type, balance.asset.icon, round(asset_latest_price, 2), round(asset_latest_holding, 2), round(asset_latest_value, 2)))
 
-    user_holdings_list.sort(reverse=False, key=lambda h: h.latest_value)
+    user_holdings_list.sort(reverse=True, key=lambda h: h.latest_value)
     return user_holdings_list
 
 
@@ -284,8 +284,8 @@ def get_asset_type_ratio_tuple_list(user_holdings_list):
         dict = dict[:1].upper() + dict[1:]
 
         asset_type_ratio_tuple_list.append((dict, ratio, value))
-    
-    return asset_type_ratio_tuple_list
+
+    return sorted(asset_type_ratio_tuple_list, key=lambda d: float(d[1]), reverse=True)
 
 
 def get_dashboard_context(user_obj):
@@ -300,20 +300,28 @@ def get_dashboard_context(user_obj):
 
     if len(user_holdings_list) > 0:
         asset_ratio = get_asset_type_ratio_tuple_list(user_holdings_list)
+
         asset_type_ratio_tuple_list_json = json.dumps(asset_ratio, default=str)
+        top_asset_type_allocation = asset_ratio[0]
         
         user_daily_balance_history = get_user_daily_balance_history(user_all_balance_list)
         user_daily_balance_history_json = json.dumps([obj.__dict__ for obj in user_daily_balance_history], default=str)
 
         if len(user_daily_balance_history) > 0: 
             latest_balance_value = user_daily_balance_history[-1].values
-
+            
             if len(user_daily_balance_history) > 30:
-                balance_change = (30, latest_balance_value - user_daily_balance_history[-30].values)
+                balance_change = [30, latest_balance_value - user_daily_balance_history[-30].values]
             elif len(user_daily_balance_history) > 7:
-                balance_change = (7, latest_balance_value - user_daily_balance_history[-7].values)
+                balance_change = [7, latest_balance_value - user_daily_balance_history[-7].values]
             else:
-                balance_change = (0, format(0.0, '.2f'))
+                balance_change = [0, format(0.0, '.2f')]
+
+            if balance_change[1] < 0:
+                balance_change[1] *= -1
+                balance_change.append('negative')
+
+        top_asset_allocation = round(user_holdings_list[0].latest_value / latest_balance_value * 100)
 
         context = {
             'user_holdings_list': user_holdings_list[:5],
@@ -322,6 +330,9 @@ def get_dashboard_context(user_obj):
             'latest_balance_value': latest_balance_value,
             'balance_change': balance_change,
             'current_date': current_date,
+            'top_asset_type_allocation': top_asset_type_allocation,
+            'top_asset_allocation': top_asset_allocation,
+            'asset_ratio': asset_ratio,
         }
         return context
 

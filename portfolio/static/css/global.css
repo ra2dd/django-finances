@@ -1,7 +1,7 @@
 html, 
 body
 {
-    font-family: 'Rubik', Segoe UI;
+    font-family: 'Rubik', -apple-system, Segoe UI;
     margin: 0;
     padding: 0;
     font-weight: 500;
@@ -25,12 +25,13 @@ h1, h2, h3, h4, h5, h6, p {
 
 a {
     text-decoration: none;
-    color: hsl(0, 0%, 33%);
 }
 
+/*
 a:hover {
     text-decoration: underline;
 }
+*/
 
 table caption {
     display: none;

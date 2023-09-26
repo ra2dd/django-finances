@@ -12,6 +12,13 @@
     align-items: center;
 }
 
+.flexboxStart {
+    display: flex;
+    flex-flow: row;
+    justify-content: start;
+    align-items: center;
+}
+
 .flexboxCenter {
     display: flex;
     flex-flow: row wrap;

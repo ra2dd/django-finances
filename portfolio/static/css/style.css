@@ -97,10 +97,6 @@ header > .header-user
     padding: 0.75rem 2rem;
 }
 
-.dashboardTotalBalance {
-    
-}
-
 .dashboardTotalBalance > div {
     width: 33%;
     padding: 0.5rem 1rem;
@@ -111,13 +107,53 @@ header > .header-user
 }
 
 #chartBalance {
-    width: 40rem !important;
-    height: 20rem !important;
+    width: 28rem !important;
+    height: 14rem !important;
 }
 
 #chartAssetRatio {
-    width: 15rem !important;
-    height: 15rem !important;
+    width: 11rem !important;
+    height: 11rem !important;
+}
+
+.lineChart {
+    background-color: hsl(0, 0%, 97%);
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.dashboardSection {
+    padding-bottom: 2rem;
+}
+
+.dashboardSection > * {
+    margin-top: 2rem;
+}
+
+.dashboardTopAsset {
+    background-color: hsl(0, 0%, 91%);
+    padding: 2rem 3rem;
+    border-radius: 0.5rem;
+}
+.dashboardTopAsset  .mainPrice{
+    margin-top: 0;
+}
+
+.centerCtn {
+    margin-left: 2rem;
+    flex-grow: 1;
+}
+
+.douChartCtn {
+    margin-right: 0.5rem;
+}
+
+.legendItem {
+    background-color: hsl(0, 0%, 53%);
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.5rem;
+    border-radius: 0.25rem;
 }
 
 
@@ -148,6 +184,11 @@ header > .header-user
 .tableAssetList > tbody td {
     padding: 1rem 2rem 0.75rem;
     border-bottom: solid 2px hsl(0, 0%, 91%);
+}
+
+.tableAssetList tr:hover {
+    background-color: hsl(0, 0%, 91%);
+    cursor: pointer;
 }
 
 

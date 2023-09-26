@@ -13,7 +13,7 @@
     </div>
 
     {% if user_holdings_list %}
-    <div class="flexboxSA grayBc5 marginB1 textLeft dashboardTotalBalance">
+    <div class="flexboxSA grayBc5 textLeft dashboardTotalBalance borderRadius">
         <div>
             <h3 class="textNormal">Total Balance</h3>
             <p class="headingXl">${{ latest_balance_value }}</p>
@@ -28,7 +28,7 @@
                 {% endif %}
             </h3>
             <p class="headingXl">
-                {% if balance_change.1 < 0 %}
+                {% if balance_change.2 %}
                     -${{ balance_change.1 }}
                 {% else %}
                     +${{ balance_change.1 }}
@@ -37,12 +37,12 @@
         </div>
 
         <div>
-            <h3 class="textNormal">Cash</h3>
-            <p class="headingXl">$200</p>
+            <h3 class="textNormal">{{ top_asset_type_allocation.0 }} allocation</h3>
+            <p class="headingXl">{{ top_asset_type_allocation.1 }}%</p>
         </div>
     </div>
     
-    <div>
+    <div class="dashboardSection flexboxSB">
         <table class="dashboardTable textSmall">
             <caption>
                 List of user assets
@@ -75,14 +75,48 @@
                 {% endfor %}
             </tbody>
         </table>
-    </div>
 
-    <div>
-        <canvas id="chartBalance"></canvas>
-    </div>
+        <div class="flexboxSA centerCtn">
+            <div class="dashboardTopAsset">
+                <p class="textLarger">
+                    {{ user_holdings_list.0.name }} 
+                    <span class="textSmall">({{ user_holdings_list.0.ticker }})</span>
+                </p>
+                <p class="headingXl mainPrice">${{ user_holdings_list.0.latest_value }}</p>
+                <p>
+                    {{ top_asset_allocation }}% 
+                    <span class="textSmall grayColor2">allocation</span>
+                </p>
+            </div>
+        </div>
 
-    <div>
-        <canvas id="chartAssetRatio"></canvas>
+        <div class="lineChart">
+            <div class="flexboxSA">
+                <p class="textSmall weight700 grayColor3">Portfolio value history</p>
+            </div>
+
+            <canvas id="chartBalance"></canvas>
+        </div>
+
+
+        <div class="flexboxSA centerCtn">
+            <div class="douChartCtn">
+                <canvas id="chartAssetRatio"></canvas>
+            </div>
+
+            <div class="chartLegend">
+                <div>
+                    {% for type in asset_ratio %}
+                        <div class="flexboxStart"> 
+                            <div class="legendItem legend{{ forloop.counter }}"></div>
+                            <p class="textSmall">{{ type.0 }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+
     </div>
 
     <script>
@@ -92,11 +126,12 @@
         let chartLine = new Chart(ctxLine, {
             type: 'line',
             data: {
-                labels: daily_balance.map(obj => obj.date),
+                labels: daily_balance.map(obj => obj.date.slice(5)),
                 datasets: [
                     {
                         label: "Portfolio value",
-                        data: daily_balance.map(obj => obj.values)
+                        data: daily_balance.map(obj => obj.values),
+                        pointRadius: 0.5,
                     }
                 ]
             },
@@ -108,12 +143,29 @@
                         display: false
                     }
                 },
+                scales: {
+                    x: {
+                        grid: {
+                        display: false,
+                        },
+                        ticks: {
+                            //maxTicksLimit: 
+                        },
+                    },
+                    y: {
+                        grid: {
+                        display: false
+                        },
+                        ticks: {
+                            maxTicksLimit: 12
+                        },
+                    }
+                },
             }
         });
         
         const ctxDough = document.getElementById("chartAssetRatio").getContext("2d");
         const asset_type_ratio = JSON.parse('{{ asset_type_ratio_tuple_list_json | safe }}');
-        console.log(asset_type_ratio); 
         
         let chartDough = new Chart(ctxDough, {
             type: 'doughnut',
@@ -131,7 +183,7 @@
                 mantainAspectRatio: true,
                 plugins: {
                     legend: {
-                        display: true
+                        display: false
                     }
                 },
             }
