@@ -26,7 +26,7 @@ header
 
     grid-area: header;
 
-    border-bottom: 2px solid hsl(0, 0%, 91%);
+    border-bottom: 2px solid hsl(214, 32%, 91%);;
 }
 
 .content-container
@@ -52,7 +52,7 @@ footer
 
 .header-navbar > li {
     margin-left: 2rem;
-    color: hsl(0, 0%, 33%);
+    color: hsl(215, 19%, 35%);
 }
 
 .header-navbar > li > a {
@@ -60,16 +60,10 @@ footer
 }
 
 .header-navbar > li > .active {
-    background-color: hsl(0, 0%, 85%);
-    color: hsl(0, 0%, 20%) !important;
+    background-color: hsl(213, 27%, 84%);
+    color: hsl(217, 33%, 17%) !important;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
-}
-
-
-header > .header-logo
-{
-    
 }
 
 header > .header-user
@@ -78,11 +72,6 @@ header > .header-user
     justify-content: right;
 }
 
-
-
-/*
-    Other styling
-*/
 
 
 
@@ -103,7 +92,7 @@ header > .header-user
 }
 
 .dashboardTotalBalance > div:nth-of-type(n+2) {
-    border-left: 2px solid hsl(0, 0%, 85%);
+    border-left: 2px solid hsl(213, 27%, 84%);
 }
 
 #chartBalance {
@@ -117,7 +106,7 @@ header > .header-user
 }
 
 .lineChart {
-    background-color: hsl(0, 0%, 97%);
+    background-color: hsl(210, 40%, 97%);
     padding: 1rem;
     border-radius: 0.5rem;
 }
@@ -131,7 +120,7 @@ header > .header-user
 }
 
 .dashboardTopAsset {
-    background-color: hsl(0, 0%, 91%);
+    background-color: hsl(214, 32%, 91%);
     padding: 2rem 3rem;
     border-radius: 0.5rem;
 }
@@ -149,7 +138,7 @@ header > .header-user
 }
 
 .legendItem {
-    background-color: hsl(0, 0%, 53%);
+    background-color: hsl(215, 16%, 47%);
     width: 1rem;
     height: 1rem;
     margin-right: 0.5rem;
@@ -183,12 +172,43 @@ header > .header-user
 
 .tableAssetList > tbody td {
     padding: 1rem 2rem 0.75rem;
-    border-bottom: solid 2px hsl(0, 0%, 91%);
+    border-bottom: solid 2px hsl(214, 32%, 91%);
+}
+
+.rowIcon {
+    padding: 0 2rem 0;
 }
 
 .tableAssetList tr:hover {
-    background-color: hsl(0, 0%, 91%);
+    background-color: hsl(214, 32%, 91%);
     cursor: pointer;
+}
+
+
+
+/*
+    Styling asset list
+*/
+
+.filterButtons {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.filterButtons > * {
+    all: unset;
+    font-size: 0.875rem;
+    margin-right: 0.5rem;
+    border: 2px solid hsl(213, 27%, 84%);
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+.filterButtons > .active {
+    background-color: hsl(213, 27%, 84%);
+    color: hsl(217, 33%, 17%);;
+    border: 1px solid hsl(213, 27%, 84%);
 }
 
 
@@ -209,7 +229,7 @@ header > .header-user
 .listPanel li {
     margin-bottom: 1rem;
     padding: 1rem 3rem;
-    background-color: hsl(0, 0%, 97%);
+    background-color: hsl(210, 40%, 97%);
     border-radius: 0.5rem;
     min-width: 25rem;
 
@@ -220,7 +240,7 @@ header > .header-user
 }
 
 .listPanel li:hover {
-    background-color: hsl(0, 0%, 91%);
+    background-color: hsl(214, 32%, 91%);
 }
 
 .listPanel li > p:nth-of-type(1) {
@@ -232,7 +252,7 @@ header > .header-user
 
 .listPanel li > p:nth-of-type(2) {
     margin-left: 2rem;
-    color: hsl(0, 0%, 33%);
+    color: hsl(215, 19%, 35%);
     width: min-content;
 
     font-size: 0.875rem;
@@ -246,6 +266,7 @@ header > .header-user
 .listPanel .headingDivider {
     margin-top: 2rem;
 }
+
 
 
 /*
@@ -263,7 +284,7 @@ header > .header-user
 }
 
 .detailPanel > div {
-    background-color: hsl(0, 0%, 97%);
+    background-color: hsl(210, 40%, 97%);
     padding: 3rem 4rem;
     border-radius: 1rem;
 }
@@ -284,17 +305,21 @@ header > .header-user
 }
 
 .mainButton {
-    background-color: hsl(0, 0%, 33%);
-    color: hsl(0, 0%, 97%);
+    background-color: hsl(215, 19%, 35%);
+    color: hsl(210, 40%, 97%);
+}
+
+.mainButton p {
+    font-weight: 700;
 }
 
 .secButton {
-    background-color: hsl(0, 0%, 93%);
+    background-color: hsl(210, 40%, 95%);
 }
 
 .terButton {
-    border: 2px solid hsl(0, 0%, 85%);
-    color: hsl(0, 0%, 33%);
+    border: 2px solid hsl(213, 27%, 84%);
+    color: hsl(215, 19%, 35%);
 }
 
 .btn p{
@@ -305,7 +330,7 @@ header > .header-user
 .mainListItem {
     margin-bottom: 1rem;
     padding: 0.5rem 3rem;
-    background-color: hsl(0, 0%, 93%);
+    background-color: hsl(210, 40%, 95%);
     border-radius: 0.5rem;
 
     display: flex;
@@ -315,13 +340,13 @@ header > .header-user
 }
 
 .mainListItem:hover {
-    background-color: hsl(0, 0%, 91%);
+    background-color: hsl(214, 32%, 91%);
 }
 
 .secondaryListItem {
     margin-bottom: 1rem;
     padding: 0.25rem 2rem;
-    background-color: hsl(0, 0%, 93%);
+    background-color: hsl(210, 40%, 95%);
     border-radius: 0.5rem;
 
     display: flex;
@@ -340,16 +365,12 @@ header > .header-user
 .infoHeader .secondaryInfo span{
     margin-left: 0.25rem;
     font-size: 1rem;
-    color: hsl(0, 0%, 33%);
+    color: hsl(215, 19%, 35%);
 }
 
 .infoHeader .mainInfo {
     font-size: 1.875rem;
 }
-
-
-
-
 
 
 
@@ -369,11 +390,11 @@ header > .header-user
 
 .tableForm .formHeader {
     font-weight: 700;
-    color:hsl(0, 0%, 20%)
+    color:hsl(217, 33%, 17%);
 }
 
 .tableForm > div {
-    background-color: hsl(0, 0%, 97%);
+    background-color: hsl(210, 40%, 97%);
     padding: 3rem 4rem;
     border-radius: 1rem;
 }
@@ -405,7 +426,7 @@ header > .header-user
 
 .tableForm input[type="text"], input[type="password"], input[type="email"], 
 input[type="number"], input[type="date"], select {
-    background-color: hsl(0, 0%, 95%);
+    background-color: hsl(210, 40%, 95%);
     width: 20em;
     height: 1.5em;
     font-size: 1.125rem;
@@ -420,7 +441,7 @@ input[type="number"], input[type="date"], select {
 }
 
 .tableForm input[type="password"] {
-    color: hsl(0, 0%, 33%);
+    color: hsl(215, 19%, 35%);
 }
 
 .tableForm form > .submitCtn {
@@ -432,8 +453,8 @@ input[type="number"], input[type="date"], select {
     margin-top: 2rem;
     padding: 0.5rem 1rem;
     font-size: 1.125rem;
-    color: hsl(0, 0%, 95%);
-    background-color: hsl(0, 0%, 33%);
+    color: hsl(210, 40%, 95%);
+    background-color: hsl(215, 19%, 35%);
 }
 
 .tableForm input[type="submit"]:hover {
@@ -441,7 +462,7 @@ input[type="number"], input[type="date"], select {
 }
 
 .tableForm input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus {
-    border: 1px solid hsl(0, 0%, 85%);
+    border: 1px solid hsl(213, 27%, 84%);
 }
 
 .tableForm form ~ p {
@@ -450,13 +471,13 @@ input[type="number"], input[type="date"], select {
 
 .tableForm p{
     margin-top: 1rem;
-    color: hsl(0, 0%, 20%);
+    color: hsl(217, 33%, 17%);;
 }
 
 .tableForm .formError, .errorlist > li {
     font-size: 1rem;
-    background-color: hsl(0, 0%, 53%);
-    color:hsl(0, 0%, 97%);
+    background-color: hsl(215, 16%, 47%);
+    color:hsl(210, 40%, 97%);
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
 }
@@ -466,13 +487,14 @@ input[type="number"], input[type="date"], select {
 }
 
 
+
 /*
     Styling index page
 */
 .infoBoxes > div {
     max-width: 28%;
-    background-color: hsl(0, 0%, 97%);
-    color: hsl(0, 0%, 20%);
+    background-color: hsl(210, 40%, 97%);
+    color: hsl(217, 33%, 17%);;
     padding: 2rem 1rem;
     margin: 0.5rem;
     border-radius: 0.25rem;

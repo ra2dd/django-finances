@@ -13,7 +13,7 @@ def get_user_portfolio(self):
     return get_object_or_404(Portfolio, owner=self.request.user)
 
 
-class AssetListView(generic.ListView, LoginRequiredMixin):
+class AssetListView(LoginRequiredMixin, generic.ListView):
     
     template_name = 'assets/asset_list.html'
     model = Asset
@@ -30,7 +30,7 @@ class AssetListView(generic.ListView, LoginRequiredMixin):
         return context
     
 
-class AssetDetailView(generic.DetailView, LoginRequiredMixin):
+class AssetDetailView(LoginRequiredMixin, generic.DetailView):
     template_name = 'assets/asset_detail.html'
     model = Asset
 
@@ -47,7 +47,7 @@ class AssetDetailView(generic.DetailView, LoginRequiredMixin):
         return context
    
 
-class AssetBalanceHistoryListView(generic.ListView, LoginRequiredMixin):
+class AssetBalanceHistoryListView(LoginRequiredMixin, generic.ListView):
     template_name = 'assets/assetbalancehistory_list.html'
     model = AssetBalanceHistory
 
@@ -108,7 +108,8 @@ def assetbalancehistory_create(request, pk, pk2=None):
             # Create new AssetBalanceHistory record
             assetbalancehistory_record = AssetBalanceHistory(amount=amount, date=date, balance=assetbalance_record)
             assetbalancehistory_record.save()
-            return HttpResponseRedirect(reverse('asset-detail', args=[pk]))
+
+            return HttpResponseRedirect(reverse('assetbalancehistory', args=[pk, assetbalance_record.pk]))
     else:
         if pk2 == None:
             form = AssetBalanceHistoryForm()
@@ -125,7 +126,7 @@ def assetbalancehistory_create(request, pk, pk2=None):
     return render(request, 'assets/assetbalancehistory_form.html', context)
 
 
-class AssetBalanceHistoryDelete(generic.DeleteView, LoginRequiredMixin):
+class AssetBalanceHistoryDelete(LoginRequiredMixin, generic.DeleteView):
     model = AssetBalanceHistory
     template_name = 'assets/assetbalancehistory_delete.html'
     pk_url_kwarg = 'pk3'

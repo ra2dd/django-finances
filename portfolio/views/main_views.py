@@ -10,12 +10,10 @@ from ..utils import dashboard_util
 def index(request):
     """View function for the home page of the site."""
 
-    context = {}
-
-    return render(request, 'index.html', context=context)
+    return render(request, 'index.html', {})
 
 
-class DashboardView(generic.TemplateView, LoginRequiredMixin):
+class DashboardView(LoginRequiredMixin, generic.TemplateView):
     """View function for the user dashboard"""
 
     template_name = 'dashboard.html'

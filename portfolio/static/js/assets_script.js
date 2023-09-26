@@ -61,20 +61,38 @@ const btnStock = document.getElementById('btn-stock');
 const btnCurrency = document.getElementById('btn-currency');
 const btnEmptyValues = document.getElementById('btn-empty-values');
 
-btnAll.addEventListener('click', () => filterRowType('all'));
-btnCrypto.addEventListener('click', () => filterRowType('cryptocurrency'));
-btnStock.addEventListener('click', () => filterRowType('stock'));
-btnCurrency.addEventListener('click', () => filterRowType('currency'));
-btnEmptyValues.addEventListener('click', () => changeEmptyValuesVisibility())
+typeButtons = [btnAll, btnCrypto, btnStock, btnCurrency];
 
-function changeEmptyValuesVisibility() {
+btnAll.addEventListener('click', (e) => filterRowType('all', e));
+btnCrypto.addEventListener('click', (e) => filterRowType('cryptocurrency', e));
+btnStock.addEventListener('click', (e) => filterRowType('stock', e));
+btnCurrency.addEventListener('click', (e) => filterRowType('currency', e));
+btnEmptyValues.addEventListener('click', (e) => changeEmptyValuesVisibility(e));
+
+function changeEmptyValuesVisibility(event) {
   emptyRowsVisible = !emptyRowsVisible;
-  filterRowType(activeFilter);
+  
+  if (emptyRowsVisible == false) {
+    event.target.setAttribute('class', 'active');
+  } else {
+    event.target.removeAttribute('class');
+  }
+
+  filterRowType(activeFilter, false);
 }
 
-function filterRowType(type) {
+function filterRowType(type, event) {
   emptyTable();
-  activeFilter = type
+  activeFilter = type;
+
+  if (event != false){
+    for (const button of typeButtons) {
+      if (button.getAttribute('class') == 'active') {
+        button.removeAttribute('class');
+      }
+    }
+    event.target.setAttribute('class', 'active');
+  }
 
   if (type == 'all') {
     appendDataRows();

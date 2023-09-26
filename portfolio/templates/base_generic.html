@@ -53,7 +53,9 @@
 
                 <div class="header-user">
                     {% if user.is_authenticated %}
-                        <a href="{% url 'logout' %}">Log out</a>
+                        <a href="{% url 'logout' %}">
+                            <span class="grayColor3">Log out</span>
+                        </a>
                     {% else %}
                         <a href="{% url 'login' %}">Log in</a>
                     {% endif %}
@@ -68,8 +70,8 @@
             </section>
 
             <footer>
-                <p>
-                    Footer
+                <p class="grayColor4">
+                    Portfolio 2023
                 </p>
             </footer>
         </div>

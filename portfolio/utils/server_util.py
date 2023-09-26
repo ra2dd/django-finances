@@ -337,7 +337,7 @@ def import_current_currency_price():
 
 def get_crypto_assets():
     
-    response = requests.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=6&page=1&sparkline=false&locale=en', headers=headers)
+    response = requests.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=false&locale=en', headers=headers)
     json_response = json.loads(response.content)
     # print(json.dumps(json_response, indent=4))
 

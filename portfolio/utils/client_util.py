@@ -26,10 +26,11 @@ def timestamp_to_datetime(timestamp):
         raise Exception(f'Timestamp length is out of range - {timestamp_length}')
     
 
-'''Bianance api connection'''
+'''Binance api client'''
 def get_binance_client(api_key, api_secret):
-    return Spot(base_url='https://testnet.binance.vision', api_key=api_key, api_secret=api_secret)
+    return Spot(base_url='https://api.binance.com', api_key=api_key, api_secret=api_secret)
 
+'''Gate.io api client'''
 def get_gateio_configuration(api_key, api_secret):
     return gate_api.Configuration (
         host = "https://api.gateio.ws/api/v4",

@@ -5,52 +5,65 @@
 
     {% load static %}
         <script src="{% static 'js/assets_script.js' %}" defer></script>
+
+        <script>
+            let rows = [];
+        </script>
 {% endblock %}
 
 {% block content %}
-    <h1 class="textLarger">All assets</h1>
+    
+    <div class="widthContent marginCenter">
 
-    <div>
-        <button id="btn-all" type="button">All</button>
-        <button id="btn-crypto" type="button">Cryptocurrency</button>
-        <button id="btn-stock" type="button">Stock</button>
-        <button id="btn-currency" type="button">Currency</button>
-    </div>
+        <h1 class="textLarger">All assets</h1>
 
-    <button id="btn-empty-values" type="button">Hide empty values</button>
+        <div class="filterButtons">
+            <button id="btn-all" class="active" type="button">All</button>
+            <button id="btn-crypto" type="button">Cryptocurrency</button>
+            <button id="btn-stock" type="button">Stock</button>
+            <button id="btn-currency" type="button">Currency</button>
+            <button id="btn-empty-values" type="button">Hide empty values</button>
+        </div>
 
-    {% if asset_list %}
-        <table class="tableAssetList">
-            <thead class="grayBc7 grayColor2">
-                <tr>
-                    <th scope="col">Icon</th>
-                    <th scope="col">Symbol</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Holdings</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Value</th>
-                </tr>
-            </thead>
-
-            <tbody class="grayBc9 grayColor3">
-                {% for asset in asset_list %}
+        {% if asset_list %}
+            <table class="tableAssetList">
+                <thead class="grayBc7 grayColor2">
                     <tr>
-                        <td scope="row">
-                            <!--
-                            {% load static %}
-                            <img class='iconSmall' src="{% static assettest.icon.url|slice:'18:' %}" />
-                            -->
-                        </td>
-                        <td scope="row">{{ asset.ticker.upper }}</td>
-                        <td class="grayColor1" scope="row"><a href="{% url 'asset-detail' asset.pk %}">{{ asset.name }}</a></td>
-                        <td scope="row">{{ asset.value_object.latest_holding }}</td>
-                        <td scope="row">{{ asset.value_object.latest_price }}</td>
-                        <td class="grayColor1" scope="row">{{ asset.value_object.latest_value }}</td>
-                        <td scope="row" class="displayNone">{{ asset.type }}</td>
+                        <th scope="col">Icon</th>
+                        <th scope="col">Symbol</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Holdings</th>
+                        <th scope="col">Value</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
+                </thead>
+
+                <tbody class="grayBc9 grayColor3">
+                    {% for asset in asset_list %}
+                        <tr id="row{{ asset.pk }}">
+                            <td scope="row" class="rowIcon">
+                                {% load static %}
+                                <img class='iconSmall' src="{% static asset.icon.url|slice:'18:' %}" />
+                            </td>
+                            <td scope="row">{{ asset.ticker.upper }}</td>
+                            <td class="grayColor1" scope="row">{{ asset.name }}</td>
+                            <td scope="row">{{ asset.value_object.latest_price }}</td>
+                            <td scope="row">{{ asset.value_object.latest_holding }}</td>
+                            <td class="grayColor1" scope="row">{{ asset.value_object.latest_value }}</td>
+                            <td scope="row" class="displayNone">{{ asset.type }}</td>
+                        
+                        <script>
+                            rows.push(document.getElementById('row{{ asset.pk }}'));
+                            rows[rows.length-1].addEventListener('click', () => {
+                                window.location.href = "{% url 'asset-detail' asset.pk %}";
+                            });
+                        </script>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+    </div>
 
 {% endblock %}

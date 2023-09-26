@@ -32,8 +32,9 @@
 }
 
 .iconSmall {
-    max-width: 2rem;
-    max-height: 2rem;
+    max-width: 1.6rem;
+    max-height: 1.6rem;
+    border-radius: 0.25rem;
 }
 
 .displayBlock {
@@ -54,4 +55,8 @@
 
 .autoWidth {
     width: auto;
+}
+
+.marginCenter {
+    margin: 0 auto;
 }
