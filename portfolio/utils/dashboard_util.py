@@ -317,7 +317,7 @@ def get_dashboard_context(user_obj):
             else:
                 balance_change = [0, format(0.0, '.2f')]
 
-            if balance_change[1] < 0:
+            if float(balance_change[1]) < 0:
                 balance_change[1] *= -1
                 balance_change.append('negative')
 

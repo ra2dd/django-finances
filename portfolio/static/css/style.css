@@ -145,6 +145,18 @@ header > .header-user
     border-radius: 0.25rem;
 }
 
+.legend1 {
+    background-color: rgb(54, 162, 235);
+}
+
+.legend2 {
+    background-color: rgb(255, 99, 132);
+}
+
+.legend3 {
+    background-color: rgb(255, 159, 64);
+}
+
 
 
 /*
