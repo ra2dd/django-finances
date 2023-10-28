@@ -11,7 +11,9 @@
             <h1>Asset Balance History</h1>
 
             <div class="infoHeader">
-                <h2 class="mainInfo">{{ assetbalancehistory_list.0.balance.asset.name }}</h2>
+                <a href="{% url 'asset-detail' pk %}">
+                    <h2 class="mainInfo">{{ assetbalancehistory_list.0.balance.asset.name }}</h2>
+                </a>
                 <p class="secondaryInfo">{{ assetbalancehistory_list.0.balance.broker.name }}</p>    
             </div>
 

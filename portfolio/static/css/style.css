@@ -545,3 +545,11 @@ input[type="number"], input[type="date"], select {
 .indexRegister {
     margin: 3rem 0.5rem 1rem;
 }
+
+.normalLink {
+    color:hsl(217, 53%, 35%) !important;
+}
+
+.normalLink:hover {
+    text-decoration: underline;
+}

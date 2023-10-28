@@ -189,19 +189,21 @@
     </script>
 
     {% else %}
-        <div>
-            <p>You don't seem to have any asset balances associated with your account.</p>
-            <p>
-                You can add import information about your assets 
-                by visiting <a href="{% url 'exchanges' %}">Connections tab</a>
-                and importing balance information using exchange keys directly into 
-                your portfolio.
-            </p>
-            <p>
-                You can also add data about your assets manually by visiting
-                <a href="{% url 'assets' %}">Assets list</a>, choosing
-                your asset and adding information about your holdings.
-            </p>
+        <div class="tableForm">
+            <div>
+                <h2 class="formHeader">You don't seem to have any asset balances associated with your account.</h2>
+                <p>
+                    You can import information about your assets 
+                    by visiting <a class="normalLink" href="{% url 'exchanges' %}">Connections tab</a>
+                    and importing balance information using exchange keys directly into 
+                    your portfolio.
+                </p>
+                <p>
+                    You can also add data about your assets manually by visiting
+                    <a class="normalLink" href="{% url 'assets' %}">Assets list</a>, choosing
+                    your asset and adding information about your holdings.
+                </p>
+            </div>
         </div>
     {% endif %}
 {% endblock %}

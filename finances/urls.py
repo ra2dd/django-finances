@@ -23,8 +23,7 @@ from .views import register
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('portfolio/', include('portfolio.urls')),
-    path('', RedirectView.as_view(url='portfolio/', permanent=True)),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('accounts/register/', register, name='register'),
+    path('', include('portfolio.urls')),
+    path('', include('django.contrib.auth.urls')),
+    path('register/', register, name='register'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
