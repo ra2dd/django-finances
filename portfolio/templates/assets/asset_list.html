@@ -43,7 +43,7 @@
                         <tr id="row{{ asset.pk }}">
                             <td scope="row" class="rowIcon">
                                 {% load static %}
-                                <img class='iconSmall' src="{% static asset.icon.url|slice:'18:' %}" />
+                                <img class='iconSmall' src="{% static asset.get_icon_path %}" />
                             </td>
                             <td scope="row">{{ asset.ticker.upper }}</td>
                             <td class="grayColor1" scope="row">{{ asset.name }}</td>

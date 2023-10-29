@@ -3,7 +3,9 @@ import os
 import requests
 import time as t
 from django.core.files import File
-from io import BytesIO
+# from io import BytesIO
+# from PIL import Image
+from django.conf import settings
 
 from ..models import Asset, AssetPriceHistory
 from .constants import START_DATE
@@ -336,8 +338,8 @@ def import_current_currency_price():
 
 
 def get_crypto_assets():
-    
-    response = requests.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=false&locale=en', headers=headers)
+
+    response = requests.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&sparkline=false&locale=en', headers=headers)
     json_response = json.loads(response.content)
     # print(json.dumps(json_response, indent=4))
 
@@ -352,17 +354,22 @@ def get_crypto_assets():
     '''
 
     for response_asset in json_response:
+
         asset = Asset.objects.filter(api_name=response_asset['id']).filter(type='cryptocurrency')
         if len(asset) == 0:
             print(f'no asset with api_name {response_asset["id"]}')
             
-            fetch_headers = {'User-Agent': 'Mozilla/5.0 (Linux; Android 13; SM-S901B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36'}
-            image_request = requests.get(response_asset["image"], headers=fetch_headers)
-           
+            # Creating asset record in database
             asset_record = Asset(name=response_asset["name"], api_name=response_asset["id"], ticker=response_asset["symbol"].upper(), type='cryptocurrency')
-            asset_record.icon.save(response_asset["symbol"] + '.png', File.open(BytesIO(image_request.content)))           
+            # asset_record.icon.save(response_asset["symbol"] + '.png', File.open(BytesIO(image_request.content)))           
             asset_record.save()
 
+            # Creating image file in project
+            fetch_headers = {'User-Agent': 'Mozilla/5.0 (Linux; Android 13; SM-S901B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36'}
+            image_request = requests.get(response_asset["image"], headers=fetch_headers)
+            img = Image.open(BytesIO(image_request.content))
+            img.save(f'{settings.BASE_DIR}/portfolio/static/images/assets/cryptocurrency/{response_asset["symbol"].lower()}.png')
+        
         elif len(asset) > 1:
             raise Exception(f'Too many assets records with api_name {response_asset["id"]}')
         elif len(asset) == 1:

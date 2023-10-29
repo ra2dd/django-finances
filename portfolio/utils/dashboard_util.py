@@ -58,7 +58,7 @@ def get_user_asset_holdings_with_values_list(user_all_balance_list):
         asset_latest_value = asset_latest_price * asset_latest_holding
 
         # Create UserCurrentAsset object and append it to the context list
-        user_holdings_list.append(UserCurrentAsset(balance.asset.name, balance.asset.ticker, balance.asset.type, balance.asset.icon, round(asset_latest_price, 2), round(asset_latest_holding, 2), round(asset_latest_value, 2)))
+        user_holdings_list.append(UserCurrentAsset(balance.asset.name, balance.asset.ticker, balance.asset.type, balance.asset.get_icon_path, round(asset_latest_price, 2), round(asset_latest_holding, 2), round(asset_latest_value, 2)))
 
     user_holdings_list.sort(reverse=True, key=lambda h: h.latest_value)
     return user_holdings_list

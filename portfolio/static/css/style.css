@@ -446,7 +446,7 @@ input[type="number"], input[type="date"], select {
 }
 
 .tableForm form select {
-    background-image: url('../media/images/generic/dropdown-icon.png');
+    background-image: url('../images/generic/dropdown-icon.png');
     background-size: 1rem;
     background-position: 97% 50%;
     background-repeat: no-repeat;

@@ -3,10 +3,6 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 
 
-def asset_icon_path(instance, filename):
-    return "portfolio/static/media/images/assets/{0}/{1}".format(instance.type, filename)
-
-
 class Portfolio(models.Model):
     owner = models.OneToOneField(
         User,
@@ -92,11 +88,12 @@ class Asset(models.Model):
         max_length=16,
         choices=ASSET_TYPE,
     )
-
-    icon = models.ImageField(upload_to=asset_icon_path, null=True, blank=True)
     
     class Meta:
         ordering = ['name']
+
+    def get_icon_path(self):
+        return f'images/assets/{self.type}/{self.ticker.lower()}.png'
         
     def __str__(self):
         return f'{self.ticker} - {self.name}'

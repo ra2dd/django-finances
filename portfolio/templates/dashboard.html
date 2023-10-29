@@ -63,7 +63,7 @@
                     <tr class="grayBc9 textRight">
                         <td scope="row" class="rowIcon">
                             {% load static %}
-                            <img class='iconSmall' src="{% static balance.icon.url|slice:'18:' %}" />
+                            <img class='iconSmall' src="{% static balance.icon %}" />
                         </td>
                         <td class="textLeft" scope="row">{{ balance.name }}</td>
                         <td scope="row">${{ balance.latest_price }}</td>
