@@ -8,8 +8,8 @@ class Command(BaseCommand):
 
         try:
             server_util.import_current_crypto_price()
-        except:
-            raise CommandError('Cannot import crypto price history.')
+        except Exception as error:
+            raise CommandError(f'Cannot import crypto price history. {error}')
         
         self.stdout.write(
             self.style.SUCCESS('Successfully imported crypto price history.')

@@ -21,8 +21,8 @@ class Command(BaseCommand):
                     client_util.import_balance(exchange, apiconnection, user)
                     print(f'imported balances from {exchange} using {apiconnection}')
 
-        except:
-            raise CommandError('Cannot import user balances from ApiConnections.')
+        except Exception as error:
+            raise CommandError(f'Cannot import user balances from ApiConnections. {error}')
         
         self.stdout.write(
             self.style.SUCCESS('Successfully imported user balances from ApiConnections.')

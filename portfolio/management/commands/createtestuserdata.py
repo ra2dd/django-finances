@@ -20,11 +20,11 @@ def create_test_user_data(user):
 
             match type[1]:
                 case 'stock':
-                    amount = 0.8
+                    amount = 2
                 case 'crypto':
                     amount = 0.4
                 case 'currency':
-                    amount = 300 
+                    amount = 400 
 
             date = START_DATE
             
@@ -36,16 +36,19 @@ def create_test_user_data(user):
 
 
 class Command(BaseCommand):
-    help = "Imports data about crypto assets"
+    help = "Create test data for users"
+
+    def add_arguments(self, parser):
+        parser.add_argument("username", nargs="1", type="str")
 
     def handle(self, *args, **options):
 
         try:
-            user = User.objects.filter(username='demo')[0]
+            user = User.objects.filter(username=options["username"].lower())[0]
             create_test_user_data(user)
 
-        except:
-            raise CommandError('Cannot create user test data.')
+        except Exception as error:
+            raise CommandError(f'Cannot create user test data. {error}')
 
         self.stdout.write(
             self.style.SUCCESS('Successfully created test user data.')

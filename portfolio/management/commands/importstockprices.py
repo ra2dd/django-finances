@@ -9,8 +9,8 @@ class Command(BaseCommand):
         try:
             server_util.import_current_stock_price()
             server_util.import_current_currency_price()
-        except:
-            raise CommandError('Cannot import stock and currency price history.')
+        except Exception as error:
+            raise CommandError(f'Cannot import stock and currency price history. {error}')
         
         self.stdout.write(
             self.style.SUCCESS('Successfully imported stock and currency price history.')
