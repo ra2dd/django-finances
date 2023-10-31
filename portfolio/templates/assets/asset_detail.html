@@ -24,7 +24,7 @@
             <ul>
                 {% for balance in user_assetbalance %}
                     <li>
-                        <a href="{% url 'assetbalancehistory' asset.pk balance.pk %}">
+                        <a href="{% url 'assetbalancehistory' asset.slug balance.pk %}">
                             <div class="mainListItem">
                                 <p>{{ balance.broker }}</p>
                                 <p>{{ balance.assetbalancehistory_set.latest.round_amount }}</p>
@@ -34,7 +34,7 @@
                 {% endfor %}
             </ul>
 
-            <a href="{% url 'assetbalancehistory-create' asset.pk %}">
+            <a href="{% url 'assetbalancehistory-create' asset.slug %}">
                 {% if user_assetbalance %}
                     <div class="btn terButton">
                         <p>Create new assetbalancehistory</p>

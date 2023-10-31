@@ -11,7 +11,7 @@
             <h1>Asset Balance History</h1>
 
             <div class="infoHeader">
-                <a href="{% url 'asset-detail' pk %}">
+                <a href="{% url 'asset-detail' slug %}">
                     <h2 class="mainInfo">{{ assetbalancehistory_list.0.balance.asset.name }}</h2>
                 </a>
                 <p class="secondaryInfo">{{ assetbalancehistory_list.0.balance.broker.name }}</p>    
@@ -22,14 +22,14 @@
                     <li class="secondaryListItem">
                         <p>{{ assetbalancehistory.date }}</p>
                         <p>{{ assetbalancehistory.round_amount }}</p>
-                            <a href="{% url 'assetbalancehistory-delete' pk pk2 assetbalancehistory.pk %}">
+                            <a href="{% url 'assetbalancehistory-delete' slug pk2 assetbalancehistory.pk %}">
                                 <p class="grayColor3">Delete</p>
                             </a>
 
                     </li>
                 {% endfor %}
             </ul>
-            <a href="{% url 'assetbalancehistory-create-pk2' pk pk2 %}">
+            <a href="{% url 'assetbalancehistory-create-pk2' slug pk2 %}">
                 <div class="btn secButton">
                     <p>Create new record</p>
                 </div>

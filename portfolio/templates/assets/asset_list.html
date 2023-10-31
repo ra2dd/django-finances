@@ -55,7 +55,7 @@
                         <script>
                             rows.push(document.getElementById('row{{ asset.pk }}'));
                             rows[rows.length-1].addEventListener('click', () => {
-                                window.location.href = "{% url 'asset-detail' asset.pk %}";
+                                window.location.href = "{% url 'asset-detail' asset.slug %}";
                             });
                         </script>
                         </tr>

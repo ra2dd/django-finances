@@ -31,6 +31,8 @@ class Exchange(models.Model):
     url = models.URLField(max_length=200, blank=True)
 
     api_url = models.URLField(max_length=200, blank=True)
+
+    slug = models.SlugField(null=False, unique=True)
     
     class Meta:
         ordering = ['name']
@@ -40,8 +42,8 @@ class Exchange(models.Model):
 
     def get_absolute_url(self):
         """Returns the URL to access a detail record for exchange."""
-        return reverse('exchange-detail', args=[str(self.id)])
-
+        return reverse('exchange-detail', kwargs={"slug": self.slug})
+    
     def __str__(self):
         """String for representing the Model object"""
         return f'{self.name}'
@@ -88,12 +90,17 @@ class Asset(models.Model):
         max_length=16,
         choices=ASSET_TYPE,
     )
+
+    slug = models.SlugField(null=False, unique=True)
     
     class Meta:
         ordering = ['name']
 
     def get_icon_path(self):
         return f'images/assets/{self.type}/{self.ticker.lower()}.png'
+    
+    def get_absolute_url(self):
+        return reverse('asset-detail', kwargs={'slug': self.slug})
         
     def __str__(self):
         return f'{self.ticker} - {self.name}'

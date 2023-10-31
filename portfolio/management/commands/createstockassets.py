@@ -17,7 +17,7 @@ class Command(BaseCommand):
                 if len(Asset.objects.filter(ticker=stock[1].upper()).filter(type='stock')) > 0:
                     print(f'{stock[0]} stock exists')
                 else:
-                    stock_record = Asset(name=stock[0], api_name=stock[1].lower(), ticker=stock[1].upper(), type='stock')
+                    stock_record = Asset(name=stock[0], api_name=stock[1].lower(), ticker=stock[1].upper(), type='stock', slug=stock[1].lower())
                     stock_record.save()
 
             currencies = [
@@ -28,7 +28,7 @@ class Command(BaseCommand):
                 if len(Asset.objects.filter(ticker=currency[1].upper()).filter(type='currency')) > 0:
                     print(f'{currency[0]} currency exists')
                 else:
-                    currency_record = Asset(name=currency[0], api_name=currency[1].lower(), ticker=currency[1].upper(), type='currency')
+                    currency_record = Asset(name=currency[0], api_name=currency[1].lower(), ticker=currency[1].upper(), type='currency', slug=currency[1].lower())
                     currency_record.save()
 
         except Exception as error:

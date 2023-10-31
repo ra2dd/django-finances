@@ -360,7 +360,7 @@ def get_crypto_assets():
             print(f'no asset with api_name {response_asset["id"]}')
             
             # Creating asset record in database
-            asset_record = Asset(name=response_asset["name"], api_name=response_asset["id"], ticker=response_asset["symbol"].upper(), type='cryptocurrency')
+            asset_record = Asset(name=response_asset["name"], api_name=response_asset["id"], ticker=response_asset["symbol"].upper(), type='cryptocurrency', slug=response_asset["symbol"].lower())
             # asset_record.icon.save(response_asset["symbol"] + '.png', File.open(BytesIO(image_request.content)))           
             asset_record.save()
 

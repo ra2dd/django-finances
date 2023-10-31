@@ -60,17 +60,17 @@ class AssetBalanceHistoryListView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['pk'] = self.kwargs['pk']
+        context['slug'] = self.kwargs['slug']
         context['pk2'] = self.kwargs['pk2']
 
         return context
 
 
 @login_required
-def assetbalancehistory_create(request, pk, pk2=None):
+def assetbalancehistory_create(request, slug, pk2=None):
     """View function for creating assetbalancehistory records"""
     
-    asset = get_object_or_404(Asset, pk=pk)
+    asset = get_object_or_404(Asset, slug=slug)
 
     if request.method == 'POST':
 
@@ -109,7 +109,7 @@ def assetbalancehistory_create(request, pk, pk2=None):
             assetbalancehistory_record = AssetBalanceHistory(amount=amount, date=date, balance=assetbalance_record)
             assetbalancehistory_record.save()
 
-            return HttpResponseRedirect(reverse('assetbalancehistory', args=[pk, assetbalance_record.pk]))
+            return HttpResponseRedirect(reverse('assetbalancehistory', args=[slug, assetbalance_record.pk]))
     else:
         if pk2 == None:
             form = AssetBalanceHistoryForm()
@@ -144,10 +144,10 @@ class AssetBalanceHistoryDelete(LoginRequiredMixin, generic.DeleteView):
     def get_success_url(self):
         try:
             if self.kwargs['balance_empty'] == True:
-                return reverse_lazy('asset-detail', args=[str(self.kwargs['pk'])])
+                return reverse_lazy('asset-detail', args=[str(self.kwargs['slug'])])
             else:
                 raise Http404('Error, please contact side admin.')
         except:
-            return reverse_lazy('assetbalancehistory', args=[str(self.kwargs['pk']), str(self.kwargs['pk2'])])
+            return reverse_lazy('assetbalancehistory', args=[str(self.kwargs['slug']), str(self.kwargs['pk2'])])
 
 
