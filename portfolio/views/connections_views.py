@@ -11,7 +11,7 @@ from ..utils import client_util
 from ..forms import ConnectionAddModelForm
 
 def fetch_exchange(self):
-    return Exchange.objects.filter(pk=self.kwargs['pk'])[0]
+    return Exchange.objects.filter(slug=self.kwargs['slug'])[0]
 
 
 class ExchangeListView(LoginRequiredMixin, generic.ListView):
@@ -116,10 +116,10 @@ class ApiConnectionDelete(LoginRequiredMixin, generic.DeleteView):
 
 @login_required
 @require_http_methods(["GET"])
-def fetch_apiconnection_balance_view(request, pk):
+def fetch_apiconnection_balance_view(request, slug):
 
     if request.method == 'GET':
-        exchange = Exchange.objects.filter(pk=pk)[0]
+        exchange = Exchange.objects.filter(slug=slug)[0]
 
         if exchange.name.lower() == 'manual trades':
             raise PermissionDenied
@@ -135,4 +135,4 @@ def fetch_apiconnection_balance_view(request, pk):
         elif(len(api_connection) == 1):
             client_util.import_balance(exchange, api_connection[0], request.user)    
         
-        return HttpResponseRedirect(reverse('exchange-detail', args=str(pk)))
+        return HttpResponseRedirect(reverse('exchange-detail', kwargs={'slug': slug}))

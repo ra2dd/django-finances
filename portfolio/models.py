@@ -62,7 +62,7 @@ class ApiConnection(models.Model):
 
     owner = models.ForeignKey(
         User,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         null=True
     )
 
@@ -109,7 +109,7 @@ class Asset(models.Model):
 class AssetPriceHistory(models.Model):
     asset = models.ForeignKey(
         Asset,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         null=True,
     )
 
@@ -128,7 +128,7 @@ class AssetPriceHistory(models.Model):
 class AssetBalance(models.Model):
     portfolio = models.ForeignKey(
         Portfolio, 
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         null=True,
     )
 
@@ -158,7 +158,7 @@ class AssetBalanceHistory(models.Model):
 
     balance = models.ForeignKey(
         AssetBalance,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         null=True,
     )
 

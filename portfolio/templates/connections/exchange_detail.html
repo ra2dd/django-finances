@@ -14,7 +14,7 @@
             <h2 class="mainHeader">{{ exchange.name }} Exchange</h2>
             
             {% if exchange.is_user_connected == True %}
-                <a href="{% url 'fetch-apiconnection-balance' exchange.pk %}">
+                <a href="{% url 'fetch-apiconnection-balance' exchange.slug %}">
                     <div class="btn mainButton">
                         <p>
                             Fetch latest Asset balance
@@ -22,7 +22,7 @@
                     </div>
                 </a>
 
-                <a href="{% url 'apiconnection-add' exchange.pk %}">
+                <a href="{% url 'apiconnection-add' exchange.slug %}">
                     <div class="btn secButton">  
                         <p>
                             Update exchange api connection
@@ -30,7 +30,7 @@
                     </div>
                 </a>
 
-                <a href="{% url 'apiconnection-delete' exchange.pk %}">
+                <a href="{% url 'apiconnection-delete' exchange.slug %}">
                     <div class="btn terButton">
                         <p>
                             Delete exchange api connection
@@ -39,7 +39,7 @@
                 </a>
 
             {% else %}
-                <a href="{% url 'apiconnection-add' exchange.pk %}">
+                <a href="{% url 'apiconnection-add' exchange.slug %}">
                     <div class="btn mainButton">
                         <p>
                             Add exchange api connection
