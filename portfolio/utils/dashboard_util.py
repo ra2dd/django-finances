@@ -322,7 +322,10 @@ def get_dashboard_context(user_obj):
                 balance_change[1] *= -1
                 balance_change.append('negative')
 
-        top_asset_allocation = round(user_holdings_list[0].latest_value / latest_balance_value * 100)
+        if user_holdings_list[0].latest_value == 0:
+            top_asset_allocation = 0
+        else:
+            top_asset_allocation = round(user_holdings_list[0].latest_value / latest_balance_value * 100)
 
         context = {
             'user_holdings_list': user_holdings_list[:5],

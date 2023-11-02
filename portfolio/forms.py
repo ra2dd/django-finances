@@ -62,19 +62,24 @@ class AssetBalanceHistoryForm(forms.Form):
     exchange_choices = list(map(get_e_choices, Exchange.objects.all())) 
 
     exchange = forms.ChoiceField(choices=exchange_choices)
-    amount = forms.DecimalField()
+    amount = forms.DecimalField(widget=forms.NumberInput(attrs={ 'min': 0}))
     date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'min': START_DATE, 'max': datetime.date.today()}), initial=datetime.date.today())
 
     def clean(self):
         cleaned_data = super().clean()
 
         date = cleaned_data['date']
+        amount = cleaned_data['amount']
 
         # Date validation
         if date > datetime.date.today():
             raise ValidationError('Date is too far in the future. Maximium date needs to be today or earlier.')
         elif date < START_DATE:
             raise ValidationError(f'Date is too far in the past. Date needs to be past {START_DATE}.')
+        
+        # Amount validation
+        if amount < 0:
+            raise ValidationError('Provided amount is negative. Amount must equal or be greater than 0.')
 
     
 

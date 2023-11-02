@@ -1,7 +1,7 @@
 {% extends "base_generic.html" %}
 
 {% block title %}
-    <title>AssetBalanceHistory List</title>
+    <title>{{ assetbalancehistory_list.0.balance.broker.name }} - {{ assetbalancehistory_list.0.balance.asset.ticker }} balances</title>
 {% endblock %}
 
 {% block content %}
