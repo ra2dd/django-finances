@@ -52,6 +52,10 @@ class ConnectionAddModelForm(forms.ModelForm):
     class Meta:
         model = ApiConnection
         fields = ['api_key', 'secret_key']
+        widgets = {
+            'api_key': forms.TextInput(attrs={'autocomplete': "off"}),
+            'secret_key': forms.TextInput(attrs={'autocomplete': "off"}),
+        }
 
 
 class AssetBalanceHistoryForm(forms.Form):
@@ -62,7 +66,7 @@ class AssetBalanceHistoryForm(forms.Form):
     exchange_choices = list(map(get_e_choices, Exchange.objects.all())) 
 
     exchange = forms.ChoiceField(choices=exchange_choices)
-    amount = forms.DecimalField(widget=forms.NumberInput(attrs={ 'min': 0}))
+    amount = forms.DecimalField(label='Total amount' ,widget=forms.NumberInput(attrs={ 'min': 0}))
     date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'min': START_DATE, 'max': datetime.date.today()}), initial=datetime.date.today())
 
     def clean(self):

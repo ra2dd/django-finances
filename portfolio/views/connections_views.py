@@ -69,8 +69,9 @@ class ApiConnectionAdd(LoginRequiredMixin, generic.CreateView):
         return super().form_valid(form)
     
     def get_success_url(self):
-        return self.object.broker.get_absolute_url()
-    
+        return reverse('fetch-apiconnection-balance', kwargs={"slug": self.kwargs['slug']})
+        # return self.object.broker.get_absolute_url()
+        
     # Add context data to display in template
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

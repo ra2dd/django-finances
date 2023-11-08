@@ -21,7 +21,7 @@ class Command(BaseCommand):
                     stock_record.save()
 
             currencies = [
-                ['Euro', 'EUR'], ['US Dollar', 'USD'],
+                ['Euro', 'EUR'], ['US Dollar', 'USD'], ['British Pound', 'GBP'],
             ]
 
             for currency in currencies:
