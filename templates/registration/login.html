@@ -20,6 +20,12 @@
                 {% endif %}
             {% endif %}
 
+            {% if messages %}
+                {% for message in messages %}
+                    <p> {{ message }}</p>
+                {% endfor %}
+            {% endif %}
+
             {% if form.errors %}
                 <p class="formError">Your username and password combination is incorrect. Please try again.</p>
             {% endif %}

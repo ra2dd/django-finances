@@ -44,7 +44,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         try:
-            user = User.objects.filter(username=options["username"].lower())[0]
+            user = User.objects.filter(username=options["username"])[0]
             create_test_user_data(user)
 
         except Exception as error:
