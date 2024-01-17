@@ -2,7 +2,8 @@
 *.bak
 *.sqlite3
 .env
-portfolio/static/images
+portfolio/static/images/*
+!portfolio/static/images/generic/
 *Zone.Identifier
 
 /static
