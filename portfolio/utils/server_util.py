@@ -3,8 +3,8 @@ import os
 import requests
 import time as t
 from django.core.files import File
-# from io import BytesIO
-# from PIL import Image
+from io import BytesIO
+from PIL import Image
 from django.conf import settings
 
 from ..models import Asset, AssetPriceHistory
@@ -152,7 +152,7 @@ def import_current_crypto_price():
                 record.save()
             
             else:
-                if(api_limit > 6):
+                if(api_limit > 5):
                     t.sleep(80)
                     api_limit = 0
                     

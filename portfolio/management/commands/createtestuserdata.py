@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 import datetime, random
 from portfolio.models import Portfolio, Exchange, Asset, AssetBalance, AssetBalanceHistory
-
+from portfolio.utils.constants import START_DATE
 
 def create_test_user_data(user):
     portfolio = get_object_or_404(Portfolio, owner=user)
@@ -39,12 +39,11 @@ class Command(BaseCommand):
     help = "Create test data for users"
 
     def add_arguments(self, parser):
-        parser.add_argument("username", nargs="1", type="str")
+        parser.add_argument("username", nargs=1, type=str)
 
     def handle(self, *args, **options):
-
         try:
-            user = User.objects.filter(username=options["username"])[0]
+            user = User.objects.filter(username=options["username"][0])[0]
             create_test_user_data(user)
 
         except Exception as error:

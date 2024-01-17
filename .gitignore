@@ -4,3 +4,6 @@
 .env
 portfolio/static/images
 *Zone.Identifier
+
+/static
+config.yml
