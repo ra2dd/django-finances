@@ -1,11 +1,11 @@
 import datetime, json
-import os
 import requests
 import time as t
 from django.core.files import File
 from io import BytesIO
 from PIL import Image
 from django.conf import settings
+from decouple import config
 
 from ..models import Asset, AssetPriceHistory
 from .constants import START_DATE
@@ -32,7 +32,7 @@ def timestamp_to_datetime(timestamp):
 
 
 def construct_crypto_price_history_url(name, startDate, endDate, precision):
-    return f'https://api.coingecko.com/api/v3/coins/{name.lower()}/market_chart/range?vs_currency=usd&from={startDate}&to={endDate}&precision={precision}'
+    return f'https://api.coingecko.com/api/v3/coins/{name.lower()}/market_chart/range?vs_currency=usd&from={startDate}&to={endDate}&precision={precision}&x_cg_demo_api_key={config("COINGECKO_API_KEY")}'
 
 def construct_current_crypto_price_url(api_name_list):
     url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids='
@@ -41,23 +41,23 @@ def construct_current_crypto_price_url(api_name_list):
         url += f'{api_name}%2C%20'
 
     url = url[0:(len(url)-6)]
-    url += '&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en'
+    url += f'&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en&x_cg_demo_api_key={config("COINGECKO_API_KEY")}'
 
     return url
 
 
 def construct_stock_price_history_url(symbol):
-    return f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&outputsize=compact&apikey={os.environ.get("ALPHAVANTAGE_API_KEY")}'
+    return f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&outputsize=compact&apikey={config("ALPHAVANTAGE_API_KEY")}'
 
 def construct_current_stock_price_url(symbol):
-    return f'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={symbol}&interval=5min&apikey={os.environ.get("ALPHAVANTAGE_API_KEY")}'
+    return f'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={symbol}&interval=5min&apikey={config("ALPHAVANTAGE_API_KEY")}'
 
 
 def construct_currency_price_history_url(symbol):
-    return f'https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=USD&to_symbol={symbol}&apikey={os.environ.get("ALPHAVANTAGE_API_KEY")}'
+    return f'https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=USD&to_symbol={symbol}&apikey={config("ALPHAVANTAGE_API_KEY")}'
 
 def construct_current_currency_price_url(symbol):
-    return f'https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency={symbol}&apikey={os.environ.get("ALPHAVANTAGE_API_KEY")}'
+    return f'https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency={symbol}&apikey={config("ALPHAVANTAGE_API_KEY")}'
 
 
 def check_query_len_euqals_one(asset_query):
@@ -152,7 +152,7 @@ def import_current_crypto_price():
                 record.save()
             
             else:
-                if(api_limit > 5):
+                if(api_limit > int(config("COINGECKO_RATE_LIMIT"))):
                     t.sleep(80)
                     api_limit = 0
                     
@@ -337,13 +337,25 @@ def import_current_currency_price():
                     
 
 
-def get_crypto_assets():
+def get_crypto_assets(asset_number):
 
-    response = requests.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&sparkline=false&locale=en', headers=headers)
+    import math
+
+    if asset_number % 100 == 0:
+        page = math.floor(asset_number/100) - 1
+        per_page = asset_number - page * 100
+    else :
+        page = math.floor(asset_number/100) + 1
+        per_page = asset_number - (page -1) * 100
+
+    response = requests.get(f'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page={per_page}&page={page}&sparkline=false&locale=en&x_cg_demo_api_key={config("COINGECKO_API_KEY")}', headers=headers)
     json_response = json.loads(response.content)
+
+    # Print response for testing purpouses
     # print(json.dumps(json_response, indent=4))
 
     '''
+    # Code for deleting all assets and their history from database
     crypto_assets = Asset.objects.filter(type='cryptocurrency')
     for crypto_asset in crypto_assets:
         crypto_asset.delete()
@@ -357,10 +369,11 @@ def get_crypto_assets():
 
         asset = Asset.objects.filter(api_name=response_asset['id']).filter(type='cryptocurrency')
         if len(asset) == 0:
-            print(f'no asset with api_name {response_asset["id"]}')
+            print(f'no asset with api_name {response_asset["id"]}, adding...')
             
             # Creating asset record in database
             asset_record = Asset(name=response_asset["name"], api_name=response_asset["id"], ticker=response_asset["symbol"].upper(), type='cryptocurrency', slug=response_asset["symbol"].lower())
+            # Code for saving icon to database ImageField 
             # asset_record.icon.save(response_asset["symbol"] + '.png', File.open(BytesIO(image_request.content)))           
             asset_record.save()
 
@@ -371,6 +384,6 @@ def get_crypto_assets():
             img.save(f'{settings.BASE_DIR}/portfolio/static/images/assets/cryptocurrency/{response_asset["symbol"].lower()}.png')
         
         elif len(asset) > 1:
-            raise Exception(f'Too many assets records with api_name {response_asset["id"]}')
+            raise Exception(f'Too many assets records with api_name {response_asset["id"]} in database')
         elif len(asset) == 1:
             print(f'asset with api_name {response_asset["id"]} exists')           
