@@ -342,11 +342,13 @@ def get_crypto_assets(asset_number):
     import math
 
     if asset_number % 100 == 0:
-        page = math.floor(asset_number/100) - 1
-        per_page = asset_number - page * 100
-    else :
+        page = math.floor(asset_number/100)
+        per_page = 100
+    elif asset_number < 100 :
         page = math.floor(asset_number/100) + 1
         per_page = asset_number - (page -1) * 100
+    else:
+        return print('Function argument must subtract by 100 without remainder or be less than 100')
 
     response = requests.get(f'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page={per_page}&page={page}&sparkline=false&locale=en&x_cg_demo_api_key={config("COINGECKO_API_KEY")}', headers=headers)
     json_response = json.loads(response.content)
