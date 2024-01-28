@@ -1,0 +1,4 @@
+**/__pycache__
+*.bak
+*.sqlite3
+*Zone.Identifier

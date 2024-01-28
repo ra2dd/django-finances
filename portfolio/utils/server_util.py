@@ -1,4 +1,5 @@
 import datetime, json
+import os
 import requests
 import time as t
 from django.core.files import File
@@ -379,11 +380,12 @@ def get_crypto_assets(asset_number):
             # asset_record.icon.save(response_asset["symbol"] + '.png', File.open(BytesIO(image_request.content)))           
             asset_record.save()
 
-            # Creating image file in project
-            fetch_headers = {'User-Agent': 'Mozilla/5.0 (Linux; Android 13; SM-S901B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36'}
-            image_request = requests.get(response_asset["image"], headers=fetch_headers)
-            img = Image.open(BytesIO(image_request.content))
-            img.save(f'{settings.BASE_DIR}/portfolio/static/images/assets/cryptocurrency/{response_asset["symbol"].lower()}.png')
+            # Creating image file in project if running env is local
+            if 'RDS_DB_NAME' not in os.environ:
+                fetch_headers = {'User-Agent': 'Mozilla/5.0 (Linux; Android 13; SM-S901B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36'}
+                image_request = requests.get(response_asset["image"], headers=fetch_headers)
+                img = Image.open(BytesIO(image_request.content))
+                img.save(f'{settings.BASE_DIR}/portfolio/static/images/assets/cryptocurrency/{response_asset["symbol"].lower()}.png')
         
         elif len(asset) > 1:
             raise Exception(f'Too many assets records with api_name {response_asset["id"]} in database')
