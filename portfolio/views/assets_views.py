@@ -72,10 +72,12 @@ def assetbalancehistory_create(request, slug, pk2=None):
     
     asset = get_object_or_404(Asset, slug=slug)
 
+    exchange_choices = assets_util.get_exhange_choices()
+
     if request.method == 'POST':
 
         # Create a form and populate it with the user entered data
-        form = AssetBalanceHistoryForm(request.POST)
+        form = AssetBalanceHistoryForm(request.POST, exchange_choices=exchange_choices)
 
         if form.is_valid():
             exchange = Exchange.objects.filter(pk=form.cleaned_data['exchange'])[0]
@@ -112,11 +114,12 @@ def assetbalancehistory_create(request, slug, pk2=None):
             return HttpResponseRedirect(reverse('assetbalancehistory', args=[slug, assetbalance_record.pk]))
     else:
         if pk2 == None:
-            form = AssetBalanceHistoryForm()
+            form = AssetBalanceHistoryForm(exchange_choices=exchange_choices)
         else:
             exchange_pk = get_object_or_404(AssetBalance, pk=pk2).broker.pk
             
-            form = AssetBalanceHistoryForm(initial={'exchange': exchange_pk})
+            form = AssetBalanceHistoryForm(
+                exchange_choices=exchange_choices, initial={'exchange': exchange_pk})
 
     context = {
         'form': form,

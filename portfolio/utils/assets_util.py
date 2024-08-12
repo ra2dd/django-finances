@@ -1,3 +1,5 @@
+from portfolio.models import Exchange
+
 class UserAssetHoldingInfo:
     def __init__(self, latest_price, latest_holding, latest_value):
         self.latest_price = latest_price
@@ -44,5 +46,9 @@ def get_asset_price_change(asset, days):
     return 100 -(round(latest_price_obj.price * 100 /day_price, 1))
     
 
-        
+def get_exhange_choices():
 
+    def get_choices(obj):
+        return (obj.pk, obj.name)
+    
+    return list(map(get_choices, Exchange.objects.all())) 

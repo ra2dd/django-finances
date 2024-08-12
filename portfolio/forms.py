@@ -3,7 +3,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 from .utils import client_util
-from .models import ApiConnection, Exchange
+from .models import ApiConnection
 from .utils.constants import START_DATE
 
 def check_connection(exchange_name, api_key_data, secret_key_data):
@@ -59,13 +59,16 @@ class ConnectionAddModelForm(forms.ModelForm):
 
 
 class AssetBalanceHistoryForm(forms.Form):
-    
-    def get_e_choices(obj):
-        return (obj.pk, obj.name)
-    
-    exchange_choices = list(map(get_e_choices, Exchange.objects.all())) 
 
-    exchange = forms.ChoiceField(choices=exchange_choices)
+    def __init__(self, *args, **kwargs):
+        exchange_choices = kwargs.pop('exchange_choices', None)
+        print('self exchange_choices')
+        print(exchange_choices)
+
+        super(AssetBalanceHistoryForm, self).__init__(*args, **kwargs)
+
+        self.fields['exchange'] = forms.ChoiceField(choices=exchange_choices)
+
     amount = forms.DecimalField(label='Total amount' ,widget=forms.NumberInput(attrs={ 'min': 0}))
     date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'min': START_DATE, 'max': datetime.date.today()}), initial=datetime.date.today())
 
@@ -84,7 +87,3 @@ class AssetBalanceHistoryForm(forms.Form):
         # Amount validation
         if amount < 0:
             raise ValidationError('Provided amount is negative. Amount must equal or be greater than 0.')
-
-    
-
-
