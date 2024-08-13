@@ -1,5 +1,6 @@
 import datetime, json
 import requests
+import os
 import time as t
 from django.core.files import File
 from io import BytesIO
@@ -367,6 +368,10 @@ def get_crypto_assets(asset_number):
         crypto_asset_ph.delete()
     '''
 
+    # Prepare directory for images
+    directory_path = f'{settings.BASE_DIR}/portfolio/static/images/assets/cryptocurrency'
+    create_directory_if_doesnt_exists(directory_path)
+
     for response_asset in json_response:
 
         asset = Asset.objects.filter(api_name=response_asset['id']).filter(type='cryptocurrency')
@@ -383,9 +388,18 @@ def get_crypto_assets(asset_number):
             fetch_headers = {'User-Agent': 'Mozilla/5.0 (Linux; Android 13; SM-S901B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36'}
             image_request = requests.get(response_asset["image"], headers=fetch_headers)
             img = Image.open(BytesIO(image_request.content))
-            img.save(f'{settings.BASE_DIR}/portfolio/static/images/assets/cryptocurrency/{response_asset["symbol"].lower()}.png')
+            img.save(f'{directory_path}/{response_asset["symbol"].lower()}.png')
         
         elif len(asset) > 1:
             raise Exception(f'Too many assets records with api_name {response_asset["id"]} in database')
         elif len(asset) == 1:
             print(f'asset with api_name {response_asset["id"]} exists')           
+
+
+def create_directory_if_doesnt_exists(directory_path):
+    if not os.path.exists(directory_path):
+        # Create the directory
+        os.makedirs(directory_path)
+        print(f'Directory created: {directory_path}')
+    else:
+        print(f'fDirectory already exists: {directory_path}')

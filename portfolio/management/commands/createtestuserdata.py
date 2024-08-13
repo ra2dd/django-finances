@@ -1,7 +1,9 @@
+import datetime, random, uuid
+
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
-import datetime, random
+
 from portfolio.models import Portfolio, Exchange, Asset, AssetBalance, AssetBalanceHistory
 from portfolio.utils.constants import START_DATE
 
@@ -43,8 +45,27 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            user = User.objects.filter(username=options["username"][0])[0]
-            create_test_user_data(user)
+            username = options["username"][0]
+            user_objects = User.objects.filter(username=username)
+
+            if (not user_objects and username == 'demo'):
+                user_record = User(
+                    username=username, 
+                    email=f'{username}@example.com',
+                    password=uuid.uuid1(),
+                )
+                user_record.save()
+
+                portfolio_record = Portfolio(owner=user_record)
+                portfolio_record.save()
+                print(f'Created User and Portfolio record for username: {username}')
+
+                create_test_user_data(user_record)
+            elif (not user_objects):
+                print(f'No user with username: {username}')
+            else:
+                create_test_user_data(user_objects[0])
+            
 
         except Exception as error:
             raise CommandError(f'Cannot create user test data. {error}')
