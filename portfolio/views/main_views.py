@@ -1,3 +1,5 @@
+from django.http import HttpRequest
+from django.http.response import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import generic
@@ -16,10 +18,15 @@ def index(request):
 class DashboardView(LoginRequiredMixin, generic.TemplateView):
     """View function for the user dashboard"""
 
+    dashboard_service = None
     template_name = 'dashboard.html'
+        
+    def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        self.dashboard_service = dashboard_util.DashboardService(request.user)
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self):
-        return dashboard_util.get_dashboard_context(self.request.user)
+        return self.dashboard_service.get_dashboard_context()
 
         """
         TODO:
@@ -29,13 +36,13 @@ class DashboardView(LoginRequiredMixin, generic.TemplateView):
 class DemoView(generic.TemplateView):
     """View for showcasing app dashboard with demo data."""
 
+    dashboard_service = None
     template_name = 'dashboard.html'
+        
+    def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        demo_user = get_object_or_404(User, username='demo')
+        self.dashboard_service = dashboard_util.DashboardService(demo_user)
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self):
-        demo_user = get_object_or_404(User, username='demo')
-
-        # dashboard_util.create_test_user_data(demo_user)
-
-        return dashboard_util.get_dashboard_context(demo_user)
-
-        
+        return self.dashboard_service.get_dashboard_context()    
