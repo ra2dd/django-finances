@@ -1,7 +1,7 @@
 import datetime
 from decimal import Decimal
 
-from portfolio.models import AssetBalanceHistory
+from portfolio.models import AssetBalanceHistory, AssetPriceHistory
 
 
 class TotalDayBalance:
@@ -35,6 +35,8 @@ class DailyBalanceUtil:
             # auxilary variable for storing last AssetBalanceHistory object 
             last_balance_history = None
 
+            self.latest_available_price = None
+
             print(f'start {balance}')
 
             # loop through user's all AssetBalanceHistory objects associated with certain AssetBalance
@@ -58,8 +60,9 @@ class DailyBalanceUtil:
                         # Add one day to last_date, because we are going to be filling it with data from last_balance_history
                         last_date += datetime.timedelta(days=1)
                         
-                        # add value using last available balance amount and price
-                        self._fetch_price_and_add_user_balance(last_balance_history, last_date)
+                        # add value using last available balance amount, price and date
+                        self._process_price_and_add_user_balance(
+                            last_balance_history, last_date, fetch_new_price=False)
 
                         records_filled = True   
                     """
@@ -69,7 +72,7 @@ class DailyBalanceUtil:
                         and next day matches our current iteration AssetBalanceHistory day
                     """
                     if(records_filled):
-                            last_date += datetime.timedelta(days=1)
+                        last_date += datetime.timedelta(days=1)
 
                 
                 """
@@ -80,8 +83,9 @@ class DailyBalanceUtil:
                 if last_date == None or last_date == balance_history.date:
                     print(f'    equals, last_date - {last_date}')
 
-                    # add value using current balance history and associated date
-                    self._fetch_price_and_add_user_balance(balance_history, balance_history.date)
+                    # add value using current balance history and associated date 
+                    self._process_price_and_add_user_balance(
+                        balance_history, balance_history.date, fetch_new_price=True)
 
                     # set last_date so we know last date in current AssetBalance that was added into user_daily_balance_history
                     # helpful in filling not existing dates between AssetBalanceHistory object dates
@@ -112,18 +116,9 @@ class DailyBalanceUtil:
                     # add one day to last_date, because it's data will be added to user_daily_balance_history
                     last_date += datetime.timedelta(days=1)
 
-                    # Update price if it exists for new date
-                    price_history_objs = last_balance_history.balance.asset.assetpricehistory_set.filter(date=last_date)
-                    if(len(price_history_objs) > 0):
-                        last_price_history = price_history_objs.first().price
-
-                    # set last_value using latest AssetBalanceHistory amount
-                    #  multiplied by latest matching price
-                    last_value = self._calculate_asset_value(
-                        last_balance_history.amount, last_price_history)
-                    
-                    # add value to the final list 
-                    self._add_user_daily_balance(last_date, last_value)
+                    # add value using last available user balance price and date
+                    self._process_price_and_add_user_balance(
+                        last_balance_history, last_date, fetch_new_price=False)
 
         # loop for adding all balance values in respective dates
         for day_balance in self.user_daily_balance_history:
@@ -139,34 +134,59 @@ class DailyBalanceUtil:
         return self.user_daily_balance_history
     
 
-    def _fetch_price_and_add_user_balance(
+    def _process_price_and_add_user_balance(
             self, balance_history: AssetBalanceHistory, 
-            date: datetime.date) -> None:
-        # Get price
-        latest_asset_price = self._get_last_available_price_for_asset(
-            balance_history, date)
-        # Calculate asset value
-        asset_value = self._calculate_asset_value(
-            balance_history.amount, latest_asset_price)
-        # Add value to final list
-        self._add_user_daily_balance(date, asset_value)
+            date: datetime.date,
+            fetch_new_price: bool = True) -> None:
+        
+        # Check if there is a new available price
+        price_history_objects = balance_history.balance.asset.assetpricehistory_set.all()
+        price_updated = self._update_price_if_exist_for_asset(
+            price_history_objects, date)
+        
+        # If there is no new available price and new price must be fetched
+        # go to the past and get last available price
+        if not price_updated and fetch_new_price:
+            self._get_latest_available_price_for_asset(
+                price_history_objects, date)
+        
+        # Calculate asset value and add it to final list
+        self._calculate_value_and_add_it_to_final_list(
+            balance_history.amount, date)
         
 
-    def _get_last_available_price_for_asset(
-                self, balance_history: AssetBalanceHistory, 
-                date: datetime.date) -> Decimal:
-        price_history_objects = balance_history.balance.asset.assetpricehistory_set
-        
-        # Check if asset price record for a requested date exists
-        if(len(filtered_objs := price_history_objects.filter(date=date)) > 0):
-            return filtered_objs.first().price
-        
-        # If it doesn't exist go back one day at a time and get last avaiable price
-        for minus_days in range(10000):
+    def _get_latest_available_price_for_asset(
+                self, price_history_objects: AssetPriceHistory, 
+                date: datetime.date) -> None:
+        # Go back one day at a time and get last avaiable price
+        for minus_days in range(100):
             if len(filtered_objs := price_history_objects.filter(
                 date=date - datetime.timedelta(days=minus_days))) > 0:
-                return filtered_objs.first().price
+                self.latest_available_price = filtered_objs.first().price
+                return
         # TODO: handle a scenario when loop iterates without returning price
+
+
+    def _update_price_if_exist_for_asset(
+            self, price_history_objects: AssetPriceHistory,
+            date: datetime.date) -> bool:
+        """Update asset price record for a requested date if it exists"""
+
+        if(len(filtered_objs := price_history_objects.filter(date=date)) > 0):
+            self.latest_available_price = filtered_objs.first().price
+            return True
+
+        return False
+
+
+    def _calculate_value_and_add_it_to_final_list(
+            self, amount: Decimal, 
+            date: datetime.date) -> None:
+        # Calculate asset value
+        asset_value = self._calculate_asset_value(
+            amount, self.latest_available_price)
+        # Add value to final list
+        self._add_user_daily_balance(date, asset_value)
 
 
     def _calculate_asset_value(self, amount: Decimal, price: Decimal) -> Decimal:
