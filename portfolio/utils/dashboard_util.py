@@ -28,8 +28,6 @@ class DashboardService:
     
     def get_dashboard_context(self):
 
-        current_date = self._get_current_date()
-
         # If user doesn't have any holdings return just date
         if len(self.user_holdings_list) == 0:
             context = {'current_date': self.current_date}
@@ -40,38 +38,24 @@ class DashboardService:
         top_asset_type_allocation = asset_ratio[0]
         
         user_daily_balance_history_json = self.daily_balance_service.get_user_daily_balance_history()
+        portfolio_value_change = self.daily_balance_service.get_portfolio_value_change()
 
-        user_daily_balance_history = self.daily_balance_service.user_daily_balance_history
-        if len(user_daily_balance_history) > 0: 
-            latest_balance_value = user_daily_balance_history[-1].values
-            
-            if len(user_daily_balance_history) > 30:
-                balance_change = [30, latest_balance_value - user_daily_balance_history[-30].values]
-            elif len(user_daily_balance_history) > 7:
-                balance_change = [7, latest_balance_value - user_daily_balance_history[-7].values]
-            else:
-                balance_change = [0, format(0.0, '.2f')]
-
-            if float(balance_change[1]) < 0:
-                balance_change[1] *= -1
-                balance_change.append('negative')
-
+        latest_balance_value = self.daily_balance_service.user_daily_balance_history[-1].values
         if self.user_holdings_list[0].latest_value == 0:
             top_asset_allocation = 0
         else:
             top_asset_allocation = round(self.user_holdings_list[0].latest_value / latest_balance_value * 100)
 
         context = {
+            'current_date': self.current_date,
             'user_holdings_list': self.user_holdings_list[:5],
             'user_daily_balance_history_json': user_daily_balance_history_json,
             'asset_type_ratio_tuple_list_json': asset_type_ratio_tuple_list_json,
             'latest_balance_value': latest_balance_value,
-            'balance_change': balance_change,
-            'current_date': current_date,
+            'portfolio_value_change': portfolio_value_change,
             'top_asset_type_allocation': top_asset_type_allocation,
             'top_asset_allocation': top_asset_allocation,
             'asset_ratio': asset_ratio,
-            'current_date': self.current_date,
         }
         return context
 
