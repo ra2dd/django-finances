@@ -19,11 +19,11 @@ class UserCurrentAsset:
 
 class DashboardService:
     def __init__(self, user_object):
-        self.portfolio = get_object_or_404(Portfolio, owner=user_object)
-        self.all_balances = self.portfolio.assetbalance_set.all()
+        self._portfolio = get_object_or_404(Portfolio, owner=user_object)
+        self._all_balances = self._portfolio.assetbalance_set.all()
         self.user_holdings_list = self._get_user_asset_holdings_with_values_list()
+        self._daily_balance_service = DailyBalanceUtil(self._all_balances)
         self.current_date = self._get_current_date()
-        self.daily_balance_service = DailyBalanceUtil(self.all_balances)
 
     
     def get_dashboard_context(self):
@@ -33,15 +33,15 @@ class DashboardService:
             context = {'current_date': self.current_date}
             return context   
         
-        asset_ratio = self._get_asset_type_ratio_tuple_list()
-        asset_type_ratio_tuple_list_json = json.dumps(asset_ratio, default=str)
-        top_asset_type_allocation = asset_ratio[0]
-        
-        user_daily_balance_history_json = self.daily_balance_service.get_user_daily_balance_history()
-        portfolio_value_change = self.daily_balance_service.get_portfolio_value_change()
+        asset_type_ratios = self._get_asset_type_ratio_tuple_list()
 
-        latest_balance_value = self.daily_balance_service.user_daily_balance_history[-1].values
+        user_daily_balance_history_json = self._daily_balance_service.get_user_daily_balance_history()
+        portfolio_value_change = self._daily_balance_service.get_portfolio_value_change()
+
+        latest_balance_value = self._daily_balance_service.user_daily_balance_history[-1].values
         if self.user_holdings_list[0].latest_value == 0:
+            # Handle a case when user portfolio value is 0
+            # (Will lead to division by 0 exception)
             top_asset_allocation = 0
         else:
             top_asset_allocation = round(self.user_holdings_list[0].latest_value / latest_balance_value * 100)
@@ -50,12 +50,11 @@ class DashboardService:
             'current_date': self.current_date,
             'user_holdings_list': self.user_holdings_list[:5],
             'user_daily_balance_history_json': user_daily_balance_history_json,
-            'asset_type_ratio_tuple_list_json': asset_type_ratio_tuple_list_json,
             'latest_balance_value': latest_balance_value,
             'portfolio_value_change': portfolio_value_change,
-            'top_asset_type_allocation': top_asset_type_allocation,
             'top_asset_allocation': top_asset_allocation,
-            'asset_ratio': asset_ratio,
+            'asset_type_ratios': asset_type_ratios,
+            'asset_type_ratios_tuple_list_json': json.dumps(asset_type_ratios, default=str),
         }
         return context
 
@@ -69,7 +68,7 @@ class DashboardService:
         user_holdings_list = []
 
         # Loop throgh balances to add amount, price and value attrributes to balance queryset
-        for balance in self.all_balances:
+        for balance in self._all_balances:
             # TODO check if balance assetbalancehistory exists
 
             # Get asset price
@@ -112,7 +111,7 @@ class DashboardService:
 
     def _get_asset_type_ratio_tuple_list(self):
         
-        asset_ratio = {
+        asset_type_ratios = {
             'cryptocurrency': 0,
             'stock': 0,
             'currency': 0,
@@ -120,21 +119,21 @@ class DashboardService:
         
         # Sum user holdings based on type
         for holding in self.user_holdings_list:
-            asset_ratio[holding.type] += holding.latest_value
+            asset_type_ratios[holding.type] += holding.latest_value
         
         # Sum complete holdings value
         asset_sum = 0
-        for dict in asset_ratio:
-            asset_sum += asset_ratio[dict]
+        for dict in asset_type_ratios:
+            asset_sum += asset_type_ratios[dict]
 
         asset_type_ratio_tuple_list = []
 
         # Calculate asset type ratio based on the complate holdings sum
         # Append calculated values to list as tuples
-        for dict in asset_ratio:
-            value = asset_ratio[dict]
+        for dict in asset_type_ratios:
+            value = asset_type_ratios[dict]
             if(asset_sum > 0):
-                ratio = round(asset_ratio[dict] / asset_sum * 100, 2)
+                ratio = round(asset_type_ratios[dict] / asset_sum * 100, 2)
             else:
                 ratio = 0
             dict = dict[:1].upper() + dict[1:]

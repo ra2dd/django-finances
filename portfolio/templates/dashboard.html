@@ -39,8 +39,9 @@
         </div>
 
         <div>
-            <h3 class="textNormal">{{ top_asset_type_allocation.0 }} allocation</h3>
-            <p class="headingXl">{{ top_asset_type_allocation.1 }}%</p>
+            <!-- Get top asset type ratio using first element of the list -->
+            <h3 class="textNormal">{{ asset_type_ratios.0.0 }} allocation</h3>
+            <p class="headingXl">{{ asset_type_ratios.0.1 }}%</p>
         </div>
     </div>
     
@@ -106,7 +107,7 @@
 
             <div class="chartLegend">
                 <div>
-                    {% for type in asset_ratio %}
+                    {% for type in asset_type_ratios %}
                         <div class="flexboxStart"> 
                             <div class="legendItem legend{{ forloop.counter }}"></div>
                             <p class="textSmall">{{ type.0 }}</p>
@@ -165,16 +166,16 @@
         });
         
         const ctxDough = document.getElementById("chartAssetRatio").getContext("2d");
-        const asset_type_ratio = JSON.parse('{{ asset_type_ratio_tuple_list_json | safe }}');
+        const asset_type_ratios = JSON.parse('{{ asset_type_ratios_tuple_list_json | safe }}');
         
         let chartDough = new Chart(ctxDough, {
             type: 'doughnut',
             data: {
-                labels: asset_type_ratio.map(tuple => tuple[0]),
+                labels: asset_type_ratios.map(tuple => tuple[0]),
                 datasets: [
                     {
                         label: "Asset type ratio",
-                        data: asset_type_ratio.map(tuple => tuple[1])
+                        data: asset_type_ratios.map(tuple => tuple[1])
                     }
                 ]
             },
