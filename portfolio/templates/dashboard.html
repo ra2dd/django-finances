@@ -21,17 +21,19 @@
 
         <div>
             <h3 class="textNormal">
-                {% if balance_change.0 == 30 %}
+                {% if portfolio_value_change.days == 30 %}
                     30 Day Change
-                {% else %}
+                {% elif portfolio_value_change.days == 7 %}
                     7 Day Change
+                {% else %}
+                    24 Hour Change
                 {% endif %}
             </h3>
             <p class="headingXl">
-                {% if balance_change.2 %}
-                    -${{ balance_change.1 }}
+                {% if portfolio_value_change.negative %}
+                    -${{ portfolio_value_change.change }}
                 {% else %}
-                    +${{ balance_change.1 }}
+                    +${{ portfolio_value_change.change }}
                 {% endif %}
             </p>
         </div>

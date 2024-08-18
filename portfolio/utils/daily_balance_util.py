@@ -12,6 +12,13 @@ class TotalDayBalance:
         self.date = date
         self.values = [value]
 
+
+class PortfolioValueChange:
+    def __init__(self, days, change, negative):
+        self.days = days
+        self.change = change
+        self.negative = negative
+
         
 class DailyBalanceUtil:
     def __init__(self, user_all_balance_list):
@@ -213,3 +220,29 @@ class DailyBalanceUtil:
             
         # If it wasn't added create a new object                       
         self.user_daily_balance_history.append(TotalDayBalance(date, last_value))
+
+    
+    def get_portfolio_value_change(self):
+        latest_portfolio_value = self.user_daily_balance_history[-1].values
+
+        # How many history days does user portfolio have
+        history_len = len(self.user_daily_balance_history)
+        if history_len > 30:
+            days_change = 30
+        elif history_len > 7:
+            days_change = 7
+        elif history_len > 1:
+            days_change = 1
+        else:
+            days_change = 0
+
+        return self._calculate_portfolio_change(days_change)
+
+    
+    def _calculate_portfolio_change(self, days_change):
+        value_change = self.user_daily_balance_history[-1].values - self.user_daily_balance_history[-1 - days_change].values
+        # Append absolute value change to an object
+        # and add negative or positive symbol in a template (before currency symbol)
+        return PortfolioValueChange(days_change, abs(value_change), value_change < 0)
+
+
